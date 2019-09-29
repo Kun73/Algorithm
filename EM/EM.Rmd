@@ -1,0 +1,64 @@
+---
+title: "EM Algorithm"
+author: "Kun Huang"
+date: "`r format(Sys.Date())`"
+output: bookdown::html_document2
+bibliography: template.bib
+biblio-style: asa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+The EM algorithm stands for expectation-maximization algorithm. It is a special case of MM(minorization-maximization) algorithm.
+
+# MM Alogrithm
+
+Our goal is to solve the problem \@ref(eq:obj),
+\begin{equation}
+x^* = \arg\max f(x)
+(\#eq:obj)
+\end{equation}
+
+From its name, the MM algorithm has two steps at each iteration $x_{t}$,
+
+- Minorization: Find a surrogate function $g_t(x), s.t.$
+
+\begin{equation}
+g_t(x)\leq f(x),
+(\#eq:wh)
+\end{equation}
+
+\begin{align}
+g_t(x_t) = f(x_t)
+(\#eq:loc)
+\end{align}
+
+- Maximization: Maximize the surrogate function $g_t(x)$
+
+\begin{equation}
+x_{t+1} = \arg\max g_t(x)
+(\#eq:max)
+\end{equation}
+
+Thus at each iteration, we have 
+\begin{equation}
+f(x_{t+1})\geq g_t(x_{t+1})\geq g_t(x_t) = f(x_t)
+(\#eq:con)
+\end{equation}
+
+The inequality \@ref(eq:con) holds because of \@ref(eq:wh), \@ref(eq:max) and \@ref(eq:loc) respectively. 
+
+Since our optimization is on the surrogate function $g_t(x)$, we can avoid dealing with some unpleasant properties in $f(x)$. However, finding such a surrogate function is not easy and does not have universal method that it varys in different problems. 
+
+The EM algorithm is a special case when the objective function is the log-likelihood function $\ell(\theta)$. Thus by [Jensen's inequality](https://en.wikipedia.org/wiki/Jensen%27s_inequality), we have 
+\begin{equation}
+f(E(X))\geq E(f(X))
+(\#eq:jensen)
+\end{equation}
+
+
+## EM Algorithm
+
+The EM algorithm was proposed by @EM. 
