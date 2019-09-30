@@ -61,6 +61,65 @@ f(E(X))\geq E(f(X))
 
 # EM Algorithm
 
+The EM algorithm is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model, the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
+y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
+(\#eq:yi)
+\end{equation}
+where $\mathbf{c}_i$ is the complete observation which cannot be observed directly, $\mathbf{x}_i$ is the predictor, $\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)$ is the missing variable indicating which group $y_i$ belongs to. 
+
+For the following discussions, we always assume $\mathbf{Y}=\mathbf{y}$ is the observed data which is fixed and known from space $\Omega(Y)$, $\mathbf{X} = \mathbf{x}$ is the complete data but not observed from space $\Omega(X)$. More specifically, we assume $\mathbf{Y}$ and $\mathbf{X}$ have the following relationship,
+\begin{equation}
+\mathbf{Y} = \mathbf{X}\ |\ \mathbf{Z}
+(\#eq:cond)
+\end{equation}
+where $\mathbf{Z}$ is unobserved parts.
+Additionally, there exists a many-to-one mapping from $\Omega(X)$ to $\Omega(Y)$.  We postulate a family of sampling density $f(\mathbf{x}|\Phi)$ depending on parameters $\Phi$ and derive its corresponding family of sampling density $g(\mathbf{y}|\Phi)$ by 
+\begin{equation}
+g(\mathbf{y}|\Phi) = \int f(\mathbf{x}|\Phi) d\mathbf{z}
+(\#eq:int)
+\end{equation}
+
+Our goal is to get the MLE of $\Phi$ from the log-likelihood function $L(\Phi)$ of complete data. We denote the observed log-likelihood function $\ell(\Phi)$ as 
+\begin{equation}
+\ell(\Phi) = \log g(\mathbf{y}|\Phi)
+(\#eq:ell)
+\end{equation}
+
+## General EM Algorithm
+
+From the above assumptions, the conditional density of unbserved variable $\mathbf{z}$ is 
+
+\begin{equation}
+c(\mathbf{z}|\Phi) = \frac{f(\mathbf{x}|\Phi)}{g(\mathbf{y|\Phi})}
+(\#eq:dc)
+\end{equation}
+
+Then, $\ell(\Phi)$ can be represented by 
+\begin{align}
+\ell(\Phi) &= \log\frac{f(\mathbf{x}|\Phi)}{c(\mathbf{z}|\Phi)}\\
+& = \log f(\mathbf{x}|\Phi) - \log c(\mathbf{z}|\Phi)
+(\#eq:ellfc)
+\end{align}
+
+Thus
+\begin{equation}
+L(\Phi) = \log f(\mathbf{x}|\Phi) = \ell(\Phi) + \log c(\mathbf{z}|\Phi)
+(\#eq:L)
+\end{equation}
+
+- E-step
+
+\begin{align}
+E[L(\Phi)] &= E[\ell(\Phi) + \log c(\mathbf{z}|\Phi)]\\
+&=\ell(\Phi) + E[\log c(\mathbf{z}|\Phi)]\\
+(\#eq:emloc)
+\end{align}
+The equation \@ref(eq:emloc) is the corresponding part in MM algorithm \@ref(eq:loc). For \@ref(eq:wh) part in MM algorithm, **how to derive?**
+
+- M-step
+
+
+
 ## EM Algorithm for Exponential Distribution
 
 ### Gaussian Mixture Model
