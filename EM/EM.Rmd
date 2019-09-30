@@ -59,6 +59,11 @@ f(E(X))\geq E(f(X))
 \end{equation}
 
 
-## EM Algorithm
+# EM Algorithm
 
+## EM Algorithm for Exponential Distribution
+
+### Gaussian Mixture Model
+
+# Reference {-}
 The EM algorithm was proposed by @EM. 
