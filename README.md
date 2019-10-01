@@ -8,4 +8,4 @@ For the first part, we derive the MLE for the most of the time while for the lat
 
 ## EM Algorithm
 
-It can be seen [here](http://htmlpreview.github.io/?https://raw.githubusercontent.com/Kun73/Algorithm/master/EM/EM.html)
+It can used in incomplete data set problem, see [here](http://htmlpreview.github.io/?https://raw.githubusercontent.com/Kun73/Algorithm/master/EM/EM.html).
