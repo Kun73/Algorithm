@@ -11,9 +11,10 @@ biblio-style: asa
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+
 The EM algorithm stands for expectation-maximization algorithm. It is a special case of MM(minorization-maximization) algorithm.
 
-# MM Alogrithm
+# MM Alogrithm {#sec:MM}
 
 Our goal is to solve the problem \@ref(eq:obj),
 \begin{equation}
@@ -52,112 +53,99 @@ The inequality \@ref(eq:con) holds because of \@ref(eq:wh), \@ref(eq:max) and \@
 
 Since our optimization is on the surrogate function $g_t(x)$, we can avoid dealing with some unpleasant properties in $f(x)$. However, finding such a surrogate function is not easy and does not have universal method that it varys in different problems. 
 
-The EM algorithm is a special case when the objective function is the log-likelihood function $\ell(\theta)$. Thus by [Jensen's inequality](https://en.wikipedia.org/wiki/Jensen%27s_inequality), we have 
-\begin{equation}
-f(E(X))\geq E(f(X))
-(\#eq:jensen)
-\end{equation}
+The EM algorithm can be seen as a special case of MM algorithm. 
 
 
 # EM Algorithm
 
-The EM algorithm was proposed by @EM. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model, the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
+The EM algorithm was proposed by @EM. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see \@ref(sec:gmm)), the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
 y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
 (\#eq:yi)
 \end{equation}
 where $\mathbf{c}_i$ is the complete observation which cannot be observed directly, $\mathbf{x}_i$ is the predictor, $\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)$ is the missing variable indicating which group $y_i$ belongs to. 
 
-For the following discussions, we always assume $\mathbf{Y}=\mathbf{y}$ is the observed data which is fixed and known from space $\Omega(Y)$, $\mathbf{X} = \mathbf{x}$ is the complete data but not observed from space $\Omega(X)$. More specifically, we assume $\mathbf{Y}$ and $\mathbf{X}$ have the following relationship,
+For the following discussions, we always assume $\mathbf{Y}=\mathbf{y}$ is the observed data which is fixed and known from space $\Omega(Y)$, $\mathbf{X} = \mathbf{x}$ is the complete data but not observed from space $\Omega(X)$. Additionally, there exists a many-to-one mapping $\mathbf{x}->\mathbf{y}(\mathbf{x})$ from $\Omega(X)$ to $\Omega(Y)$, and that $\mathbf{x}$ is known only to lie in $M(\mathbf{y})$, the subset determined by the equation $\mathbf{y} = \mathbf{y}(\mathbf{x})$.  We postulate a family of sampling density $f(\mathbf{x}|\Phi)$ depending on parameters $\Phi$ and derive its corresponding family of sampling density $g(\mathbf{y}|\Phi)$ by 
 \begin{equation}
-\mathbf{Y} = \mathbf{X}\ |\ \mathbf{Z}
-(\#eq:cond)
-\end{equation}
-where $\mathbf{Z}$ is unobserved parts.
-Additionally, there exists a many-to-one mapping from $\Omega(X)$ to $\Omega(Y)$.  We postulate a family of sampling density $f(\mathbf{x}|\Phi)$ depending on parameters $\Phi$ and derive its corresponding family of sampling density $g(\mathbf{y}|\Phi)$ by 
-\begin{equation}
-g(\mathbf{y}|\Phi) = \int f(\mathbf{x}|\Phi) d\mathbf{z}
+g(\mathbf{y}|\Phi) = \int_{M(\mathbf{y})} f(\mathbf{x}|\Phi) d\mathbf{x}
 (\#eq:int)
 \end{equation}
 
-Our goal is to get the MLE of $\Phi$ from the log-likelihood function $L(\Phi)$ of complete data. We denote the observed log-likelihood function $\ell(\Phi)$ as 
-\begin{equation}
-\ell(\Phi) = \log g(\mathbf{y}|\Phi)
-(\#eq:ell)
-\end{equation}
+Our goal is to get the MLE of $\Phi$ from the log-likelihood function $\ell(\Phi|\mathbf{y})$ when an observed data $\mathbf{y}$ is given. The EM algorithm does so by **making essential use of the associated family ** $f(\mathbf{x}|\Phi)$. 
 
 ## General EM Algorithm {#sec:gen}
 
-From the above assumptions, the conditional density of unbserved variable $\mathbf{z}$ is 
+To get the MLE of $\Phi$ from $\ell(\Phi|\mathbf{y})$ given an observed data $\mathbf{y}$, we aim to derive a $\Phi^*$ that maximize $\ell(\Phi|\mathbf{y})$. 
+
+First, $\ell(\Phi|\mathbf{y})$ can be represented by $f(\mathbf{x}|\Phi)$ and a corresponding conditional density $k(\mathbf{x}|\mathbf{y},\Phi)$, i.e.
+\begin{align}
+(\#eq:conell)
+\ell(\Phi|\mathbf{y}) &= \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\mathbf{y},\Phi)\\
+
+k(\mathbf{x}|\mathbf{y},\Phi) &= \frac{f(\mathbf{x}|\Phi)}{g(\mathbf{y}|\Phi)}
+\end{align}
+Where $k(\mathbf{x}|\mathbf{y},\Phi)$ depends only on $\mathbf{x}$ when $\mathbf{y}$ is given, we denote it as $k(\mathbf{x}|\Phi)$, then \@ref(eq:conell) becomes 
 
 \begin{equation}
-c(\mathbf{z}|\Phi) = \frac{f(\mathbf{x}|\Phi)}{g(\mathbf{y|\Phi})}
-(\#eq:dc)
+\ell(\Phi|\mathbf{y}) = \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\Phi)
+(\#eq:ellbefore)
 \end{equation}
 
-Then, $\ell(\Phi)$ can be represented by 
+For \@ref(eq:ellbefore), we integrate (or sum) both sides after multiplying with $k(\mathbf{x}|\Phi^{(t)})$. The LHS has nothing random with  respetive to $\mathbf{x}$. For the RHS, we have 
 \begin{align}
-\ell(\Phi) &= \log\frac{f(\mathbf{x}|\Phi)}{c(\mathbf{z}|\Phi)}\\
-& = \log f(\mathbf{x}|\Phi) - \log c(\mathbf{z}|\Phi)
-(\#eq:ellfc)
+
+\int_{M(\mathbf{y})}\log f(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
+&=E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]:= Q(\Phi|\Phi^{(t)}) \\
+\int_{M(\mathbf{y})}\log k(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})&:=H(\Phi|\Phi^{(t)})
 \end{align}
 
-Thus
+Thus we have 
 \begin{equation}
-L(\Phi) = \log f(\mathbf{x}|\Phi) = \ell(\Phi) + \log c(\mathbf{z}|\Phi)
-(\#eq:L)
+\ell(\Phi|\mathbf{y})d\mathbf{x} = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
+(\#eq:emfin)
 \end{equation}
 
-- E-step
+Where $\Phi^{(t)}$ is the parameter $\Phi$ aftering iterating $t$ times. According to \@ref(eq:emfin), we update $\ell(\Phi|\mathbf{y})$ by repeatedly updating $Q(\Phi|\Phi^{(t)})$ and $H(\Phi|\Phi^{(t)})$. We now give the E- and M-step of EM algorithm.
+
+- E-step: Compute the conditional expectation,
+$$
+Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
+$$ 
+
+- M-step: Derive the next $\Phi^{(t+1)}$ by maximizing $Q(\Phi|\Phi^{(t)})$, i.e. 
+\begin{equation}
+(\#eq:mgen)
+\Phi^{(t+1)} = \arg\max Q(\Phi|\Phi^{(t)})
+\end{equation}
+
+Note that $-H(\Phi|\Phi^{(t)})$ can be seen as the entropy of $k(\mathbf{x}|\Phi)$, which is non-negative, since $k(\mathbf{x}|\Phi)\in[0,1]$. 
+
+So $\ell(\Phi|\mathbf{y})\geq Q(\Phi|\Phi')$. Thus $Q(\Phi|\Phi')$ is the minorization of $\ell(\Phi|\mathbf{y})$. Hence the EM algorithm leads to the maximal according to section \@ref(sec:MM). 
+
+Also, we can prove the convergence of EM algorithm by showing that updating $\Phi^{(t)}$ by the E- and M-steps leads to ultimately maximal of $\ell(\Phi|\mathbf{y})$, i.e. we show $\ell(\Phi^{(t+1)}|\mathbf{y})\geq\ell(\Phi^{(t)}|\mathbf{y})$.
 
 \begin{align}
-E[L(\Phi)] &= E[\ell(\Phi) + \log c(\mathbf{z}|\Phi)]\\
-&=\ell(\Phi) + E[\log c(\mathbf{z}|\Phi)]\\
-(\#eq:emloc)
+\ell(\Phi^{(t+1)}|\mathbf{y}) - \ell(\Phi^{(t)}|\mathbf{y})
+& = \underbrace{(Q(\Phi^{(t+1)}|\Phi^{(t)}) - Q(\Phi^{(t)}|\Phi^{(t)}))}_{\text{M-step, }\geq0}+\underbrace{(H(\Phi^{(t)}|\Phi^{(t)}) - H(\phi^{(t+1)}|\Phi^{(t)}))}_{\text{Jensen's inequality}, f(\cdot) = \log(\cdot),\geq0}\\
+&\geq 0
 \end{align}
-The equation \@ref(eq:emloc) is the corresponding part in MM algorithm \@ref(eq:loc). For \@ref(eq:wh) part in MM algorithm, **how to derive?**
-
-- M-step
 
 
 ## EM Algorithm for Exponential Distribution
 
-In this section, we restrict the complete density $f(\mathbf{x}|\Phi)$ has regular($\Phi$ is unique up to an arbitary non-singular $r\times r$ leaner transformation) exonential-family form
+In this section, we restrict the complete density $f(\mathbf{x}|\Phi)$ has regular($\Phi$ is unique up to an arbitary non-singular $r\times r$ linear transformation) exonential-family form
 \begin{equation}
 f(\mathbf{x}|\Phi) = b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi/a(\Phi)\\
 \Phi, \mathbf{t}(\mathbf{x})\in\mathbb{R}^r
 \end{equation}
 Here, $\mathbf{t}(\mathbf{x})$ is the sufficient statistics. 
 
-Generally, we follow the same step in section \@ref(sec:gen). Since the density function is more concrete and restricted, we can get a more specific result.
-
-First, the log-likelihood function of complete-data is 
-\begin{equation}
-L(\Phi)= \log b(\mathbf{x}) +\mathbf{t}(\mathbf{x})^T\Phi - \log a(\Phi)
-(\#eq:Lexp)
-\end{equation}
-
-The density of observed data $g(\mathbf{y}|\Phi)$ can be represented by 
-\begin{equation}
-g(\mathbf{y}|\Phi) = \frac{\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)d\mathbf{z}}{a(\Phi)}
-\end{equation}
-
-The conditional density of unobserved part $\mathbf{z}$ is 
-\begin{equation}
-c(\mathbf{z}|\Phi) = \frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)}{\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}}
-\end{equation}
-
-Additionally, $f(\mathbf{x}|\Phi)$ is the density function hence $\int f(\mathbf{x|\Phi})d\mathbf{x} = 1$, so we can represent $a(\Phi)$ as 
-\begin{equation}
-a(\Phi) = \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)d\mathbf{x}
-\end{equation}
-
-The integral $\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}$ can be seen as 
-\begin{equation}
-a(\Phi|\mathbf{y}) = \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}
-\end{equation}
 
 
 
-### Gaussian Mixture Model
+### Gaussian Mixture Model {#sec:gmm}
+
+# Acknowledgment {-}
+
+The above contents are notes after taking the class from Prof. @stat5361.
 
 # Reference {-}
