@@ -61,7 +61,7 @@ f(E(X))\geq E(f(X))
 
 # EM Algorithm
 
-The EM algorithm is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model, the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
+The EM algorithm was proposed by @EM. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model, the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
 y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
 (\#eq:yi)
 \end{equation}
@@ -85,7 +85,7 @@ Our goal is to get the MLE of $\Phi$ from the log-likelihood function $L(\Phi)$ 
 (\#eq:ell)
 \end{equation}
 
-## General EM Algorithm
+## General EM Algorithm {#sec:gen}
 
 From the above assumptions, the conditional density of unbserved variable $\mathbf{z}$ is 
 
@@ -119,10 +119,45 @@ The equation \@ref(eq:emloc) is the corresponding part in MM algorithm \@ref(eq:
 - M-step
 
 
-
 ## EM Algorithm for Exponential Distribution
+
+In this section, we restrict the complete density $f(\mathbf{x}|\Phi)$ has regular($\Phi$ is unique up to an arbitary non-singular $r\times r$ leaner transformation) exonential-family form
+\begin{equation}
+f(\mathbf{x}|\Phi) = b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi/a(\Phi)\\
+\Phi, \mathbf{t}(\mathbf{x})\in\mathbb{R}^r
+\end{equation}
+Here, $\mathbf{t}(\mathbf{x})$ is the sufficient statistics. 
+
+Generally, we follow the same step in section \@ref(sec:gen). Since the density function is more concrete and restricted, we can get a more specific result.
+
+First, the log-likelihood function of complete-data is 
+\begin{equation}
+L(\Phi)= \log b(\mathbf{x}) +\mathbf{t}(\mathbf{x})^T\Phi - \log a(\Phi)
+(\#eq:Lexp)
+\end{equation}
+
+The density of observed data $g(\mathbf{y}|\Phi)$ can be represented by 
+\begin{equation}
+g(\mathbf{y}|\Phi) = \frac{\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)d\mathbf{z}}{a(\Phi)}
+\end{equation}
+
+The conditional density of unobserved part $\mathbf{z}$ is 
+\begin{equation}
+c(\mathbf{z}|\Phi) = \frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)}{\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}}
+\end{equation}
+
+Additionally, $f(\mathbf{x}|\Phi)$ is the density function hence $\int f(\mathbf{x|\Phi})d\mathbf{x} = 1$, so we can represent $a(\Phi)$ as 
+\begin{equation}
+a(\Phi) = \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf x)^T\Phi)d\mathbf{x}
+\end{equation}
+
+The integral $\int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}$ can be seen as 
+\begin{equation}
+a(\Phi|\mathbf{y}) = \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf(x))^T\Phi)d\mathbf{z}
+\end{equation}
+
+
 
 ### Gaussian Mixture Model
 
 # Reference {-}
-The EM algorithm was proposed by @EM. 
