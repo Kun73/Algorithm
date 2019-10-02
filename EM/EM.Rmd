@@ -58,11 +58,7 @@ The EM algorithm can be seen as a special case of MM algorithm.
 
 # EM Algorithm
 
-The EM algorithm was proposed by @EM. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see \@ref(sec:gmm)), the observations are not from homogeneous group. Instead, we assume they come from $K$ several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, $y_i$, is in fact conditioned on the clusters, i.e. \begin{equation}
-y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
-(\#eq:yi)
-\end{equation}
-where $\mathbf{c}_i$ is the complete observation which cannot be observed directly, $\mathbf{x}_i$ is the predictor, $\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)$ is the missing variable indicating which group $y_i$ belongs to. 
+The EM algorithm was proposed by @EM. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see \@ref(sec:gmm)), the observations are not from homogeneous group. 
 
 For the following discussions, we always assume $\mathbf{Y}=\mathbf{y}$ is the observed data which is fixed and known from space $\Omega(Y)$, $\mathbf{X} = \mathbf{x}$ is the complete data but not observed from space $\Omega(X)$. Additionally, there exists a many-to-one mapping $\mathbf{x}->\mathbf{y}(\mathbf{x})$ from $\Omega(X)$ to $\Omega(Y)$, and that $\mathbf{x}$ is known only to lie in $M(\mathbf{y})$, the subset determined by the equation $\mathbf{y} = \mathbf{y}(\mathbf{x})$.  We postulate a family of sampling density $f(\mathbf{x}|\Phi)$ depending on parameters $\Phi$ and derive its corresponding family of sampling density $g(\mathbf{y}|\Phi)$ by 
 \begin{equation}
@@ -93,14 +89,14 @@ Where $k(\mathbf{x}|\mathbf{y},\Phi)$ depends only on $\mathbf{x}$ when $\mathbf
 For \@ref(eq:ellbefore), we integrate (or sum) both sides after multiplying with $k(\mathbf{x}|\Phi^{(t)})$. The LHS has nothing random with  respetive to $\mathbf{x}$. For the RHS, we have 
 \begin{align}
 
-\int_{M(\mathbf{y})}\log f(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
+\int_{M(\mathbf{y})}\log (f(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
 &=E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]:= Q(\Phi|\Phi^{(t)}) \\
-\int_{M(\mathbf{y})}\log k(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})&:=H(\Phi|\Phi^{(t)})
+\int_{M(\mathbf{y})}\log( k(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}&:=H(\Phi|\Phi^{(t)})
 \end{align}
 
 Thus we have 
 \begin{equation}
-\ell(\Phi|\mathbf{y})d\mathbf{x} = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
+\ell(\Phi|\mathbf{y}) = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
 (\#eq:emfin)
 \end{equation}
 
@@ -134,15 +130,71 @@ Also, we can prove the convergence of EM algorithm by showing that updating $\Ph
 
 In this section, we restrict the complete density $f(\mathbf{x}|\Phi)$ has regular($\Phi$ is unique up to an arbitary non-singular $r\times r$ linear transformation) exonential-family form
 \begin{equation}
+(\#eq:exp)
 f(\mathbf{x}|\Phi) = b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi/a(\Phi)\\
 \Phi, \mathbf{t}(\mathbf{x})\in\mathbb{R}^r
 \end{equation}
 Here, $\mathbf{t}(\mathbf{x})$ is the sufficient statistics. 
 
+From the above discussion \@ref(eq:emfin),Substituting $f(\mathbf{x}|\Phi)$, we have 
+\begin{align}
+k(\mathbf{x}|\mathbf{y},\Phi) = \frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{\int_{M(\mathbf{y})} b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi d\mathbf{x}}
+:=\frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{a(\Phi|\mathbf{y})}
+\end{align}
+
+Thus 
+\begin{align}
+Q(\Phi|\Phi^{(t)}) &= \int_{M(y)}\log b(\mathbf{x})k(\mathbf{x}|\Phi^{(t)})d\mathbf{x} + \int_{M(y)}\mathbf{t}(\mathbf{x})^T\Phi k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}-\int_{M(y)} \log (a(\Phi)) k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}\\
+&:=B(\Phi^{(t)}) + \Phi^T E[\mathbf{t}|\Phi^{(t)},\mathbf{y}] - \log a(\Phi)
+
+\end{align}
+
+Let $Q'(\Phi|\Phi^{(t)})=E[\mathbf{t}|\Phi^{(t)},\mathbf{y}]-\frac{a'(\Phi)}{a(\Phi)} = 0$, notice that $\int f(\mathbf{x}|\Phi)d\mathbf{x}=1$, then
+\begin{align}
+a(\Phi) &= \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x} \stackrel{\text{take ln then take derivative}}\Rightarrow\\
+\frac{a'(\Phi)}{a(\Phi)} &= \frac{\int b(\mathbf{x}) \mathbf{t}(\mathbf{x})^T \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}{\int b(\mathbf{x})  \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}
+= E[\mathbf{t}(\mathbf{x})|\Phi,\mathbf{y}]
+\end{align}
+
+Hence we derive the EM algorithm for exponential family as follows
+
+- E-step: Compute $E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]$
+
+- M-step: Update $\Phi^{(t+1)}$ by solving $E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]$
+
+## Gaussian Mixture Model {#sec:gmm}
 
 
 
-### Gaussian Mixture Model {#sec:gmm}
+For a Gaussian mixture model, we have 
+\begin{equation}
+y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
+(\#eq:gmmdata)
+\end{equation}
+where $\mathbf{c}_i$ is the complete observation which cannot be observed directly, $\mathbf{x}_i$ is the predictor, $\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)$ is the latent variable indicating which group $y_i$ belongs to. 
+
+Suppose the density of $y_i$ is given by 
+\begin{equation}
+f\left(y_{i} | \mathbf{x}_{i}, \mathbf{\Phi}\right)=\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right), \quad i=1, \ldots, n
+(\#eq:gmmden)
+\end{equation}
+Where $\pi_j's$ are called mixing parameters, $\boldsymbol{\beta}_j$ is the regression coefficient vector for the $j$th group, $\phi\left(y_{i} ; \mu, \sigma^{2}\right)$  denotes the density function of $\mathcal{N}(\mu,\sigma^2)$, $\boldsymbol{\Phi}=(\pi_1,\boldsymbol{\beta}_1,...,\pi_m,\boldsymbol{\beta}_m,\sigma)$ contains all the unknown parameters.
+
+The log-likelihood function $\ell(\boldsymbol{\Phi})$ of observed data can be represented as 
+\begin{equation}
+\ell(\boldsymbol{\Phi}) = \sum_{i=1}^n\log \left[\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right)\right]
+(\#eq:gmmell)
+\end{equation}
+
+
+## Variants of EM
+
+### Monte Carlo EM(MCEM)
+
+### Generalized EM(GEM)
+
+## Acceleration of EM
+
 
 # Acknowledgment {-}
 

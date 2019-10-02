@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-01" />
+<meta name="date" content="2019-10-02" />
 
 <title>EM Algorithm</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">EM Algorithm</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-01</h4>
+<h4 class="date">2019-10-02</h4>
 
 </div>
 
@@ -224,16 +224,11 @@ f(x_{t+1})\geq g_t(x_{t+1})\geq g_t(x_t) = f(x_t)
 </div>
 <div id="em-algorithm" class="section level1">
 <h1><span class="header-section-number">2</span> EM Algorithm</h1>
-The EM algorithm was proposed by <span class="citation">Dempster, Laird, and Rubin (1977)</span>. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see <a href="#sec:gmm">2.2.1</a>), the observations are not from homogeneous group. Instead, we assume they come from <span class="math inline">\(K\)</span> several distinct clusters. The problem is we cannot observe their corresponding clusters. What we observe, <span class="math inline">\(y_i\)</span>, is in fact conditioned on the clusters, i.e.
-<span class="math display" id="eq:yi">\[\begin{equation}
-y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
-\tag{2.1}
-\end{equation}\]</span>
-<p>where <span class="math inline">\(\mathbf{c}_i\)</span> is the complete observation which cannot be observed directly, <span class="math inline">\(\mathbf{x}_i\)</span> is the predictor, <span class="math inline">\(\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)\)</span> is the missing variable indicating which group <span class="math inline">\(y_i\)</span> belongs to.</p>
+<p>The EM algorithm was proposed by <span class="citation">Dempster, Laird, and Rubin (1977)</span>. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see <a href="#sec:gmm">2.3</a>), the observations are not from homogeneous group.</p>
 For the following discussions, we always assume <span class="math inline">\(\mathbf{Y}=\mathbf{y}\)</span> is the observed data which is fixed and known from space <span class="math inline">\(\Omega(Y)\)</span>, <span class="math inline">\(\mathbf{X} = \mathbf{x}\)</span> is the complete data but not observed from space <span class="math inline">\(\Omega(X)\)</span>. Additionally, there exists a many-to-one mapping <span class="math inline">\(\mathbf{x}-&gt;\mathbf{y}(\mathbf{x})\)</span> from <span class="math inline">\(\Omega(X)\)</span> to <span class="math inline">\(\Omega(Y)\)</span>, and that <span class="math inline">\(\mathbf{x}\)</span> is known only to lie in <span class="math inline">\(M(\mathbf{y})\)</span>, the subset determined by the equation <span class="math inline">\(\mathbf{y} = \mathbf{y}(\mathbf{x})\)</span>. We postulate a family of sampling density <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> depending on parameters <span class="math inline">\(\Phi\)</span> and derive its corresponding family of sampling density <span class="math inline">\(g(\mathbf{y}|\Phi)\)</span> by
 <span class="math display" id="eq:int">\[\begin{equation}
 g(\mathbf{y}|\Phi) = \int_{M(\mathbf{y})} f(\mathbf{x}|\Phi) d\mathbf{x}
-\tag{2.2}
+\tag{2.1}
 \end{equation}\]</span>
 <p>Our goal is to get the MLE of <span class="math inline">\(\Phi\)</span> from the log-likelihood function <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> when an observed data <span class="math inline">\(\mathbf{y}\)</span> is given. The EM algorithm does so by <strong>making essential use of the associated family </strong> <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span>.</p>
 <div id="sec:gen" class="section level2">
@@ -241,36 +236,36 @@ g(\mathbf{y}|\Phi) = \int_{M(\mathbf{y})} f(\mathbf{x}|\Phi) d\mathbf{x}
 <p>To get the MLE of <span class="math inline">\(\Phi\)</span> from <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> given an observed data <span class="math inline">\(\mathbf{y}\)</span>, we aim to derive a <span class="math inline">\(\Phi^*\)</span> that maximize <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>.</p>
 First, <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> can be represented by <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> and a corresponding conditional density <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span>, i.e.
 <span class="math display" id="eq:conell">\[\begin{align}
-\tag{2.3}
+\tag{2.2}
 \ell(\Phi|\mathbf{y}) &amp;= \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\mathbf{y},\Phi)\\
 
 k(\mathbf{x}|\mathbf{y},\Phi) &amp;= \frac{f(\mathbf{x}|\Phi)}{g(\mathbf{y}|\Phi)}
 \end{align}\]</span>
-<p>Where <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span> depends only on <span class="math inline">\(\mathbf{x}\)</span> when <span class="math inline">\(\mathbf{y}\)</span> is given, we denote it as <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, then <a href="#eq:conell">(2.3)</a> becomes</p>
+<p>Where <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span> depends only on <span class="math inline">\(\mathbf{x}\)</span> when <span class="math inline">\(\mathbf{y}\)</span> is given, we denote it as <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, then <a href="#eq:conell">(2.2)</a> becomes</p>
 <span class="math display" id="eq:ellbefore">\[\begin{equation}
 \ell(\Phi|\mathbf{y}) = \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\Phi)
-\tag{2.4}
+\tag{2.3}
 \end{equation}\]</span>
-For <a href="#eq:ellbefore">(2.4)</a>, we integrate (or sum) both sides after multiplying with <span class="math inline">\(k(\mathbf{x}|\Phi^{(t)})\)</span>. The LHS has nothing random with respetive to <span class="math inline">\(\mathbf{x}\)</span>. For the RHS, we have
+For <a href="#eq:ellbefore">(2.3)</a>, we integrate (or sum) both sides after multiplying with <span class="math inline">\(k(\mathbf{x}|\Phi^{(t)})\)</span>. The LHS has nothing random with respetive to <span class="math inline">\(\mathbf{x}\)</span>. For the RHS, we have
 <span class="math display">\[\begin{align}
 
-\int_{M(\mathbf{y})}\log f(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
+\int_{M(\mathbf{y})}\log (f(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
 &amp;=E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]:= Q(\Phi|\Phi^{(t)}) \\
-\int_{M(\mathbf{y})}\log k(\mathbf{x}|\Phi)k(\mathbf{x}|\Phi^{(t)})&amp;:=H(\Phi|\Phi^{(t)})
+\int_{M(\mathbf{y})}\log( k(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}&amp;:=H(\Phi|\Phi^{(t)})
 \end{align}\]</span>
 Thus we have
 <span class="math display" id="eq:emfin">\[\begin{equation}
-\ell(\Phi|\mathbf{y})d\mathbf{x} = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
-\tag{2.5}
+\ell(\Phi|\mathbf{y}) = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
+\tag{2.4}
 \end{equation}\]</span>
-<p>Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.5)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm.</p>
+<p>Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.4)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm.</p>
 <ul>
 <li><p>E-step: Compute the conditional expectation, <span class="math display">\[
 Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
 \]</span></p></li>
 <li>M-step: Derive the next <span class="math inline">\(\Phi^{(t+1)}\)</span> by maximizing <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span>, i.e.
 <span class="math display" id="eq:mgen">\[\begin{equation}
-\tag{2.6}
+\tag{2.5}
 \Phi^{(t+1)} = \arg\max Q(\Phi|\Phi^{(t)})
 \end{equation}\]</span></li>
 </ul>
@@ -286,14 +281,66 @@ Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
 <div id="em-algorithm-for-exponential-distribution" class="section level2">
 <h2><span class="header-section-number">2.2</span> EM Algorithm for Exponential Distribution</h2>
 In this section, we restrict the complete density <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> has regular(<span class="math inline">\(\Phi\)</span> is unique up to an arbitary non-singular <span class="math inline">\(r\times r\)</span> linear transformation) exonential-family form
-<span class="math display">\[\begin{equation}
+<span class="math display" id="eq:exp">\[\begin{equation}
+\tag{2.6}
 f(\mathbf{x}|\Phi) = b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi/a(\Phi)\\
 \Phi, \mathbf{t}(\mathbf{x})\in\mathbb{R}^r
 \end{equation}\]</span>
 <p>Here, <span class="math inline">\(\mathbf{t}(\mathbf{x})\)</span> is the sufficient statistics.</p>
-<div id="sec:gmm" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Gaussian Mixture Model</h3>
+From the above discussion <a href="#eq:emfin">(2.4)</a>,Substituting <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span>, we have
+<span class="math display">\[\begin{align}
+k(\mathbf{x}|\mathbf{y},\Phi) = \frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{\int_{M(\mathbf{y})} b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi d\mathbf{x}}
+:=\frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{a(\Phi|\mathbf{y})}
+\end{align}\]</span>
+Thus
+<span class="math display">\[\begin{align}
+Q(\Phi|\Phi^{(t)}) &amp;= \int_{M(y)}\log b(\mathbf{x})k(\mathbf{x}|\Phi^{(t)})d\mathbf{x} + \int_{M(y)}\mathbf{t}(\mathbf{x})^T\Phi k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}-\int_{M(y)} \log (a(\Phi)) k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}\\
+&amp;:=B(\Phi^{(t)}) + \Phi^T E[\mathbf{t}|\Phi^{(t)},\mathbf{y}] - \log a(\Phi)
+
+\end{align}\]</span>
+Let <span class="math inline">\(Q'(\Phi|\Phi^{(t)})=E[\mathbf{t}|\Phi^{(t)},\mathbf{y}]-\frac{a'(\Phi)}{a(\Phi)} = 0\)</span>, notice that <span class="math inline">\(\int f(\mathbf{x}|\Phi)d\mathbf{x}=1\)</span>, then
+<span class="math display">\[\begin{align}
+a(\Phi) &amp;= \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x} \stackrel{\text{take ln then take derivative}}\Rightarrow\\
+\frac{a'(\Phi)}{a(\Phi)} &amp;= \frac{\int b(\mathbf{x}) \mathbf{t}(\mathbf{x})^T \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}{\int b(\mathbf{x})  \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}
+= E[\mathbf{t}(\mathbf{x})|\Phi,\mathbf{y}]
+\end{align}\]</span>
+<p>Hence we derive the EM algorithm for exponential family as follows</p>
+<ul>
+<li><p>E-step: Compute <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
+<li><p>M-step: Update <span class="math inline">\(\Phi^{(t+1)}\)</span> by solving <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
+</ul>
 </div>
+<div id="sec:gmm" class="section level2">
+<h2><span class="header-section-number">2.3</span> Gaussian Mixture Model</h2>
+For a Gaussian mixture model, we have
+<span class="math display" id="eq:gmmdata">\[\begin{equation}
+y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
+\tag{2.7}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(\mathbf{c}_i\)</span> is the complete observation which cannot be observed directly, <span class="math inline">\(\mathbf{x}_i\)</span> is the predictor, <span class="math inline">\(\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)\)</span> is the latent variable indicating which group <span class="math inline">\(y_i\)</span> belongs to.</p>
+Suppose the density of <span class="math inline">\(y_i\)</span> is given by
+<span class="math display" id="eq:gmmden">\[\begin{equation}
+f\left(y_{i} | \mathbf{x}_{i}, \mathbf{\Phi}\right)=\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right), \quad i=1, \ldots, n
+\tag{2.8}
+\end{equation}\]</span>
+<p>Where <span class="math inline">\(\pi_j's\)</span> are called mixing parameters, <span class="math inline">\(\boldsymbol{\beta}_j\)</span> is the regression coefficient vector for the <span class="math inline">\(j\)</span>th group, <span class="math inline">\(\phi\left(y_{i} ; \mu, \sigma^{2}\right)\)</span> denotes the density function of <span class="math inline">\(\mathcal{N}(\mu,\sigma^2)\)</span>, <span class="math inline">\(\boldsymbol{\Phi}=(\pi_1,\boldsymbol{\beta}_1,...,\pi_m,\boldsymbol{\beta}_m,\sigma)\)</span> contains all the unknown parameters.</p>
+The log-likelihood function <span class="math inline">\(\ell(\boldsymbol{\Phi})\)</span> of observed data can be represented as
+<span class="math display" id="eq:gmmell">\[\begin{equation}
+\ell(\boldsymbol{\Phi}) = \sum_{i=1}^n\log \left[\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right)\right]
+\tag{2.9}
+\end{equation}\]</span>
+</div>
+<div id="variants-of-em" class="section level2">
+<h2><span class="header-section-number">2.4</span> Variants of EM</h2>
+<div id="monte-carlo-emmcem" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Monte Carlo EM(MCEM)</h3>
+</div>
+<div id="generalized-emgem" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> Generalized EM(GEM)</h3>
+</div>
+</div>
+<div id="acceleration-of-em" class="section level2">
+<h2><span class="header-section-number">2.5</span> Acceleration of EM</h2>
 </div>
 </div>
 <div id="acknowledgment" class="section level1 unnumbered">
