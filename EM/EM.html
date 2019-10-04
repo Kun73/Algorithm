@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-02" />
+<meta name="date" content="2019-10-03" />
 
 <title>EM Algorithm</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">EM Algorithm</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-02</h4>
+<h4 class="date">2019-10-03</h4>
 
 </div>
 
@@ -233,22 +233,19 @@ g(\mathbf{y}|\Phi) = \int_{M(\mathbf{y})} f(\mathbf{x}|\Phi) d\mathbf{x}
 <p>Our goal is to get the MLE of <span class="math inline">\(\Phi\)</span> from the log-likelihood function <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> when an observed data <span class="math inline">\(\mathbf{y}\)</span> is given. The EM algorithm does so by <strong>making essential use of the associated family </strong> <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span>.</p>
 <div id="sec:gen" class="section level2">
 <h2><span class="header-section-number">2.1</span> General EM Algorithm</h2>
-<p>To get the MLE of <span class="math inline">\(\Phi\)</span> from <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> given an observed data <span class="math inline">\(\mathbf{y}\)</span>, we aim to derive a <span class="math inline">\(\Phi^*\)</span> that maximize <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>.</p>
-First, <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> can be represented by <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> and a corresponding conditional density <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span>, i.e.
+To get the MLE of <span class="math inline">\(\Phi\)</span> from <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> given an observed data <span class="math inline">\(\mathbf{y}\)</span>, we aim to derive a <span class="math inline">\(\Phi^*\)</span> that maximize <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>. First, <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> can be represented by <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> and a corresponding conditional density <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span>, i.e.
 <span class="math display" id="eq:conell">\[\begin{align}
 \tag{2.2}
 \ell(\Phi|\mathbf{y}) &amp;= \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\mathbf{y},\Phi)\\
-
 k(\mathbf{x}|\mathbf{y},\Phi) &amp;= \frac{f(\mathbf{x}|\Phi)}{g(\mathbf{y}|\Phi)}
 \end{align}\]</span>
-<p>Where <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span> depends only on <span class="math inline">\(\mathbf{x}\)</span> when <span class="math inline">\(\mathbf{y}\)</span> is given, we denote it as <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, then <a href="#eq:conell">(2.2)</a> becomes</p>
+Where <span class="math inline">\(k(\mathbf{x}|\mathbf{y},\Phi)\)</span> depends only on <span class="math inline">\(\mathbf{x}\)</span> when <span class="math inline">\(\mathbf{y}\)</span> is given, we denote it as <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, then <a href="#eq:conell">(2.2)</a> becomes
 <span class="math display" id="eq:ellbefore">\[\begin{equation}
 \ell(\Phi|\mathbf{y}) = \log f(\mathbf{x}|\Phi) - \log k(\mathbf{x}|\Phi)
 \tag{2.3}
 \end{equation}\]</span>
 For <a href="#eq:ellbefore">(2.3)</a>, we integrate (or sum) both sides after multiplying with <span class="math inline">\(k(\mathbf{x}|\Phi^{(t)})\)</span>. The LHS has nothing random with respetive to <span class="math inline">\(\mathbf{x}\)</span>. For the RHS, we have
 <span class="math display">\[\begin{align}
-
 \int_{M(\mathbf{y})}\log (f(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}
 &amp;=E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]:= Q(\Phi|\Phi^{(t)}) \\
 \int_{M(\mathbf{y})}\log( k(\mathbf{x}|\Phi))k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}&amp;:=H(\Phi|\Phi^{(t)})
@@ -258,20 +255,14 @@ Thus we have
 \ell(\Phi|\mathbf{y}) = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
 \tag{2.4}
 \end{equation}\]</span>
-<p>Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.4)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm.</p>
-<ul>
-<li><p>E-step: Compute the conditional expectation, <span class="math display">\[
+Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.4)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm. - E-step: Compute the conditional expectation, <span class="math display">\[
 Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
-\]</span></p></li>
-<li>M-step: Derive the next <span class="math inline">\(\Phi^{(t+1)}\)</span> by maximizing <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span>, i.e.
+\]</span> - M-step: Derive the next <span class="math inline">\(\Phi^{(t+1)}\)</span> by maximizing <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span>, i.e.
 <span class="math display" id="eq:mgen">\[\begin{equation}
 \tag{2.5}
 \Phi^{(t+1)} = \arg\max Q(\Phi|\Phi^{(t)})
-\end{equation}\]</span></li>
-</ul>
-<p>Note that <span class="math inline">\(-H(\Phi|\Phi^{(t)})\)</span> can be seen as the entropy of <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, which is non-negative, since <span class="math inline">\(k(\mathbf{x}|\Phi)\in[0,1]\)</span>.</p>
-<p>So <span class="math inline">\(\ell(\Phi|\mathbf{y})\geq Q(\Phi|\Phi')\)</span>. Thus <span class="math inline">\(Q(\Phi|\Phi')\)</span> is the minorization of <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>. Hence the EM algorithm leads to the maximal according to section <a href="#sec:MM">1</a>.</p>
-<p>Also, we can prove the convergence of EM algorithm by showing that updating <span class="math inline">\(\Phi^{(t)}\)</span> by the E- and M-steps leads to ultimately maximal of <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>, i.e. we show <span class="math inline">\(\ell(\Phi^{(t+1)}|\mathbf{y})\geq\ell(\Phi^{(t)}|\mathbf{y})\)</span>.</p>
+\end{equation}\]</span>
+Note that <span class="math inline">\(-H(\Phi|\Phi^{(t)})\)</span> can be seen as the entropy of <span class="math inline">\(k(\mathbf{x}|\Phi)\)</span>, which is non-negative, since <span class="math inline">\(k(\mathbf{x}|\Phi)\in[0,1]\)</span>. So <span class="math inline">\(\ell(\Phi|\mathbf{y})\geq Q(\Phi|\Phi')\)</span>. Thus <span class="math inline">\(Q(\Phi|\Phi')\)</span> is the minorization of <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>. Hence the EM algorithm leads to the maximal according to section <a href="#sec:MM">1</a>. Also, we can prove the convergence of EM algorithm by showing that updating <span class="math inline">\(\Phi^{(t)}\)</span> by the E- and M-steps leads to ultimately maximal of <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span>, i.e. we show <span class="math inline">\(\ell(\Phi^{(t+1)}|\mathbf{y})\geq\ell(\Phi^{(t)}|\mathbf{y})\)</span>.
 <span class="math display">\[\begin{align}
 \ell(\Phi^{(t+1)}|\mathbf{y}) - \ell(\Phi^{(t)}|\mathbf{y})
 &amp; = \underbrace{(Q(\Phi^{(t+1)}|\Phi^{(t)}) - Q(\Phi^{(t)}|\Phi^{(t)}))}_{\text{M-step, }\geq0}+\underbrace{(H(\Phi^{(t)}|\Phi^{(t)}) - H(\phi^{(t+1)}|\Phi^{(t)}))}_{\text{Jensen's inequality}, f(\cdot) = \log(\cdot),\geq0}\\
@@ -286,8 +277,7 @@ In this section, we restrict the complete density <span class="math inline">\(f(
 f(\mathbf{x}|\Phi) = b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi/a(\Phi)\\
 \Phi, \mathbf{t}(\mathbf{x})\in\mathbb{R}^r
 \end{equation}\]</span>
-<p>Here, <span class="math inline">\(\mathbf{t}(\mathbf{x})\)</span> is the sufficient statistics.</p>
-From the above discussion <a href="#eq:emfin">(2.4)</a>,Substituting <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span>, we have
+Here, <span class="math inline">\(\mathbf{t}(\mathbf{x})\)</span> is the sufficient statistics. From the above discussion <a href="#eq:emfin">(2.4)</a>,Substituting <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span>, we have
 <span class="math display">\[\begin{align}
 k(\mathbf{x}|\mathbf{y},\Phi) = \frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{\int_{M(\mathbf{y})} b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi d\mathbf{x}}
 :=\frac{b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x}))^T\Phi)}{a(\Phi|\mathbf{y})}
@@ -296,7 +286,6 @@ Thus
 <span class="math display">\[\begin{align}
 Q(\Phi|\Phi^{(t)}) &amp;= \int_{M(y)}\log b(\mathbf{x})k(\mathbf{x}|\Phi^{(t)})d\mathbf{x} + \int_{M(y)}\mathbf{t}(\mathbf{x})^T\Phi k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}-\int_{M(y)} \log (a(\Phi)) k(\mathbf{x}|\Phi^{(t)})d\mathbf{x}\\
 &amp;:=B(\Phi^{(t)}) + \Phi^T E[\mathbf{t}|\Phi^{(t)},\mathbf{y}] - \log a(\Phi)
-
 \end{align}\]</span>
 Let <span class="math inline">\(Q'(\Phi|\Phi^{(t)})=E[\mathbf{t}|\Phi^{(t)},\mathbf{y}]-\frac{a'(\Phi)}{a(\Phi)} = 0\)</span>, notice that <span class="math inline">\(\int f(\mathbf{x}|\Phi)d\mathbf{x}=1\)</span>, then
 <span class="math display">\[\begin{align}
@@ -304,11 +293,7 @@ a(\Phi) &amp;= \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x} \
 \frac{a'(\Phi)}{a(\Phi)} &amp;= \frac{\int b(\mathbf{x}) \mathbf{t}(\mathbf{x})^T \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}{\int b(\mathbf{x})  \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}
 = E[\mathbf{t}(\mathbf{x})|\Phi,\mathbf{y}]
 \end{align}\]</span>
-<p>Hence we derive the EM algorithm for exponential family as follows</p>
-<ul>
-<li><p>E-step: Compute <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
-<li><p>M-step: Update <span class="math inline">\(\Phi^{(t+1)}\)</span> by solving <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
-</ul>
+<p>Hence we derive the EM algorithm for exponential family as follows - E-step: Compute <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span> - M-step: Update <span class="math inline">\(\Phi^{(t+1)}\)</span> by solving <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p>
 </div>
 <div id="sec:gmm" class="section level2">
 <h2><span class="header-section-number">2.3</span> Gaussian Mixture Model</h2>
@@ -317,18 +302,144 @@ For a Gaussian mixture model, we have
 y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
 \tag{2.7}
 \end{equation}\]</span>
-<p>where <span class="math inline">\(\mathbf{c}_i\)</span> is the complete observation which cannot be observed directly, <span class="math inline">\(\mathbf{x}_i\)</span> is the predictor, <span class="math inline">\(\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)\)</span> is the latent variable indicating which group <span class="math inline">\(y_i\)</span> belongs to.</p>
-Suppose the density of <span class="math inline">\(y_i\)</span> is given by
+where <span class="math inline">\(\mathbf{c}_i\)</span> is the complete observation which cannot be observed directly, <span class="math inline">\(\mathbf{x}_i\)</span> is the predictor, <span class="math inline">\(\mathbf{z}_i = \left(z_{i 1}, z_{i 2}, \ldots, z_{i m}\right)\)</span> is the latent variable indicating which group <span class="math inline">\(y_i\)</span> belongs to. Suppose the density of <span class="math inline">\(y_i\)</span> is given by
 <span class="math display" id="eq:gmmden">\[\begin{equation}
 f\left(y_{i} | \mathbf{x}_{i}, \mathbf{\Phi}\right)=\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right), \quad i=1, \ldots, n
 \tag{2.8}
 \end{equation}\]</span>
-<p>Where <span class="math inline">\(\pi_j's\)</span> are called mixing parameters, <span class="math inline">\(\boldsymbol{\beta}_j\)</span> is the regression coefficient vector for the <span class="math inline">\(j\)</span>th group, <span class="math inline">\(\phi\left(y_{i} ; \mu, \sigma^{2}\right)\)</span> denotes the density function of <span class="math inline">\(\mathcal{N}(\mu,\sigma^2)\)</span>, <span class="math inline">\(\boldsymbol{\Phi}=(\pi_1,\boldsymbol{\beta}_1,...,\pi_m,\boldsymbol{\beta}_m,\sigma)\)</span> contains all the unknown parameters.</p>
-The log-likelihood function <span class="math inline">\(\ell(\boldsymbol{\Phi})\)</span> of observed data can be represented as
+Where <span class="math inline">\(\pi_j's\)</span> are called mixing parameters, <span class="math inline">\(\boldsymbol{\beta}_j\)</span> is the regression coefficient vector for the <span class="math inline">\(j\)</span>th group, <span class="math inline">\(\phi\left(y_{i} ; \mu, \sigma^{2}\right)\)</span> denotes the density function of <span class="math inline">\(\mathcal{N}(\mu,\sigma^2)\)</span>, <span class="math inline">\(\boldsymbol{\Phi}=(\pi_1,\boldsymbol{\beta}_1,...,\pi_m,\boldsymbol{\beta}_m,\sigma)\)</span> contains all the unknown parameters. The log-likelihood function <span class="math inline">\(\ell(\boldsymbol{\Phi})\)</span> of observed data can be represented as
 <span class="math display" id="eq:gmmell">\[\begin{equation}
 \ell(\boldsymbol{\Phi}) = \sum_{i=1}^n\log \left[\sum_{j=1}^{m} \pi_{j} \phi\left(y_{i} ; \mathbf{x}_{i}^{\top} \boldsymbol{\beta}_{j}, \sigma^{2}\right)\right]
 \tag{2.9}
 \end{equation}\]</span>
+<div id="e-step" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> E-step</h3>
+<p>For the <span class="math inline">\(t\)</span>th iteration, define <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> as</p>
+<span class="math display">\[\begin{align}
+Q(\Psi|\Psi^{(t)}) &amp;= E[\log f(\mathbf{x}, \mathbf{z},y|\Psi)|y,\mathbf{x},\Psi^{(t)}]\\
+&amp;= \sum_{\mathbf{z}}p(\mathbf{z}|\mathbf{x},y,\Psi)\log \log f(\mathbf{x}, \mathbf{z}_{ij}=j,y|\Psi)\\
+&amp;= \underbrace{\sum_{i=1}^n\sum_{j=1}^m p(z_{ij} = j|\mathbf{x}_i,y_i,\Psi^{(t)})}_{p_{ij}^{(t+1)}} \left[\pi_j\phi(y_i;\mathbf{x}_i^T\beta_j^{t},\sigma^{2^{(t)}})\right]
+\end{align}\]</span>
+<p>where, <span class="math display">\[
+p_{ij}^{(t+1)} = \frac{p(z_{ij}=j,\mathbf{x}_i|\Psi^{(t)})}{p(\mathbf{x}_i,y|\Psi^{(t)})}= \frac{\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}{\sum_{j=1}^m\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}
+\]</span></p>
+</div>
+<div id="m-step" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> M-step</h3>
+Maximize <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> under the constraint <span class="math inline">\(\sum_{j=1}^m\pi_j = 1\)</span>, we use the method of Lagrange multipliers. Let <span class="math inline">\(L(\Psi,\lambda|\Psi^{(t)})\)</span> be
+<span class="math display" id="eq:lagrange">\[\begin{equation}
+L(\Psi,\lambda|\Psi^{(t)}) = Q(\Psi|\Psi^{(t)})-\lambda (\sum_{j=1}^m\pi_j-1)
+\tag{2.10}
+\end{equation}\]</span>
+Let <span class="math display">\[
+L'(\Psi,\lambda|\Psi^{(t)}) = 0
+\]</span> For <span class="math inline">\(\pi_j\)</span>, we have
+<span class="math display" id="eq:pij">\[\begin{equation}
+\sum_{i=1}^n\frac{p_{ij}^{(t+1)}}{\pi_j}-\lambda = 0
+\tag{2.11}
+\end{equation}\]</span>
+Notice that <span class="math inline">\(\sum_{j=1}^m\pi_j=1, \sum_{j=1}^m p_{ij}^{(t+1)}=1\)</span>, take summation of <span class="math inline">\(i\)</span> in <a href="#eq:pij">(2.11)</a>, we get <span class="math inline">\(\lambda = n\)</span>. Thus we derive the formula to update <span class="math inline">\(\pi_j\)</span> as
+<span class="math display" id="eq:uppi">\[\begin{equation}
+\pi_j^{(t+1)} = \frac{\sum_{i=1}^n p_{ij}^{(t+1)}}{n}
+\tag{2.12}
+\end{equation}\]</span>
+<p>For <span class="math inline">\(\beta_j\)</span>, we</p>
+</div>
+<div id="implemented-function" class="section level3">
+<h3><span class="header-section-number">2.3.3</span> Implemented Function</h3>
+<p>The function <code>em_update()</code> is for each E- and M-step, the function <code>regmix_em()</code> is to iterates EM-algorithm untile convergence or up to maximum iteration times.</p>
+<pre class="r"><code>em_update &lt;- function(y, xmat, PI, bt, sgm) {
+  n &lt;- dim(xmat)[1]
+  m &lt;- length(PI)
+  log_phi &lt;- matrix(1:m * n, ncol = m, nrow = n)
+  log_phi &lt;- dnorm(y - xmat %*% bt, 0, sqrt(sgm))
+  pij &lt;- matrix(1:m * n, ncol = m, nrow = n)
+  ## avoid iterating on i
+  for (j in 1:m) {
+    pij[, j] &lt;- (PI[j] * log_phi[, j]) / (log_phi %*% PI)
+  }
+  for (j in 1:m) {
+    xsp &lt;- sqrt(pij[, j]) * xmat
+    xp &lt;- pij[, j] * xmat
+    bt[, j] &lt;- solve(t(xsp) %*% xsp) %*% (t(xp) %*% y)
+  }
+  PI &lt;- colSums(pij) / n
+  sgm &lt;- sum(pij * ((y - xmat %*% bt)**2)) / n
+  list(PI = PI, bt = bt, sgm = sgm)
+}</code></pre>
+<pre class="r"><code>regmix_em &lt;- function (y, xmat, pi.init, beta.init, sigma.init, control) {
+  
+  stop &lt;- 1
+  convergence &lt;- FALSE
+  tol &lt;- control$tol
+  maxit &lt;- control$maxit
+  bt &lt;- beta.init
+  PI &lt;- pi.init
+  sgm &lt;- sigma.init
+  
+  for (i in 1 : maxit) {
+    if (stop &gt;= tol) {
+      PHI_n &lt;- em_update(y, xmat, PI, bt, sgm)
+      C &lt;- sum(PI**2) + sum(bt**2) +sum(sgm**2)
+      stop &lt;- (sum((PHI_n$PI - PI)**2) + sum((PHI_n$bt - bt)**2) 
+               + sum((PHI_n$sgm - sgm)**2)) / (C + 0.01)
+      PI &lt;- PHI_n$PI
+      bt &lt;- PHI_n$bt
+      sgm &lt;- PHI_n$sgm
+    } else{
+      convergence &lt;- TRUE
+      return (list(PHI = PHI_n, convergence = convergence, iteration = i))
+    }
+  }
+  list(PHI = PHI_n, convergence = convergence, iteration = maxit)
+}</code></pre>
+<div id="a-simulated-example" class="section level4">
+<h4><span class="header-section-number">2.3.3.1</span> A Simulated Example</h4>
+<pre class="r"><code>regmix_sim &lt;- function(n, pi, beta, sigma) {
+    K &lt;- ncol(beta)
+    p &lt;- NROW(beta)
+    xmat &lt;- matrix(rnorm(n * p), n, p) # normal covaraites
+    error &lt;- matrix(rnorm(n * K, sd = sigma), n, K)
+    ymat &lt;- xmat %*% beta + error # n by K matrix
+    ind &lt;- t(rmultinom(n, size = 1, prob = pi))
+    y &lt;- rowSums(ymat * ind)
+    data.frame(y, xmat)
+}
+n &lt;- 400
+pi &lt;- c(.3, .4, .3)
+bet &lt;- matrix(c( 1,  1,  1, 
+                 -1,  -1,  -1), 2, 3)
+sig &lt;- 1
+set.seed(1205)
+dat &lt;- regmix_sim(n, pi, bet, sig)
+xmat &lt;- as.matrix(dat[, -1], ncol = 3, nrow = n)
+control &lt;- list(maxit = 500, tol = 1e-8)
+bt &lt;- matrix(rnorm(6), nrow = 2, ncol = 3)
+
+PHI &lt;- regmix_em(dat$y, xmat, pi / pi / length(pi), bt, sig / sig, control) </code></pre>
+<p>The result is</p>
+<pre class="r"><code>PHI</code></pre>
+<pre><code>## $PHI
+## $PHI$PI
+## [1] 0.3449956 0.2693431 0.3856613
+## 
+## $PHI$bt
+##           [,1]       [,2]      [,3]
+## [1,] -0.914337  0.9904182 0.8795585
+## [2,] -1.199029 -1.2420256 0.9344761
+## 
+## $PHI$sgm
+## [1] 1.047742
+## 
+## 
+## $convergence
+## [1] TRUE
+## 
+## $iteration
+## [1] 31</code></pre>
+<p>Where <code>PI</code> stands for <span class="math inline">\(\boldsymbol\pi\)</span>, <code>bt</code> represents for <span class="math inline">\(\boldsymbol\beta\)</span> and <code>sqm</code> stands for <span class="math inline">\(\sigma^2\)</span>.</p>
+</div>
+</div>
 </div>
 <div id="variants-of-em" class="section level2">
 <h2><span class="header-section-number">2.4</span> Variants of EM</h2>
