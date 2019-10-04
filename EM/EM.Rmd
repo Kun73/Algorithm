@@ -174,6 +174,37 @@ $$
 p_{ij}^{(t+1)} = \frac{p(z_{ij}=j,\mathbf{x}_i|\Psi^{(t)})}{p(\mathbf{x}_i,y|\Psi^{(t)})}= \frac{\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}{\sum_{j=1}^m\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}
 $$
 
+For this example, $Q(\Psi|\Psi^{(t)})$ can be written more concrete as 
+\begin{align}
+Q(\Psi|\Psi^{(t)}) 
+&= \sum_{i=1}^n\sum_{j=1}^m p_{ij}^{(t+1)}\ln((2\pi)^{-1/2}\pi_{j}) - \frac{1}{2}\sum_{i=1}^n\sum_{j=1}^mp_{ij}^{(t+1)}\ln\sigma^{2^{(t)}} -\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^mp_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})/\sigma^{2^{(t)}}\\
+&=I_1-\frac{I_2}{2}-\frac{I_3}{2}
+(\#eq:Q)
+\end{align}
+
+For $\beta_j$, only $I_{3j}=\sum_{i=1}^np_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})/\sigma^{2^{(t)}}$ in \@ref(eq:Q) involves it, let $\frac{\partial}{\partial\beta_j}\frac{I_{3j}}{2} = 0$, we have 
+
+\begin{equation}
+-\sum_{i=1}^n\frac{p_{ij}^{(t+1)}}{\sigma^{2^{(t)}}}\mathbf{x}_i(y_i-\mathbf{x}_i^T\beta_j)=0
+(\#eq:betaj)
+\end{equation}
+
+Solve the equation \@ref(eq:betaj), we have 
+\begin{equation}
+\boldsymbol{\beta}_{j}^{(t+1)}=\left(\sum_{i=1}^{n} \mathbf{x}_{i} \mathbf{x}_{i}^{\top} p_{i j}^{(t+1)}\right)^{-1}\left(\sum_{i=1}^{n} \mathbf{x}_{i} p_{i j}^{(t+1)} y_{i}\right), \quad j=1, \ldots, m
+\end{equation}
+
+For $\sigma^{2^{(t)}}$, only $I_2,I_3$ in \@ref(eq:Q) invlove it. Similarly, we take the partial derivative with respect to $\sigma^{2^{(t)}}$, we have 
+\begin{equation}
+-\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^m\frac{p_{ij}^{(t+1)}}{\sigma^{2^{(t)}}}+\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^m\frac{p_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})}{\sigma^{4^{(t)}}} = 0
+(\#eq:sigma)
+\end{equation}
+
+Solve the equation \@ref(eq:sigma) and notice that $\sum_{j=1}^mp_{ij}^{(t+1)}=1$, we derive the fomula to update $\sigma^{2^{(t)}}$.
+\begin{equation}
+\sigma^{2^{(t+1)}} = \frac{\sum_{i=1}^{n}\sum_{j=1}^{m} p_{i j}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_j^{(t+1)})^2}{n}
+\end{equation}
+
 ### M-step
 
 Maximize $Q(\Psi|\Psi^{(t)})$ under the constraint $\sum_{j=1}^m\pi_j = 1$, we use the method of Lagrange multipliers. Let $L(\Psi,\lambda|\Psi^{(t)})$ be 

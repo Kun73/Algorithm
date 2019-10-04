@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-03" />
+<meta name="date" content="2019-10-04" />
 
 <title>EM Algorithm</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">EM Algorithm</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-03</h4>
+<h4 class="date">2019-10-04</h4>
 
 </div>
 
@@ -323,25 +323,50 @@ Q(\Psi|\Psi^{(t)}) &amp;= E[\log f(\mathbf{x}, \mathbf{z},y|\Psi)|y,\mathbf{x},\
 <p>where, <span class="math display">\[
 p_{ij}^{(t+1)} = \frac{p(z_{ij}=j,\mathbf{x}_i|\Psi^{(t)})}{p(\mathbf{x}_i,y|\Psi^{(t)})}= \frac{\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}{\sum_{j=1}^m\pi_j^{(t)}\phi(y_i;\mathbf{x}_i\beta_j^{(t)},\sigma^{2^{(t)}})}
 \]</span></p>
+For this example, <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> can be written more concrete as
+<span class="math display" id="eq:Q">\[\begin{align}
+Q(\Psi|\Psi^{(t)}) 
+&amp;= \sum_{i=1}^n\sum_{j=1}^m p_{ij}^{(t+1)}\ln((2\pi)^{-1/2}\pi_{j}) - \frac{1}{2}\sum_{i=1}^n\sum_{j=1}^mp_{ij}^{(t+1)}\ln\sigma^{2^{(t)}} -\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^mp_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})/\sigma^{2^{(t)}}\\
+&amp;=I_1-\frac{I_2}{2}-\frac{I_3}{2}
+\tag{2.10}
+\end{align}\]</span>
+<p>For <span class="math inline">\(\beta_j\)</span>, only <span class="math inline">\(I_{3j}=\sum_{i=1}^np_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})/\sigma^{2^{(t)}}\)</span> in <a href="#eq:Q">(2.10)</a> involves it, let <span class="math inline">\(\frac{\partial}{\partial\beta_j}\frac{I_{3j}}{2} = 0\)</span>, we have</p>
+<span class="math display" id="eq:betaj">\[\begin{equation}
+-\sum_{i=1}^n\frac{p_{ij}^{(t+1)}}{\sigma^{2^{(t)}}}\mathbf{x}_i(y_i-\mathbf{x}_i^T\beta_j)=0
+\tag{2.11}
+\end{equation}\]</span>
+Solve the equation <a href="#eq:betaj">(2.11)</a>, we have
+<span class="math display">\[\begin{equation}
+\boldsymbol{\beta}_{j}^{(t+1)}=\left(\sum_{i=1}^{n} \mathbf{x}_{i} \mathbf{x}_{i}^{\top} p_{i j}^{(t+1)}\right)^{-1}\left(\sum_{i=1}^{n} \mathbf{x}_{i} p_{i j}^{(t+1)} y_{i}\right), \quad j=1, \ldots, m
+\end{equation}\]</span>
+For <span class="math inline">\(\sigma^{2^{(t)}}\)</span>, only <span class="math inline">\(I_2,I_3\)</span> in <a href="#eq:Q">(2.10)</a> invlove it. Similarly, we take the partial derivative with respect to <span class="math inline">\(\sigma^{2^{(t)}}\)</span>, we have
+<span class="math display" id="eq:sigma">\[\begin{equation}
+-\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^m\frac{p_{ij}^{(t+1)}}{\sigma^{2^{(t)}}}+\frac{1}{2}\sum_{i=1}^n\sum_{j=1}^m\frac{p_{ij}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})^T(y_i-\mathbf{x}_i^T\beta_{j}^{(t)})}{\sigma^{4^{(t)}}} = 0
+\tag{2.12}
+\end{equation}\]</span>
+Solve the equation <a href="#eq:sigma">(2.12)</a> and notice that <span class="math inline">\(\sum_{j=1}^mp_{ij}^{(t+1)}=1\)</span>, we derive the fomula to update <span class="math inline">\(\sigma^{2^{(t)}}\)</span>.
+<span class="math display">\[\begin{equation}
+\sigma^{2^{(t+1)}} = \frac{\sum_{i=1}^{n}\sum_{j=1}^{m} p_{i j}^{(t+1)}(y_i-\mathbf{x}_i^T\beta_j^{(t+1)})^2}{n}
+\end{equation}\]</span>
 </div>
 <div id="m-step" class="section level3">
 <h3><span class="header-section-number">2.3.2</span> M-step</h3>
 Maximize <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> under the constraint <span class="math inline">\(\sum_{j=1}^m\pi_j = 1\)</span>, we use the method of Lagrange multipliers. Let <span class="math inline">\(L(\Psi,\lambda|\Psi^{(t)})\)</span> be
 <span class="math display" id="eq:lagrange">\[\begin{equation}
 L(\Psi,\lambda|\Psi^{(t)}) = Q(\Psi|\Psi^{(t)})-\lambda (\sum_{j=1}^m\pi_j-1)
-\tag{2.10}
+\tag{2.13}
 \end{equation}\]</span>
 Let <span class="math display">\[
 L'(\Psi,\lambda|\Psi^{(t)}) = 0
 \]</span> For <span class="math inline">\(\pi_j\)</span>, we have
 <span class="math display" id="eq:pij">\[\begin{equation}
 \sum_{i=1}^n\frac{p_{ij}^{(t+1)}}{\pi_j}-\lambda = 0
-\tag{2.11}
+\tag{2.14}
 \end{equation}\]</span>
-Notice that <span class="math inline">\(\sum_{j=1}^m\pi_j=1, \sum_{j=1}^m p_{ij}^{(t+1)}=1\)</span>, take summation of <span class="math inline">\(i\)</span> in <a href="#eq:pij">(2.11)</a>, we get <span class="math inline">\(\lambda = n\)</span>. Thus we derive the formula to update <span class="math inline">\(\pi_j\)</span> as
+Notice that <span class="math inline">\(\sum_{j=1}^m\pi_j=1, \sum_{j=1}^m p_{ij}^{(t+1)}=1\)</span>, take summation of <span class="math inline">\(i\)</span> in <a href="#eq:pij">(2.14)</a>, we get <span class="math inline">\(\lambda = n\)</span>. Thus we derive the formula to update <span class="math inline">\(\pi_j\)</span> as
 <span class="math display" id="eq:uppi">\[\begin{equation}
 \pi_j^{(t+1)} = \frac{\sum_{i=1}^n p_{ij}^{(t+1)}}{n}
-\tag{2.12}
+\tag{2.15}
 \end{equation}\]</span>
 <p>For <span class="math inline">\(\beta_j\)</span>, we</p>
 </div>
