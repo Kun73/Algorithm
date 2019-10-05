@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-04" />
+<meta name="date" content="2019-10-05" />
 
 <title>EM Algorithm</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">EM Algorithm</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-04</h4>
+<h4 class="date">2019-10-05</h4>
 
 </div>
 
@@ -477,6 +477,95 @@ PHI &lt;- regmix_em(dat$y, xmat, pi / pi / length(pi), bt, sig / sig, control) <
 </div>
 <div id="acceleration-of-em" class="section level2">
 <h2><span class="header-section-number">2.5</span> Acceleration of EM</h2>
+<p>In this section, we illustrate an acceleration method of EM algorithm (SQUAREM, squared iterative methods) introdued by <span class="citation">Varadhan and Roland (2008)</span>. In R, this methods can be implemented by the package <strong>SQUAREM</strong>.</p>
+The EM alogrithm
+<span class="math display">\[\begin{equation}
+\theta^{(n+1)} = \arg\max Q(\theta|\theta^{(n)})
+\end{equation}\]</span>
+can be seen as a fixed point iteration as
+<span class="math display" id="eq:fixed">\[\begin{equation}
+\theta^{(n+1)} = F(\theta^{(n)}),\\
+F:\Omega\in \mathbb{R}^p \rightarrow \Omega
+\tag{2.16}
+\end{equation}\]</span>
+<p>In summary, the author adapts the idea of Cauchy-Barzilai-Borwein(CBB) mthod, see <span class="citation">Raydan and Svaiter (2002)</span>, to solve the nonlinear fixed-point problem in <a href="#eq:fixed">(2.16)</a>, called SQUAREM schemes. The CBB builds on Steffensen-type methods for EM(STEM), which is an extension of scalar Steffensen’s method to vector fixed-point iteration.</p>
+<div id="steffensen-type-methods-for-em" class="section level3">
+<h3><span class="header-section-number">2.5.1</span> Steffensen-type methods for EM</h3>
+To make it simple to denote, we introduce a sequence of vetcor <span class="math inline">\(\{\mu_i\},i\geq0\)</span>,
+<span class="math display">\[\begin{equation}
+\mu_i = \begin{cases}
+\theta^{(n)},\ i=0,\\
+F(\mu_{i-1}),\ i\geq1
+\end{cases}
+\end{equation}\]</span>
+Newton’s method for finding the fixed point of <span class="math inline">\(F(\mu)=\mu\)</span> can be transformed as finding the zeros of <span class="math inline">\(g(\mu)=F(\mu)-\mu\)</span>, then <span class="math display">\[
+\mu_{t+1} = \mu_t-J^{-1}(\mu_t)g(\mu_t)
+\]</span> Where <span class="math inline">\(J^{-1}(\mu_t)\)</span> is the inverse of Jacobian matrix of <span class="math inline">\(g(\mu)\)</span> at the point <span class="math inline">\(\mu=\mu_t\)</span>. Thus Newton’s method for finging the fixed point of <a href="#eq:fixed">(2.16)</a> is
+<span class="math display" id="eq:solver">\[\begin{equation}
+\theta^{(n+1)}=\mu_0-M^{-1}_ng(\mu_0)
+\tag{2.17}
+\end{equation}\]</span>
+<p>Where <span class="math inline">\(g(\mu)= F(\mu)-\mu,M_n=J(\theta^{(n)})-I\)</span>, <span class="math inline">\(J(\theta^{(n)})\)</span> is the Jacobian matrix of <span class="math inline">\(F(\mu)\)</span>.</p>
+<p>Next we introdece three types of steplength <span class="math inline">\(\alpha_n\)</span>. The idea is that we approximate <span class="math inline">\(M_n^{-1}\)</span> by a diagnoal matrix.</p>
+By Taylor expansion, we derive two linear approximations of <span class="math inline">\(g(\mu)\)</span> at <span class="math inline">\(\mu_0=\theta^{(n)}\)</span> and <span class="math inline">\(\mu_1=\theta^{(n+1)}=F(\theta^{(n)})\)</span> as follows,
+<span class="math display">\[\begin{align}
+g_0(\theta)&amp;=g(\mu_0)+\frac{1}{\alpha_n}I(\theta-\mu_0)\\
+g_1(\theta)&amp;=g(\mu_1)+\frac{1}{\alpha_n}I(\theta-\mu_1)
+\end{align}\]</span>
+That is, we approximate <span class="math inline">\(M_n\)</span> by <span class="math inline">\(\frac{1}{\alpha_n}I\)</span>. Suppose the zeros of <span class="math inline">\(g_0(\theta),g_1(\theta)\)</span> are <span class="math display">\[
+g_0(t_{n+1}^0) = 0,\ g_1(t_{n+1}^1)=0
+\]</span> Then we have,
+<span class="math display">\[\begin{align}
+0&amp;=g(\mu_0)+\frac{1}{\alpha_n}I(t_{n+1}^0-\mu_0)\\
+0&amp;=g(\mu_1)+\frac{1}{\alpha_n}I(t_{n+1}^1-\mu_1)\Rightarrow \\
+t_{n+1}^0&amp;=\mu_0-\alpha_ng(\mu_0)\\
+t_{n+1}^1&amp;=\mu_1-\alpha_ng(\mu_1)
+\end{align}\]</span>
+Basically, for a function <span class="math inline">\(m(\cdot)\)</span> measuring the discrepency between <span class="math inline">\(t_{n+1}^1\)</span> and <span class="math inline">\(t_{n+1}^0\)</span>, we choose <span class="math inline">\(\alpha_n\)</span> such that <span class="math inline">\(m(t_{n+1}^1,t_{n+1}^0)\)</span> is minimized, i.e.
+<span class="math display">\[\begin{equation}
+\alpha_n=\arg\min m(t_{n+1}^1,t_{n+1}^0)
+\end{equation}\]</span>
+<ul>
+<li><span class="math inline">\(m\)</span> is the Euclidean distance, <span class="math inline">\(m(t_{n+1}^1,t_{n+1}^0)=||t_{n+1}^1-t_{n+1}^0||^2\)</span>. Let <span class="math inline">\(f(\alpha_n) = ||t_{n+1}^1-t_{n+1}^0||^2\)</span>, substituting <span class="math inline">\(t_{n+1}^1,t_{n+1}^0\)</span>, we have
+<span class="math display" id="eq:fp">\[\begin{equation}
+f'(\alpha_n) = -2[\mu_1-\mu_0-\alpha_n(g(\mu_1)-g(\mu_0))]^T(g(\mu_1)-g(\mu_0)) = 0
+\tag{2.18}
+\end{equation}\]</span>
+Solve <a href="#eq:fp">(2.18)</a>, we have
+<span class="math display" id="eq:as1">\[\begin{equation}
+\alpha_n=\frac{r_n^Tv_n}{v_n^Tv_n}
+\tag{2.19}
+\end{equation}\]</span>
+<p>Where <span class="math inline">\(r_n = \mu_1-\mu_0=F(\theta^{n})-\theta^{n},v_n=g(\mu_1)-g(\mu_0)=F(F(\theta^{n}))-2F(\theta^n)+\theta^n\)</span>.</p></li>
+<li><span class="math inline">\(m(t_{n+1}^1,t_{n+1}^0)=||t_{n+1}^1-t_{n+1}^0||^2/\alpha_n^2\)</span>. Similarly, we let <span class="math inline">\(\frac{\partial}{\partial\alpha_n}m(t_{n+1}^1,t_{n+1}^0)=0\)</span> and derive
+<span class="math display" id="eq:as2">\[\begin{equation}
+\alpha_n=\frac{r_n^Tr_n}{r_n^Tv_n}
+\tag{2.20}
+\end{equation}\]</span></li>
+<li><span class="math inline">\(m(t_{n+1}^1,t_{n+1}^0)=-||t_{n+1}^1-t_{n+1}^0||^2/\alpha_n\)</span>. For this measurement, we have
+<span class="math display" id="eq:as3">\[\begin{equation}
+\alpha_n=-\frac{||r_n||}{||v_n||}
+\tag{2.21}
+\end{equation}\]</span></li>
+</ul>
+Approximate <span class="math inline">\(M^{-1}_n\)</span> in <a href="#eq:solver">(2.17)</a> by <span class="math inline">\(\alpha_nI\)</span>, we derive a series of new iteration schemes, called STEM, i.e.
+<span class="math display" id="eq:STEM">\[\begin{equation}
+\theta^{(n+1)} = \theta^{(n)}-\alpha_n(F(\theta^{(n)})-\theta^{(n)})
+\tag{2.22}
+\end{equation}\]</span>
+<p>. Hence, STEM can also be considered as a member of the quasi-Newton family.</p>
+</div>
+<div id="cauchy-barzilai-borwein" class="section level3">
+<h3><span class="header-section-number">2.5.2</span> Cauchy-Barzilai-Borwein</h3>
+<p>In summary, the Cauchy-Barzilar-Borwein(CBB) method, see <span class="citation">Raydan and Svaiter (2002)</span>, combines classical Cauchy method and Barzilar &amp; Borwein’s method(denoted as BB, which uses the <span class="math inline">\(n-1\)</span> steplength at the <span class="math inline">\(n\)</span>th iteration to get <span class="math inline">\(x_{n+1}\)</span>) by using both methods at one iteration step.</p>
+<p>First, Cauchy scheme is applied at <span class="math inline">\(x_n\)</span> to get an intermediate update,<span class="math inline">\(z_n\)</span>. Then BB method is applied at <span class="math inline">\(z_n\)</span> with previously calculated Cauchy steplength to obtain <span class="math inline">\(x_{n+1}\)</span>.</p>
+</div>
+<div id="convergence" class="section level3">
+<h3><span class="header-section-number">2.5.3</span> Convergence</h3>
+</div>
+<div id="an-example" class="section level3">
+<h3><span class="header-section-number">2.5.4</span> An Example</h3>
+</div>
 </div>
 </div>
 <div id="acknowledgment" class="section level1 unnumbered">
@@ -488,6 +577,12 @@ PHI &lt;- regmix_em(dat$y, xmat, pi / pi / length(pi), bt, sig / sig, control) <
 <div id="refs" class="references">
 <div id="ref-EM">
 <p>Dempster, A. P., N. M. Laird, and D. B. Rubin. 1977. “Maximum Likelihood from Incomplete Data via the Em Algorithm.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em> 39 (1). [Royal Statistical Society, Wiley]: 1–38. <a href="http://www.jstor.org/stable/2984875" class="uri">http://www.jstor.org/stable/2984875</a>.</p>
+</div>
+<div id="ref-raydan2002relaxed">
+<p>Raydan, Marcos, and Benar F Svaiter. 2002. “Relaxed Steepest Descent and Cauchy-Barzilai-Borwein Method.” <em>Computational Optimization and Applications</em> 21 (2). Springer: 155–67.</p>
+</div>
+<div id="ref-varadhan2008simple">
+<p>Varadhan, Ravi, and Christophe Roland. 2008. “Simple and Globally Convergent Methods for Accelerating the Convergence of Any Em Algorithm.” <em>Scandinavian Journal of Statistics</em> 35 (2). Wiley Online Library: 335–53.</p>
 </div>
 <div id="ref-stat5361">
 <p>Yan, Jun. 2019. “STAT 5361 Statistical Computing, Uconn.” <a href="https://github.com/jun-yan/stat-5361" class="uri">https://github.com/jun-yan/stat-5361</a>.</p>

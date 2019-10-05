@@ -333,6 +333,107 @@ Where `PI` stands for $\boldsymbol\pi$, `bt` represents for $\boldsymbol\beta$ a
 
 ## Acceleration of EM
 
+In this section, we illustrate an acceleration method of EM algorithm (SQUAREM, squared iterative methods) introdued by @varadhan2008simple. In R, this methods can be implemented by the package **SQUAREM**. 
+
+The EM alogrithm
+\begin{equation}
+\theta^{(n+1)} = \arg\max Q(\theta|\theta^{(n)})
+\end{equation}
+can be seen as a fixed point iteration as 
+\begin{equation}
+\theta^{(n+1)} = F(\theta^{(n)}),\\
+F:\Omega\in \mathbb{R}^p \rightarrow \Omega
+(\#eq:fixed)
+\end{equation}
+
+In summary, the author adapts the idea of Cauchy-Barzilai-Borwein(CBB) mthod, see @raydan2002relaxed, to solve the nonlinear fixed-point problem in \@ref(eq:fixed), called SQUAREM schemes.  The CBB builds on Steffensen-type methods for EM(STEM), which is an extension of scalar Steffensen's method to vector fixed-point iteration. 
+
+### Steffensen-type methods for EM
+
+To make it simple to denote, we introduce a sequence of vetcor $\{\mu_i\},i\geq0$, 
+\begin{equation}
+\mu_i = \begin{cases}
+\theta^{(n)},\ i=0,\\
+F(\mu_{i-1}),\ i\geq1
+\end{cases}
+\end{equation}
+
+Newton's method for finding the fixed point of $F(\mu)=\mu$ can be transformed as finding the zeros of $g(\mu)=F(\mu)-\mu$, then 
+$$
+\mu_{t+1} = \mu_t-J^{-1}(\mu_t)g(\mu_t)
+$$
+Where $J^{-1}(\mu_t)$ is the inverse of Jacobian matrix of $g(\mu)$ at the point $\mu=\mu_t$. Thus Newton's method for finging the fixed point of \@ref(eq:fixed) is 
+\begin{equation}
+\theta^{(n+1)}=\mu_0-M^{-1}_ng(\mu_0)
+(\#eq:solver)
+\end{equation}
+Where $g(\mu)= F(\mu)-\mu,M_n=J(\theta^{(n)})-I$, $J(\theta^{(n)})$ is the Jacobian matrix of $F(\mu)$. 
+
+Next we introdece three types of steplength $\alpha_n$. The idea is that we approximate $M_n^{-1}$ by a diagnoal matrix. 
+
+By Taylor expansion, we derive two linear approximations of $g(\mu)$ at $\mu_0=\theta^{(n)}$ and $\mu_1=\theta^{(n+1)}=F(\theta^{(n)})$ as follows,
+\begin{align}
+g_0(\theta)&=g(\mu_0)+\frac{1}{\alpha_n}I(\theta-\mu_0)\\
+g_1(\theta)&=g(\mu_1)+\frac{1}{\alpha_n}I(\theta-\mu_1)
+\end{align}
+That is, we approximate $M_n$ by $\frac{1}{\alpha_n}I$.
+Suppose the zeros of $g_0(\theta),g_1(\theta)$ are 
+$$
+g_0(t_{n+1}^0) = 0,\ g_1(t_{n+1}^1)=0
+$$
+Then we have,
+\begin{align}
+0&=g(\mu_0)+\frac{1}{\alpha_n}I(t_{n+1}^0-\mu_0)\\
+0&=g(\mu_1)+\frac{1}{\alpha_n}I(t_{n+1}^1-\mu_1)\Rightarrow \\
+t_{n+1}^0&=\mu_0-\alpha_ng(\mu_0)\\
+t_{n+1}^1&=\mu_1-\alpha_ng(\mu_1)
+\end{align}
+
+Basically, for a function $m(\cdot)$ measuring the discrepency between $t_{n+1}^1$ and $t_{n+1}^0$, we choose $\alpha_n$ such that $m(t_{n+1}^1,t_{n+1}^0)$ is minimized, i.e.
+\begin{equation}
+\alpha_n=\arg\min m(t_{n+1}^1,t_{n+1}^0)
+\end{equation}
+
+- $m$ is the Euclidean distance, $m(t_{n+1}^1,t_{n+1}^0)=||t_{n+1}^1-t_{n+1}^0||^2$. Let $f(\alpha_n) = ||t_{n+1}^1-t_{n+1}^0||^2$, substituting $t_{n+1}^1,t_{n+1}^0$, we have 
+\begin{equation}
+f'(\alpha_n) = -2[\mu_1-\mu_0-\alpha_n(g(\mu_1)-g(\mu_0))]^T(g(\mu_1)-g(\mu_0)) = 0
+(\#eq:fp)
+\end{equation}
+Solve \@ref(eq:fp), we have 
+\begin{equation}
+\alpha_n=\frac{r_n^Tv_n}{v_n^Tv_n}
+(\#eq:as1)
+\end{equation}
+Where $r_n = \mu_1-\mu_0=F(\theta^{n})-\theta^{n},v_n=g(\mu_1)-g(\mu_0)=F(F(\theta^{n}))-2F(\theta^n)+\theta^n$. 
+
+- $m(t_{n+1}^1,t_{n+1}^0)=||t_{n+1}^1-t_{n+1}^0||^2/\alpha_n^2$. Similarly, we let $\frac{\partial}{\partial\alpha_n}m(t_{n+1}^1,t_{n+1}^0)=0$ and derive 
+\begin{equation}
+\alpha_n=\frac{r_n^Tr_n}{r_n^Tv_n}
+(\#eq:as2)
+\end{equation}
+
+- $m(t_{n+1}^1,t_{n+1}^0)=-||t_{n+1}^1-t_{n+1}^0||^2/\alpha_n$. For this measurement, we have 
+\begin{equation}
+\alpha_n=-\frac{||r_n||}{||v_n||}
+(\#eq:as3)
+\end{equation}
+
+Approximate $M^{-1}_n$ in \@ref(eq:solver) by $\alpha_nI$, we derive a series of new iteration schemes, called STEM, i.e.
+\begin{equation}
+\theta^{(n+1)} = \theta^{(n)}-\alpha_n(F(\theta^{(n)})-\theta^{(n)})
+(\#eq:STEM)
+\end{equation}.
+Hence, STEM can also be considered as a member of the quasi-Newton family.
+
+### Cauchy-Barzilai-Borwein
+
+In summary, the Cauchy-Barzilar-Borwein(CBB) method, see @raydan2002relaxed, combines classical Cauchy method and Barzilar & Borwein's method(denoted as BB, which uses the $n-1$ steplength at the $n$th iteration to get $x_{n+1}$) by using both methods at one iteration step. 
+
+First, Cauchy scheme is applied at $x_n$ to get an intermediate update,$z_n$. Then BB method is applied at $z_n$ with previously calculated Cauchy steplength to obtain $x_{n+1}$. 
+
+### Convergence
+
+### An Example
 
 # Acknowledgment {-}
 
