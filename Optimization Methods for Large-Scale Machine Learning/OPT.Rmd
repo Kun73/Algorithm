@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 This note provides a summary of *Optimization Methods for Large-Scale Machine Learning*, which gives a review and commentary  on the past, present, and future of numerical optimization algorithms in the context of machine learning applications. Large-scale machine learning represents a distinctive setting in which the stochastic gradient (SG) method has traditionally played a central role while conventional gradient-based nonlinear optimization techniques typically falter. Two main streams of research on techniques are diminishing noise in the stochastic directions and methods that make use of second-order derivative approximations.
 
-
+# Introduction and Cases
 
 # Acknowledgment {-}
 
