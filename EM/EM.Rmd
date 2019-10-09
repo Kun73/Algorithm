@@ -232,20 +232,27 @@ $\lambda = n$. Thus we derive the formula to update $\pi_j$ as
 
 For $\beta_j$, we 
 
-### Implemented Function
+### Implemented Function {#sec:gmm}
 
-The function `em_update()` is for each E- and M-step, the function `regmix_em()` is to iterates EM-algorithm untile convergence or up to maximum iteration times.
+The function `regmix_em1step()` is for each E- and M-step, the function `regmix_em()` is to iterates EM-algorithm untile convergence or up to maximum iteration times.
 
 ```{r}
-em_update <- function(y, xmat, PI, bt, sgm) {
+regmix_em1step <- function(par, y, xmat) {
+  ## y : n x 1 vector
+  ## xmat : n x p matrix
+  ## par : a (m + m x p + 1 + 1) x 1 vector contains pi, beta, sigma, m
+  m <- par[length(par)]
   n <- dim(xmat)[1]
-  m <- length(PI)
-  log_phi <- matrix(1:m * n, ncol = m, nrow = n)
-  log_phi <- dnorm(y - xmat %*% bt, 0, sqrt(sgm))
-  pij <- matrix(1:m * n, ncol = m, nrow = n)
+  p <- dim(xmat)[2]
+  PI <- par[1:m]
+  bt <- matrix(par[(m + 1):(m + m * p)], nrow = p, ncol = m)
+  sgm <- par[m + m * p + 1]
+  phi <- matrix(1:m * n, ncol = m, nrow = n)
+  phi <- dnorm(y - xmat %*% bt, 0, sqrt(sgm))
+  pij <- matrix(1:(m * n), ncol = m, nrow = n)
   ## avoid iterating on i
   for (j in 1:m) {
-    pij[, j] <- (PI[j] * log_phi[, j]) / (log_phi %*% PI)
+    pij[, j] <- (PI[j] * phi[, j]) / (phi %*% PI)
   }
   for (j in 1:m) {
     xsp <- sqrt(pij[, j]) * xmat
@@ -254,41 +261,33 @@ em_update <- function(y, xmat, PI, bt, sgm) {
   }
   PI <- colSums(pij) / n
   sgm <- sum(pij * ((y - xmat %*% bt)**2)) / n
-  list(PI = PI, bt = bt, sgm = sgm)
+  c(PI, bt, sgm, m)
 }
-
 ```
 
 ```{r}
-regmix_em <- function (y, xmat, pi.init, beta.init, sigma.init, control) {
+regmix_em <- function (par, y, xmat, control) {
   
   stop <- 1
   convergence <- FALSE
   tol <- control$tol
-  maxit <- control$maxit
-  bt <- beta.init
-  PI <- pi.init
-  sgm <- sigma.init
-  
+  maxit <- control$maxiter
+  l <- length(par)
   for (i in 1 : maxit) {
     if (stop >= tol) {
-      PHI_n <- em_update(y, xmat, PI, bt, sgm)
-      C <- sum(PI**2) + sum(bt**2) +sum(sgm**2)
-      stop <- (sum((PHI_n$PI - PI)**2) + sum((PHI_n$bt - bt)**2) 
-               + sum((PHI_n$sgm - sgm)**2)) / (C + 0.01)
-      PI <- PHI_n$PI
-      bt <- PHI_n$bt
-      sgm <- PHI_n$sgm
+      pnew <- regmix_em1step(par, y, xmat)
+      stop <- sqrt(crossprod(pnew[1:(l - 1)] - par[1:(l - 1)]))
+      par <- pnew
     } else{
       convergence <- TRUE
-      return (list(PHI = PHI_n, convergence = convergence, iteration = i))
+      return (list(PHI = par, convergence = convergence, fpevals = i))
     }
   }
-  list(PHI = PHI_n, convergence = convergence, iteration = maxit)
+  list(PHI = par, convergence = convergence, fpevals = maxit)
 }
 ```
 
-#### A Simulated Example
+#### A Simulated Example {#sec:example}
 
 ```{r}
 regmix_sim <- function(n, pi, beta, sigma) {
@@ -308,18 +307,17 @@ bet <- matrix(c( 1,  1,  1,
 sig <- 1
 set.seed(1205)
 dat <- regmix_sim(n, pi, bet, sig)
-xmat <- as.matrix(dat[, -1], ncol = 3, nrow = n)
-control <- list(maxit = 500, tol = 1e-8)
+xmat <- as.matrix(dat[, -1], ncol = 2, nrow = n)
+control <- list(maxiter = 500, tol = 1e-8)
 bt <- matrix(rnorm(6), nrow = 2, ncol = 3)
-
-PHI <- regmix_em(dat$y, xmat, pi / pi / length(pi), bt, sig / sig, control) 
+p0 <- c(pi / pi / length(pi), bt, sig/sig, 3)
+PHI <- regmix_em(p0, dat$y, xmat, control)
 ```
 
 The result is
 ```{r}
 PHI
 ```
-Where `PI` stands for $\boldsymbol\pi$, `bt` represents for $\boldsymbol\beta$ and `sqm` stands for $\sigma^2$.
 
 
 
@@ -431,9 +429,71 @@ In summary, the Cauchy-Barzilar-Borwein(CBB) method, see @raydan2002relaxed, com
 
 First, Cauchy scheme is applied at $x_n$ to get an intermediate update,$z_n$. Then BB method is applied at $z_n$ with previously calculated Cauchy steplength to obtain $x_{n+1}$. 
 
-### Convergence
+The idea of SQUAREM comes from CBB, i.e., it adapts the idea of CBB to solve nonlinear fixed-point problem of EM. Next, we illustrate why this idea can accelerate the EM algorithm.
+
+### SQUAREM Scheme
+
+For the fixed point problem $F(\theta) = \theta$, we denote the composite function $F(F(\theta))$ as $F^2(\theta)$. Under some regularizations, we expand the composite function  $F^j(\theta)$ at the fixed point $\theta=\theta^*$ using Taylor expansion and evaluate it at $\theta^{(n)}$.
+\begin{equation}
+F^j(\theta^{(n)}) = F^j(\theta^*) + J^je_n +\mathcal{o}(e_n),\ j=1,2,...
+(\#eq:Fj)
+\end{equation}
+where $e_n=\theta^{(n)}-\theta^*$, $J$ is the Jacobian of $F(\theta)$ evaluate at $\theta^*$. This is because for the fixed point $\theta^*$, we have 
+$$
+F(\theta^*) = \theta^*\Rightarrow\\
+F^j(\theta^*) = F^{j-1}(\theta^*),\\
+(F^j(\theta^*))'= [F^{j-1}(F( \theta^*))]' F'(\theta^*)
+$$
+By the above recursive formula, we can derive \@ref(eq:Fj). Then we have 
+\begin{align}
+r_n&=F(\theta^{(n)})-\theta^{(n)}\\
+&=F(\theta^{(n)})-\theta^*-(\theta^{(n)}-\theta^*)\\
+&=(J-I)e_n+\mathcal{o}(e_n)\\
+v_n &=F^2(\theta^{(n)})-2F(\theta^{(n)})+\theta^{(n)}\\
+&=\theta^*+J^2e_n-2\theta^*-2Je_n+\theta^{(n)}+\mathcal{o}(e_n)\\
+&=(J-I)^2e_n+\mathcal{o}(e_n)
+\end{align}
+
+For STEM scheme $\theta^{(n+1)}=\theta^{(n)}-\alpha_n(F(\theta^{(n)})-\theta^{(n)})$, we apply \@ref(eq:Fj) on it and derive
+\begin{equation}
+e_{n+1} =[I-\alpha_n(J-I)]e_n+\mathcal{o}(e_n)
+\end{equation}
+
+The SQUAREM adapts the idea of CBB by using the STEM scheme, then we have 
+\begin{equation}
+e_{n+1} =[I-\alpha_n(J-I)]^2e_n
+(\#eq:en1)
+\end{equation}
+
+Substite $r_n$ and $v_n$ in \@ref(eq:en1), we obtain the SQUAREM scheme
+\begin{equation}
+\theta_{n+1}=\theta_{n}-2 \alpha_{n} r_{n}+\alpha_{n}^{2} v_{n}
+(\#eq:SQUAREM)
+\end{equation}
+
+We can see from \@ref(eq:SQUAREM) that the error at the next step is much smaller, hence we obtain the goal of acceleration. 
 
 ### An Example
+The package SQUAREM requires all the paramters in a vector `par`. Still we use the example in section \@ref(#sec:example). 
+
+```{r}
+library(microbenchmark)
+library(SQUAREM)
+res <- microbenchmark(
+f1 <- regmix_em(par = p0, dat$y, xmat, control),
+f2 <- squarem(par = p0, fixptfn = regmix_em1step, control = control, y = dat$y, xmat = xmat)
+)
+```
+
+```{r}
+## parameter estimates are almost the same
+cbind(f1$PHI[1:(length(f1$PHI)-1)], f2$par[1:(length(f1$PHI)-1)])
+
+## the number of EM steps are very different
+c(f1$fpevals, f2$fpevals)
+
+```
+
 
 # Acknowledgment {-}
 
