@@ -94,6 +94,7 @@ Thus we have
 (\#eq:emfin)
 \end{equation}
 Where $\Phi^{(t)}$ is the parameter $\Phi$ aftering iterating $t$ times. According to \@ref(eq:emfin), we update $\ell(\Phi|\mathbf{y})$ by repeatedly updating $Q(\Phi|\Phi^{(t)})$ and $H(\Phi|\Phi^{(t)})$. We now give the E- and M-step of EM algorithm.
+
 - E-step: Compute the conditional expectation,
 $$
 Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
@@ -136,7 +137,9 @@ a(\Phi) &= \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x} \stac
 = E[\mathbf{t}(\mathbf{x})|\Phi,\mathbf{y}]
 \end{align}
 Hence we derive the EM algorithm for exponential family as follows
+
 - E-step: Compute $E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]$
+
 - M-step: Update $\Phi^{(t+1)}$ by solving $E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]$
 
 ## Gaussian Mixture Model {#sec:gmm}
@@ -467,7 +470,7 @@ e_{n+1} =[I-\alpha_n(J-I)]^2e_n
 
 Substite $r_n$ and $v_n$ in \@ref(eq:en1), we obtain the SQUAREM scheme
 \begin{equation}
-\theta_{n+1}=\theta_{n}-2 \alpha_{n} r_{n}+\alpha_{n}^{2} v_{n}
+\theta^{(n+1)}=\theta^{(n)}-2 \alpha_{n} r_{n}+\alpha_{n}^{2} v_{n}
 (\#eq:SQUAREM)
 \end{equation}
 
@@ -480,8 +483,8 @@ The package SQUAREM requires all the paramters in a vector `par`. Still we use t
 library(microbenchmark)
 library(SQUAREM)
 res <- microbenchmark(
-f1 <- regmix_em(par = p0, dat$y, xmat, control),
-f2 <- squarem(par = p0, fixptfn = regmix_em1step, control = control, y = dat$y, xmat = xmat)
+  f1 <- regmix_em(par = p0, dat$y, xmat, control),
+  f2 <- squarem(par = p0, fixptfn = regmix_em1step, control = control, y = dat$y, xmat = xmat)
 )
 ```
 

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-09" />
+<meta name="date" content="2019-10-10" />
 
 <title>EM Algorithm</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">EM Algorithm</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-09</h4>
+<h4 class="date">2019-10-10</h4>
 
 </div>
 
@@ -224,7 +224,7 @@ f(x_{t+1})\geq g_t(x_{t+1})\geq g_t(x_t) = f(x_t)
 </div>
 <div id="em-algorithm" class="section level1">
 <h1><span class="header-section-number">2</span> EM Algorithm</h1>
-<p>The EM algorithm was proposed by <span class="citation">Dempster, Laird, and Rubin (1977)</span>. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see <a href="#sec:gmm">2.3</a>), the observations are not from homogeneous group.</p>
+<p>The EM algorithm was proposed by <span class="citation">Dempster, Laird, and Rubin (1977)</span>. It is widely used dealing with incomlete data set. For example, in the Gaussian mixture regression model(see <a href="#sec:gmm">2.2</a>), the observations are not from homogeneous group.</p>
 For the following discussions, we always assume <span class="math inline">\(\mathbf{Y}=\mathbf{y}\)</span> is the observed data which is fixed and known from space <span class="math inline">\(\Omega(Y)\)</span>, <span class="math inline">\(\mathbf{X} = \mathbf{x}\)</span> is the complete data but not observed from space <span class="math inline">\(\Omega(X)\)</span>. Additionally, there exists a many-to-one mapping <span class="math inline">\(\mathbf{x}-&gt;\mathbf{y}(\mathbf{x})\)</span> from <span class="math inline">\(\Omega(X)\)</span> to <span class="math inline">\(\Omega(Y)\)</span>, and that <span class="math inline">\(\mathbf{x}\)</span> is known only to lie in <span class="math inline">\(M(\mathbf{y})\)</span>, the subset determined by the equation <span class="math inline">\(\mathbf{y} = \mathbf{y}(\mathbf{x})\)</span>. We postulate a family of sampling density <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> depending on parameters <span class="math inline">\(\Phi\)</span> and derive its corresponding family of sampling density <span class="math inline">\(g(\mathbf{y}|\Phi)\)</span> by
 <span class="math display" id="eq:int">\[\begin{equation}
 g(\mathbf{y}|\Phi) = \int_{M(\mathbf{y})} f(\mathbf{x}|\Phi) d\mathbf{x}
@@ -255,9 +255,12 @@ Thus we have
 \ell(\Phi|\mathbf{y}) = Q(\Phi|\Phi^{(t)}) - H(\Phi|\Phi^{(t)})
 \tag{2.4}
 \end{equation}\]</span>
-Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.4)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm. - E-step: Compute the conditional expectation, <span class="math display">\[
+<p>Where <span class="math inline">\(\Phi^{(t)}\)</span> is the parameter <span class="math inline">\(\Phi\)</span> aftering iterating <span class="math inline">\(t\)</span> times. According to <a href="#eq:emfin">(2.4)</a>, we update <span class="math inline">\(\ell(\Phi|\mathbf{y})\)</span> by repeatedly updating <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span> and <span class="math inline">\(H(\Phi|\Phi^{(t)})\)</span>. We now give the E- and M-step of EM algorithm.</p>
+<ul>
+<li>E-step: Compute the conditional expectation, <span class="math display">\[
 Q(\Phi|\Phi^{(t)}) = E[\log f(\mathbf{x}|\Phi)| \mathbf{y},\Phi^{(t)}]
-\]</span> - M-step: Derive the next <span class="math inline">\(\Phi^{(t+1)}\)</span> by maximizing <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span>, i.e.
+\]</span></li>
+<li>M-step: Derive the next <span class="math inline">\(\Phi^{(t+1)}\)</span> by maximizing <span class="math inline">\(Q(\Phi|\Phi^{(t)})\)</span>, i.e.
 <span class="math display" id="eq:mgen">\[\begin{equation}
 \tag{2.5}
 \Phi^{(t+1)} = \arg\max Q(\Phi|\Phi^{(t)})
@@ -268,9 +271,7 @@ Note that <span class="math inline">\(-H(\Phi|\Phi^{(t)})\)</span> can be seen a
 &amp; = \underbrace{(Q(\Phi^{(t+1)}|\Phi^{(t)}) - Q(\Phi^{(t)}|\Phi^{(t)}))}_{\text{M-step, }\geq0}+\underbrace{(H(\Phi^{(t)}|\Phi^{(t)}) - H(\phi^{(t+1)}|\Phi^{(t)}))}_{\text{Jensen's inequality}, f(\cdot) = \log(\cdot),\geq0}\\
 &amp;\geq 0
 \end{align}\]</span>
-</div>
-<div id="em-algorithm-for-exponential-distribution" class="section level2">
-<h2><span class="header-section-number">2.2</span> EM Algorithm for Exponential Distribution</h2>
+<h2 id="em-algorithm-for-exponential-distribution"><span class="header-section-number">2.1</span> EM Algorithm for Exponential Distribution</h2>
 In this section, we restrict the complete density <span class="math inline">\(f(\mathbf{x}|\Phi)\)</span> has regular(<span class="math inline">\(\Phi\)</span> is unique up to an arbitary non-singular <span class="math inline">\(r\times r\)</span> linear transformation) exonential-family form
 <span class="math display" id="eq:exp">\[\begin{equation}
 \tag{2.6}
@@ -293,10 +294,13 @@ a(\Phi) &amp;= \int b(\mathbf{x})\exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x} \
 \frac{a'(\Phi)}{a(\Phi)} &amp;= \frac{\int b(\mathbf{x}) \mathbf{t}(\mathbf{x})^T \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}{\int b(\mathbf{x})  \exp(\mathbf{t}(\mathbf{x})^T\Phi)d\mathbf{x}}
 = E[\mathbf{t}(\mathbf{x})|\Phi,\mathbf{y}]
 \end{align}\]</span>
-<p>Hence we derive the EM algorithm for exponential family as follows - E-step: Compute <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span> - M-step: Update <span class="math inline">\(\Phi^{(t+1)}\)</span> by solving <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p>
+<p>Hence we derive the EM algorithm for exponential family as follows</p></li>
+<li><p>E-step: Compute <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
+<li><p>M-step: Update <span class="math inline">\(\Phi^{(t+1)}\)</span> by solving <span class="math inline">\(E[\mathbf{t}(\mathbf{x})|\phi^{(t+1)},\mathbf{y}]=E[\mathbf{t}(\mathbf{x})|\phi^{(t)},\mathbf{y}]\)</span></p></li>
+</ul>
 </div>
 <div id="sec:gmm" class="section level2">
-<h2><span class="header-section-number">2.3</span> Gaussian Mixture Model</h2>
+<h2><span class="header-section-number">2.2</span> Gaussian Mixture Model</h2>
 For a Gaussian mixture model, we have
 <span class="math display" id="eq:gmmdata">\[\begin{equation}
 y_i = \mathbf{c}_i | (\mathbf{X} = \mathbf{x}_i,\mathbf{Z}=\mathbf{z}_i)
@@ -313,7 +317,7 @@ Where <span class="math inline">\(\pi_j's\)</span> are called mixing parameters,
 \tag{2.9}
 \end{equation}\]</span>
 <div id="e-step" class="section level3">
-<h3><span class="header-section-number">2.3.1</span> E-step</h3>
+<h3><span class="header-section-number">2.2.1</span> E-step</h3>
 <p>For the <span class="math inline">\(t\)</span>th iteration, define <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> as</p>
 <span class="math display">\[\begin{align}
 Q(\Psi|\Psi^{(t)}) &amp;= E[\log f(\mathbf{x}, \mathbf{z},y|\Psi)|y,\mathbf{x},\Psi^{(t)}]\\
@@ -350,7 +354,7 @@ Solve the equation <a href="#eq:sigma">(2.12)</a> and notice that <span class="m
 \end{equation}\]</span>
 </div>
 <div id="m-step" class="section level3">
-<h3><span class="header-section-number">2.3.2</span> M-step</h3>
+<h3><span class="header-section-number">2.2.2</span> M-step</h3>
 Maximize <span class="math inline">\(Q(\Psi|\Psi^{(t)})\)</span> under the constraint <span class="math inline">\(\sum_{j=1}^m\pi_j = 1\)</span>, we use the method of Lagrange multipliers. Let <span class="math inline">\(L(\Psi,\lambda|\Psi^{(t)})\)</span> be
 <span class="math display" id="eq:lagrange">\[\begin{equation}
 L(\Psi,\lambda|\Psi^{(t)}) = Q(\Psi|\Psi^{(t)})-\lambda (\sum_{j=1}^m\pi_j-1)
@@ -371,7 +375,7 @@ Notice that <span class="math inline">\(\sum_{j=1}^m\pi_j=1, \sum_{j=1}^m p_{ij}
 <p>For <span class="math inline">\(\beta_j\)</span>, we</p>
 </div>
 <div id="sec:gmm" class="section level3">
-<h3><span class="header-section-number">2.3.3</span> Implemented Function</h3>
+<h3><span class="header-section-number">2.2.3</span> Implemented Function</h3>
 <p>The function <code>regmix_em1step()</code> is for each E- and M-step, the function <code>regmix_em()</code> is to iterates EM-algorithm untile convergence or up to maximum iteration times.</p>
 <pre class="r"><code>regmix_em1step &lt;- function(par, y, xmat) {
   ## y : n x 1 vector
@@ -419,7 +423,7 @@ Notice that <span class="math inline">\(\sum_{j=1}^m\pi_j=1, \sum_{j=1}^m p_{ij}
   list(PHI = par, convergence = convergence, fpevals = maxit)
 }</code></pre>
 <div id="sec:example" class="section level4">
-<h4><span class="header-section-number">2.3.3.1</span> A Simulated Example</h4>
+<h4><span class="header-section-number">2.2.3.1</span> A Simulated Example</h4>
 <pre class="r"><code>regmix_sim &lt;- function(n, pi, beta, sigma) {
     K &lt;- ncol(beta)
     p &lt;- NROW(beta)
@@ -457,16 +461,16 @@ PHI &lt;- regmix_em(p0, dat$y, xmat, control)</code></pre>
 </div>
 </div>
 <div id="variants-of-em" class="section level2">
-<h2><span class="header-section-number">2.4</span> Variants of EM</h2>
+<h2><span class="header-section-number">2.3</span> Variants of EM</h2>
 <div id="monte-carlo-emmcem" class="section level3">
-<h3><span class="header-section-number">2.4.1</span> Monte Carlo EM(MCEM)</h3>
+<h3><span class="header-section-number">2.3.1</span> Monte Carlo EM(MCEM)</h3>
 </div>
 <div id="generalized-emgem" class="section level3">
-<h3><span class="header-section-number">2.4.2</span> Generalized EM(GEM)</h3>
+<h3><span class="header-section-number">2.3.2</span> Generalized EM(GEM)</h3>
 </div>
 </div>
 <div id="acceleration-of-em" class="section level2">
-<h2><span class="header-section-number">2.5</span> Acceleration of EM</h2>
+<h2><span class="header-section-number">2.4</span> Acceleration of EM</h2>
 <p>In this section, we illustrate an acceleration method of EM algorithm (SQUAREM, squared iterative methods) introdued by <span class="citation">Varadhan and Roland (2008)</span>. In R, this methods can be implemented by the package <strong>SQUAREM</strong>.</p>
 The EM alogrithm
 <span class="math display">\[\begin{equation}
@@ -480,7 +484,7 @@ F:\Omega\in \mathbb{R}^p \rightarrow \Omega
 \end{equation}\]</span>
 <p>In summary, the author adapts the idea of Cauchy-Barzilai-Borwein(CBB) mthod, see <span class="citation">Raydan and Svaiter (2002)</span>, to solve the nonlinear fixed-point problem in <a href="#eq:fixed">(2.16)</a>, called SQUAREM schemes. The CBB builds on Steffensen-type methods for EM(STEM), which is an extension of scalar Steffensen’s method to vector fixed-point iteration.</p>
 <div id="steffensen-type-methods-for-em" class="section level3">
-<h3><span class="header-section-number">2.5.1</span> Steffensen-type methods for EM</h3>
+<h3><span class="header-section-number">2.4.1</span> Steffensen-type methods for EM</h3>
 To make it simple to denote, we introduce a sequence of vetcor <span class="math inline">\(\{\mu_i\},i\geq0\)</span>,
 <span class="math display">\[\begin{equation}
 \mu_i = \begin{cases}
@@ -546,13 +550,13 @@ Approximate <span class="math inline">\(M^{-1}_n\)</span> in <a href="#eq:solver
 <p>. Hence, STEM can also be considered as a member of the quasi-Newton family.</p>
 </div>
 <div id="cauchy-barzilai-borwein" class="section level3">
-<h3><span class="header-section-number">2.5.2</span> Cauchy-Barzilai-Borwein</h3>
+<h3><span class="header-section-number">2.4.2</span> Cauchy-Barzilai-Borwein</h3>
 <p>In summary, the Cauchy-Barzilar-Borwein(CBB) method, see <span class="citation">Raydan and Svaiter (2002)</span>, combines classical Cauchy method and Barzilar &amp; Borwein’s method(denoted as BB, which uses the <span class="math inline">\(n-1\)</span> steplength at the <span class="math inline">\(n\)</span>th iteration to get <span class="math inline">\(x_{n+1}\)</span>) by using both methods at one iteration step.</p>
 <p>First, Cauchy scheme is applied at <span class="math inline">\(x_n\)</span> to get an intermediate update,<span class="math inline">\(z_n\)</span>. Then BB method is applied at <span class="math inline">\(z_n\)</span> with previously calculated Cauchy steplength to obtain <span class="math inline">\(x_{n+1}\)</span>.</p>
 <p>The idea of SQUAREM comes from CBB, i.e., it adapts the idea of CBB to solve nonlinear fixed-point problem of EM. Next, we illustrate why this idea can accelerate the EM algorithm.</p>
 </div>
 <div id="squarem-scheme" class="section level3">
-<h3><span class="header-section-number">2.5.3</span> SQUAREM Scheme</h3>
+<h3><span class="header-section-number">2.4.3</span> SQUAREM Scheme</h3>
 For the fixed point problem <span class="math inline">\(F(\theta) = \theta\)</span>, we denote the composite function <span class="math inline">\(F(F(\theta))\)</span> as <span class="math inline">\(F^2(\theta)\)</span>. Under some regularizations, we expand the composite function <span class="math inline">\(F^j(\theta)\)</span> at the fixed point <span class="math inline">\(\theta=\theta^*\)</span> using Taylor expansion and evaluate it at <span class="math inline">\(\theta^{(n)}\)</span>.
 <span class="math display" id="eq:Fj">\[\begin{equation}
 F^j(\theta^{(n)}) = F^j(\theta^*) + J^je_n +\mathcal{o}(e_n),\ j=1,2,...
@@ -582,19 +586,19 @@ e_{n+1} =[I-\alpha_n(J-I)]^2e_n
 \end{equation}\]</span>
 Substite <span class="math inline">\(r_n\)</span> and <span class="math inline">\(v_n\)</span> in <a href="#eq:en1">(2.24)</a>, we obtain the SQUAREM scheme
 <span class="math display" id="eq:SQUAREM">\[\begin{equation}
-\theta_{n+1}=\theta_{n}-2 \alpha_{n} r_{n}+\alpha_{n}^{2} v_{n}
+\theta^{(n+1)}=\theta^{(n)}-2 \alpha_{n} r_{n}+\alpha_{n}^{2} v_{n}
 \tag{2.25}
 \end{equation}\]</span>
 <p>We can see from <a href="#eq:SQUAREM">(2.25)</a> that the error at the next step is much smaller, hence we obtain the goal of acceleration.</p>
 </div>
 <div id="an-example" class="section level3">
-<h3><span class="header-section-number">2.5.4</span> An Example</h3>
+<h3><span class="header-section-number">2.4.4</span> An Example</h3>
 <p>The package SQUAREM requires all the paramters in a vector <code>par</code>. Still we use the example in section @ref(#sec:example).</p>
 <pre class="r"><code>library(microbenchmark)
 library(SQUAREM)
 res &lt;- microbenchmark(
-f1 &lt;- regmix_em(par = p0, dat$y, xmat, control),
-f2 &lt;- squarem(par = p0, fixptfn = regmix_em1step, control = control, y = dat$y, xmat = xmat)
+  f1 &lt;- regmix_em(par = p0, dat$y, xmat, control),
+  f2 &lt;- squarem(par = p0, fixptfn = regmix_em1step, control = control, y = dat$y, xmat = xmat)
 )</code></pre>
 <pre class="r"><code>## parameter estimates are almost the same
 cbind(f1$PHI[1:(length(f1$PHI)-1)], f2$par[1:(length(f1$PHI)-1)])</code></pre>
