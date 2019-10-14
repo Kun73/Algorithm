@@ -11,9 +11,78 @@ biblio-style: asa
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-This note provides a summary of *Optimization Methods for Large-Scale Machine Learning*, which gives a review and commentary  on the past, present, and future of numerical optimization algorithms in the context of machine learning applications. Large-scale machine learning represents a distinctive setting in which the stochastic gradient (SG) method has traditionally played a central role while conventional gradient-based nonlinear optimization techniques typically falter. Two main streams of research on techniques are diminishing noise in the stochastic directions and methods that make use of second-order derivative approximations.
+This note provides a summary of *Optimization Methods for Large-Scale Machine Learning*, which gives a review and commentary  on the past, present, and future of numerical optimization algorithms in the context of machine learning applications. 
 
-# Introduction and Cases
+# Objective Function {#sec:obj}
+
+We discuss the supervised learning. The linear regression is a good example to begin with.
+
+For the linear regression, 
+\begin{equation}
+y_i=X\beta+\epsilon_i,i=1,2,...,n \\
+\epsilon_i\stackrel{i.i.d.}\sim N(0,\sigma)
+(\#eq:LR)
+\end{equation}
+To solve \@ref(eq:LR), we use least squares approach to solve the optimization problem, 
+\begin{equation}
+\beta^*=\arg\min ||Y-X\beta||^2\\
+Y=(y_1,...,y_n)^T
+(\#eq:LS)
+\end{equation}
+In \@ref(eq:LS), we use the $\ell_2$-norm as the loss function $\ell:\mathbb{R}^{d_x}\times\mathbb{R}^{d_y}\rightarrow\mathbb{R}$,
+$$
+\ell(X\beta,Y)=||Y-X\beta||^2
+$$
+and restrict our prediction function $h:\mathbb{R}^{d_x}\times\mathbb{R}^d\rightarrow\mathbb{R}^{d_y}$ to have the linear form 
+$$
+h(X,\beta)=X\beta
+$$
+Similar to the linear regression example, we can define a more generic family of prediction function $\mathcal{H}$, a loss function $\ell$, an expected risk $R$, and an empirical risk $R_n$. 
+$$
+\mathcal{H}:=\left\{h(\cdot ; w): w \in \mathbb{R}^{d}\right\}
+$$
+Where $w\in\mathbb{R}^d$ is the parameter vector, i.e. the $\beta$ in \@ref(eq:LR). Additinally, we assume that the input-output space $\mathbb{R}^{d_{x}} \times \mathbb{R}^{d_{y}}$ is endowed with a distribution function $P:\mathbb{R}^{d_{x}} \times \mathbb{R}^{d_{y}}\rightarrow[0,1]$, then we can define the **expected risk**
+\begin{equation}
+R(w)=\int_{\mathbb{R}^{d_{x}} \times \mathbb{R}^{d_{y}}} \ell(h(x ; w), y) d P(x, y)=\mathbb{E}[\ell(h(x ; w), y)]
+(\#eq:expr)
+\end{equation}
+
+However, we do not have completed information about $P$. In practice, we use the **empirical risk**, 
+\begin{equation}
+R_{n}(w)=\frac{1}{n} \sum_{i=1}^{n} \ell\left(h\left(x_{i} ; w\right), y_{i}\right)
+(\#eq:empr)
+\end{equation}
+
+To make the above notation more simple, we introduce the composite function $f(w,\xi)=\ell(h(x;w),y)$, where $\xi$ is the realization of  a sample $(x,y)$. Then our objective function $F:\mathbb{R}^d\rightarrow\mathbb{R}$ can either be the expected risk \@ref(eq:expr) or the empirical risk \@ref(eq:empr), i.e.
+\begin{equation}
+F(w)=
+\begin{cases}
+R(w)=E[f(w;\xi)],\\
+\text{or}\\
+R_n(w)=\frac{1}{n}\sum_{i=1}^nf(w;\xi_i):=\frac{1}{n}\sum_{i=1}^nf_i(w)
+\end{cases}
+(\#eq:F)
+\end{equation}
+
+Our goal, under the *big data* scenario with an infinite supply of training samples, but a limited computational time budget $\mathcal{T}_{\max}$, can be summarized as 
+\begin{equation}
+w^0 = \underset{\mathcal{H}}{\arg\min}F(w)
+(\#eq:obj)
+\end{equation}
+
+To compare two algorithms under the *big data* scenario, we are to balance the trade-off among three aspects in \@ref(eq:trade-off). Suppose that both $R$ and $R_n$ attain their minima with parameter vector $w_*=\arg\min R(w)$ and $w_n=\arg\min R_n(w)$, and let $\tilde{w}_n$ be the approximate empirical risk minimizer returned by a given algorithm when $\mathcal{T}_\max$ is exhausted. Then we decomposite the expected risk given $\tilde{w}_n$, $E[R(\tilde{w}_n)]$ as following, 
+\begin{equation}
+\mathbb{E}\left[R\left(\tilde{w}_{n}\right)\right]=\underbrace{R\left(w_{*}\right)}_{\mathcal{E}_{a p p}(\mathcal{H})}+\underbrace{\mathbb{E}\left[R\left(w_{n}\right)-R\left(w_{*}\right)\right]}_{\mathcal{E}_{e s t}(\mathcal{H}, n)}+\underbrace{\mathbb{E}\left[R\left(\tilde{w}_{n}\right)-R\left(w_{n}\right)\right]}_{\mathcal{E}_{o p t}(\mathcal{H}, n, \epsilon)}
+(\#eq:decom)
+\end{equation}
+
+
+# Batch Gradient Descent and Stochastic Gradient Descent {#sec:SG}
+
+## Batch Gradient Descent
+
+
+
 
 # Acknowledgment {-}
 
