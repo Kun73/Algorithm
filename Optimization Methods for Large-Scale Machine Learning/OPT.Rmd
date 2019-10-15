@@ -5,6 +5,7 @@ date: "`r format(Sys.Date())`"
 output: bookdown::html_document2
 bibliography: template.bib
 biblio-style: asa
+
 ---
 
 ```{r setup, include=FALSE}
@@ -25,13 +26,13 @@ y_i=X\beta+\epsilon_i,i=1,2,...,n \\
 \end{equation}
 To solve \@ref(eq:LR), we use least squares approach to solve the optimization problem, 
 \begin{equation}
-\beta^*=\arg\min ||Y-X\beta||^2\\
+\beta^*=\frac{1}{2n}\arg\min ||Y-X\beta||^2\\
 Y=(y_1,...,y_n)^T
 (\#eq:LS)
 \end{equation}
 In \@ref(eq:LS), we use the $\ell_2$-norm as the loss function $\ell:\mathbb{R}^{d_x}\times\mathbb{R}^{d_y}\rightarrow\mathbb{R}$,
 $$
-\ell(X\beta,Y)=||Y-X\beta||^2
+\ell(X\beta,Y)=\frac{1}{2n}||Y-X\beta||^2
 $$
 and restrict our prediction function $h:\mathbb{R}^{d_x}\times\mathbb{R}^d\rightarrow\mathbb{R}^{d_y}$ to have the linear form 
 $$
@@ -73,13 +74,55 @@ w^0 = \underset{\mathcal{H}}{\arg\min}F(w)
 To compare two algorithms under the *big data* scenario, we are to balance the trade-off among three aspects in \@ref(eq:trade-off). Suppose that both $R$ and $R_n$ attain their minima with parameter vector $w_*=\arg\min R(w)$ and $w_n=\arg\min R_n(w)$, and let $\tilde{w}_n$ be the approximate empirical risk minimizer returned by a given algorithm when $\mathcal{T}_\max$ is exhausted. Then we decomposite the expected risk given $\tilde{w}_n$, $E[R(\tilde{w}_n)]$ as following, 
 \begin{equation}
 \mathbb{E}\left[R\left(\tilde{w}_{n}\right)\right]=\underbrace{R\left(w_{*}\right)}_{\mathcal{E}_{a p p}(\mathcal{H})}+\underbrace{\mathbb{E}\left[R\left(w_{n}\right)-R\left(w_{*}\right)\right]}_{\mathcal{E}_{e s t}(\mathcal{H}, n)}+\underbrace{\mathbb{E}\left[R\left(\tilde{w}_{n}\right)-R\left(w_{n}\right)\right]}_{\mathcal{E}_{o p t}(\mathcal{H}, n, \epsilon)}
-(\#eq:decom)
+(\#eq:trade-off)
 \end{equation}
 
 
-# Batch Gradient Descent and Stochastic Gradient Descent {#sec:SG}
+# Batch Gradient Descent and Stochastic Gradient Descent {#sec:GD}
 
-## Batch Gradient Descent
+The idea of gradient descent is based on the fact that $f(x)$ decreases fastest at the direction of gradient in a neighborhood of a point. The iteration scheme is, 
+\begin{equation}
+x_{n+1} = x_n - \alpha_n I \nabla f(x_n)
+(\#eq:GDO)
+\end{equation}
+where $I$ is the identity matrix, $\alpha_n$ is the steplength. Moreover, $\alpha_n I$ can be seen as an approximation of the hessian matrix $H$ of $f(x)$. This is can be showed onece we give the scheme of Newton-Raphson method,
+\begin{equation}
+x_{n+1} = x_n - (H(x_n))^{-1}\nabla f(x_n)
+(\#eq:nr)
+\end{equation}
+
+In summary, the batch gradient descent evaluates the gradient using all the $n$ samples while the stochastic gradient descent(SGD) uses only a subset of all the observations. As the name of SGD, we derive the subset by sampling from the whole observations. To emphasize the need for stpchastic gradient descent under the big data scenario, we again use the linear regression \@ref(eq:LR) as an example. For the optimization problem \@ref(eq:LS), the gradient is 
+\begin{align}
+\nabla \ell &= (\frac{\partial}{\partial\beta_j}\ell)\\
+&=(-\frac{1}{n}\sum_{i=1}^n(y_i-X\beta)x_1, ..., -\frac{1}{n}\sum_{i=1}^n(y_i-X\beta)x_d)^T\in\mathbf{R}^d
+(\#eq:glr)
+\end{align}
+
+Then we can see from \@ref(eq:glr) that evluating the gradient when $n$ is large(under the big data senario, it is common) costs a lot. For this reason, SGD is better. We then give the pseudocode of SGD.
+
+
+**(stochastic gradient descent(SGD))**
+
+| Choose a starting point $w_1$
+| **For** k = 1, 2, ...
+|  Generate a realization of the random variable $\xi_k$
+|  Compute a stochastic vector $g(w_k,\xi_k)$
+|  Choose a steplength $\alpha_k>0$
+|  Set the new point $w_{k+1}<- w_k - \alpha_k g(w_k,\xi_k)$
+
+
+The stochastic vector $g(w_k,\xi_k)$ can represents the following 
+\begin{equation}
+g(w_k,\xi_k) = 
+\begin{cases}
+\nabla f(w_k;\xi_k)\\
+\frac{1}{n_k}\sum_{i=1}^{n_k}\nabla f(w_k;\xi_{k,i})\\
+H_k\frac{1}{n_k}\sum_{i=1}^{n_k}\nabla f(w_k;\xi_{k,i})
+\end{cases}
+(\#eq:sv)
+\end{equation}
+
+
 
 
 
