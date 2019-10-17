@@ -1,0 +1,50 @@
+---
+title: "Optimization"
+author: "Kun Huang"
+date: "`r format(Sys.Date())`"
+output: bookdown::html_document2
+bibliography: template.bib
+biblio-style: asa
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+We consider computational algorithms generating random numbers. These algorithms can produce long sequences of apparently random results, which are in fact completely determined by a shorter initial value, known as a seed value or key. As a result, the entire seemingly random sequence can be reproduced if the seed value is known. This type of random number generator is often called a pseudorandom number generator(PRNG)[(wiki)](https://en.wikipedia.org/wiki/Random_number_generation#%22True%22_vs._pseudo-random_numbers).
+
+Suppose we have attained $U(0,1)$. 
+
+# Inverse CDF
+
+For a continuous distribution function $F$, we can generate a series of random numbers distributed as $F$ by $X=F^{-1}(u),u\sim U(0,1)$
+\begin{align}
+P(X\leq x) &= P(F^{-1}(u)\leq x)\\
+&= P(u\leq F(x))\\
+&= F(x)
+(\#eq:invCDFc)
+\end{align}
+
+However, when $F$ is discrete, we do not have $F^{-1}$. For this situation, we can define the generalized inverse of $F$ as 
+\begin{equation}
+F^{-}(u) = \inf{x: F(x)\geq u}
+(\#eq:gF)
+\end{equation}
+
+Then, similar as \@ref(eq:invCDFc), we can generate a random number distributed as $F$ by $X=F^{-}(u),u\sim U(0,1)$. 
+
+# Rejection Method
+
+
+
+
+
+
+
+
+# Acknowledgment {-}
+
+The above contents are notes after taking the class by @stat5361. 
+
+# Reference {-}
