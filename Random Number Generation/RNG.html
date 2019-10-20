@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-17" />
+<meta name="date" content="2019-10-20" />
 
 <title>Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-17</h4>
+<h4 class="date">2019-10-20</h4>
 
 </div>
 
@@ -206,6 +206,82 @@ F^{-}(u) = \inf{x: F(x)\geq u}
 </div>
 <div id="rejection-method" class="section level1">
 <h1><span class="header-section-number">2</span> Rejection Method</h1>
+</div>
+<div id="sampling-using-markov-chains" class="section level1">
+<h1><span class="header-section-number">3</span> Sampling using Markov Chains</h1>
+<div id="background-of-markov-chains" class="section level2">
+<h2><span class="header-section-number">3.1</span> Background of Markov Chains</h2>
+Let <span class="math inline">\(\mathcal{X}\)</span> be a discrete of Euclidean space, a stochastic process <span class="math inline">\(\{X_t, t=0,1,...\}, X_t\in\mathcal{X}\)</span> is called <em>Markov chain</em> if
+<span class="math display" id="eq:MC">\[\begin{equation}
+P(X_t\in A|X_{t-1},...,X_1,X_0) \stackrel{a.s.}{=} P(X_t\in A|X_{t-1}), \forall t&gt;0, \ \forall A\subset\mathcal{X}
+\tag{3.1}
+\end{equation}\]</span>
+Thus the state at <span class="math inline">\(T=t\)</span> only depends on the previous state. The marginal distribution of <span class="math inline">\(X_0\)</span> is called the initial distribution of the Markov chain <span class="math inline">\((X_t)\)</span>. Moreover, if the conditional density of any two consecutive states are the same, i.e. <span class="math inline">\(\forall a,b\)</span>
+<span class="math display" id="eq:HMC">\[\begin{equation}
+p(x_t=b|x_{t-1}=a):=q(b|a), \forall t&gt;0
+\tag{3.2}
+\end{equation}\]</span>
+<p>are the same, then the chain is called <em>homogeneous</em>, <span class="math inline">\(q(\cdot|\cdot)\)</span> is called the <em>transition kernel</em> of the Markov chain.</p>
+For a homogeneous Markov chain <span class="math inline">\((X_t)\)</span>, if <span class="math inline">\(X_0\sim\pi,s.t.\)</span>
+<span class="math display" id="eq:initpi">\[\begin{equation}
+\pi(x) = \int q(x|y)\pi(y)dy
+\tag{3.3}
+\end{equation}\]</span>
+Then the density <span class="math inline">\(p_t\)</span> of <span class="math inline">\(X_t\)</span> can be written as
+<span class="math display" id="eq:stationary">\[\begin{align}
+p_t(x) &amp;= \int q(x|y)p_{t-1}(y)dy\\
+&amp;\stackrel{\text{homogeneous}}{=}\int q(x_{1}=x|x_{0}=y)p_0(y)dy\\
+&amp;=\int q(x|y)\pi(y)dy\\
+&amp;=\pi(x), \forall t\geq0
+\tag{3.4}
+\end{align}\]</span>
+<p>We introduce the idea of <em>stationary distribution</em>, that is, a stationary distribution of a Markov chain is a probability distribution that remains unchanged in the Markov chain as time progresses. From <a href="#eq:stationary">(3.4)</a>, <span class="math inline">\(\pi\)</span> is the stationary distribution of a homogeneous Markov chain <span class="math inline">\((X_t)\)</span>. For non-homogeneous Markov chains, under certain condistions, there exists an unique stationay distribution whatever the initial distribution <span class="math inline">\(p_0,\)</span> as <span class="math inline">\(t\rightarrow\infty,p_t\rightarrow\pi\)</span>.</p>
+<p>We sample the target distribution <span class="math inline">\(f\)</span> based on the existence and uniqueness of the stationary distribution of a Markov chain <span class="math inline">\((X_t)\)</span>. That is, we construct a Markov chain such that its stationary distribution is <span class="math inline">\(f\)</span>, then <span class="math inline">\(X_t\)</span> is the random sample asympotic to <span class="math inline">\(f\)</span> when <span class="math inline">\(n\)</span> is large enough.</p>
+<p>The question is <strong>how to choose the transition probability <span class="math inline">\(q(\cdot|\cdot)\)</span> such that <span class="math inline">\(f\)</span> is a stationary distribution of <span class="math inline">\((X_t)\)</span></strong>.</p>
+When <span class="math inline">\(f\)</span> is known up to a multiplicative factor, i.e. <span class="math display">\[
+f(x) = \frac{h(x)}{C}, C&gt;0
+\]</span> The <em>detailed balance condition</em> <a href="#eq:dbc">(3.5)</a> answers the above question.
+<span class="math display" id="eq:dbc">\[\begin{equation}
+h(x)q(y|x) = h(y)q(x|y), \forall x\not=y\in\mathcal{X}
+\tag{3.5}
+\end{equation}\]</span>
+This is because from <a href="#eq:dbc">(3.5)</a>, we have <span class="math inline">\(f(x)q(y|x) = f(y)q(x|y)\)</span>, then
+<span class="math display">\[\begin{equation}
+p_t(y)=\int f(x)q(y|x) dx = \int f(y)q(x|y) dx = f(y)\underbrace{\int q(x|y) dx}_{=1}
+\end{equation}\]</span>
+<p>To determine the transition probability(kernel) <span class="math inline">\(q(\cdot|\cdot)\)</span>, we have <strong>Metropolis-Hastings(MH)</strong> algorithm.</p>
+</div>
+<div id="metropolis-hastingsmh-algorithm" class="section level2">
+<h2><span class="header-section-number">3.2</span> Metropolis-Hastings(MH) Algorithm</h2>
+<p>To sample from <span class="math inline">\(f(x) = \frac{h(x)}{C}, C&gt;0\)</span>, suppose we have known a <em>proposal distribution</em> <span class="math inline">\(k(y|x)\)</span></p>
+<p><strong>Metropolis-Hastings(MH) Algorithm</strong></p>
+<hr />
+<ol style="list-style-type: decimal">
+<li>Set <span class="math inline">\(x_0,s.t. h(x_0)&gt;0\)</span></li>
+<li>For <span class="math inline">\(t=1,2,...,n\)</span></li>
+</ol>
+<ul>
+<li><p>Draw <span class="math inline">\(x^*\sim k(\cdot|x_t)\)</span> and <span class="math inline">\(U\sim\text{Unif}(0,1)\)</span>,</p></li>
+<li><p>Compute the MH ratio <span class="math inline">\(R(x_t,x^*)=\frac{h(x^*)k(x_t|x^*)}{h(x_t)k(x^*|x_t)}\)</span></p></li>
+<li><p>If <span class="math inline">\(U\leq\min\{R(x_t,x^*),1\}\)</span>, then <span class="math inline">\(x_{t+1}=x^*\)</span>, else <span class="math inline">\(x_{t+1} = x_t\)</span></p></li>
+</ul>
+<hr />
+<div id="example-bayesian-inference" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Example, Bayesian Inference</h3>
+We show an example using MH algorithm in Bayesian inference. For a parametric family of probability <span class="math inline">\(f(x|\theta)\)</span>, given data <span class="math inline">\(x\)</span> and the prior density <span class="math inline">\(p(\theta)\)</span>, the posterior density of <span class="math inline">\(\theta\)</span> is
+<span class="math display" id="eq:bayes">\[\begin{equation}
+p(\theta|x) = \frac{f(x|\theta)p(\theta)}{\int f(x|\theta)p(\theta)d\theta} \propto h(\theta)
+\tag{3.6}
+\end{equation}\]</span>
+<p>We can use the prior <span class="math inline">\(p(\theta)\)</span> as a proposal distribution, i.e. <span class="math inline">\(k(\theta^*|\theta_t)=p(\theta^*)\)</span>. Then <span class="math inline">\(R(\theta_t,\theta^*)=\frac{h(\theta^*) p(\theta_t)}{h(\theta_t)p(\theta^*)}=\frac{h(\theta^*)}{p(\theta^*)}/\frac{h(\theta_t)}{p(\theta_t)}=\frac{f(x|\theta^*)}{f(x|\theta_t)}\)</span>.</p>
+</div>
+</div>
+<div id="gibbs-sampling" class="section level2">
+<h2><span class="header-section-number">3.3</span> Gibbs Sampling</h2>
+<p>Gibbs sampling is adapted for multidimensional target distributions by sequentially sampling from the conditional distributions of parts of the random vector. The idea is also used in the coordinate descent algorithm.</p>
+<p><strong>(Gibbs Sampler)</strong></p>
+<hr />
+</div>
 </div>
 <div id="acknowledgment" class="section level1 unnumbered">
 <h1>Acknowledgment</h1>

@@ -36,11 +36,94 @@ Then, similar as \@ref(eq:invCDFc), we can generate a random number distributed 
 
 # Rejection Method
 
+# Sampling using Markov Chains
 
+## Background of Markov Chains
 
+Let $\mathcal{X}$ be a discrete of Euclidean space, a stochastic process $\{X_t, t=0,1,...\}, X_t\in\mathcal{X}$ is called *Markov chain* if 
+\begin{equation}
+P(X_t\in A|X_{t-1},...,X_1,X_0) \stackrel{a.s.}{=} P(X_t\in A|X_{t-1}), \forall t>0, \ \forall A\subset\mathcal{X}
+(\#eq:MC)
+\end{equation}
+Thus the state at $T=t$ only depends on the previous state. The marginal distribution of $X_0$ is called the initial distribution of the Markov chain $(X_t)$. Moreover, if the conditional density of any two consecutive states are the same, i.e. $\forall a,b$
+\begin{equation}
+p(x_t=b|x_{t-1}=a):=q(b|a), \forall t>0
+(\#eq:HMC)
+\end{equation}
+are the same, then the chain is called *homogeneous*, $q(\cdot|\cdot)$ is called the *transition kernel* of the Markov chain.
 
+For a homogeneous Markov chain $(X_t)$, if $X_0\sim\pi,s.t.$
+\begin{equation}
+\pi(x) = \int q(x|y)\pi(y)dy
+(\#eq:initpi)
+\end{equation}
+Then the density $p_t$ of $X_t$ can be written as 
+\begin{align}
+p_t(x) &= \int q(x|y)p_{t-1}(y)dy\\
+&\stackrel{\text{homogeneous}}{=}\int q(x_{1}=x|x_{0}=y)p_0(y)dy\\
+&=\int q(x|y)\pi(y)dy\\
+&=\pi(x), \forall t\geq0
+(\#eq:stationary)
+\end{align}
 
+We introduce the idea of *stationary distribution*, that is, a stationary distribution of a Markov chain is a probability distribution that remains unchanged in the Markov chain as time progresses.
+From \@ref(eq:stationary), $\pi$ is the stationary distribution of a homogeneous Markov chain $(X_t)$. For non-homogeneous Markov chains, under certain condistions, there exists an unique stationay distribution whatever the initial distribution $p_0,$ as $t\rightarrow\infty,p_t\rightarrow\pi$. 
 
+We sample the target distribution $f$ based on the existence and uniqueness of the stationary distribution of a Markov chain $(X_t)$. That is, we construct a Markov chain such that its stationary distribution is $f$, then $X_t$ is the random sample asympotic to $f$ when $n$ is large enough. 
+
+The question is **how to choose the transition probability $q(\cdot|\cdot)$ such that $f$ is a stationary distribution of $(X_t)$**.
+
+When $f$ is known up to a multiplicative factor, i.e.
+$$
+f(x) = \frac{h(x)}{C}, C>0
+$$
+The *detailed balance condition* \@ref(eq:dbc) answers the above question.
+\begin{equation}
+h(x)q(y|x) = h(y)q(x|y), \forall x\not=y\in\mathcal{X}
+(\#eq:dbc)
+\end{equation}
+This is because from \@ref(eq:dbc), we have $f(x)q(y|x) = f(y)q(x|y)$, then 
+\begin{equation}
+p_t(y)=\int f(x)q(y|x) dx = \int f(y)q(x|y) dx = f(y)\underbrace{\int q(x|y) dx}_{=1}
+\end{equation}
+
+To determine the transition probability(kernel) $q(\cdot|\cdot)$, we have **Metropolis-Hastings(MH)** algorithm. 
+
+## Metropolis-Hastings(MH) Algorithm
+
+To sample from $f(x) = \frac{h(x)}{C}, C>0$, suppose we have known a *proposal distribution* $k(y|x)$
+
+**Metropolis-Hastings(MH) Algorithm**
+
+---
+
+1. Set $x_0,s.t. h(x_0)>0$
+2. For $t=1,2,...,n$
+  - Draw $x^*\sim k(\cdot|x_t)$ and $U\sim\text{Unif}(0,1)$,
+  
+  - Compute the MH ratio $R(x_t,x^*)=\frac{h(x^*)k(x_t|x^*)}{h(x_t)k(x^*|x_t)}$
+  
+  - If $U\leq\min\{R(x_t,x^*),1\}$, then $x_{t+1}=x^*$, else $x_{t+1} = x_t$
+  
+---
+
+### Example, Bayesian Inference
+
+We show an example using MH algorithm in Bayesian inference. For a parametric family of probability $f(x|\theta)$, given data $x$ and the prior density $p(\theta)$, the posterior density of $\theta$ is 
+\begin{equation}
+p(\theta|x) = \frac{f(x|\theta)p(\theta)}{\int f(x|\theta)p(\theta)d\theta} \propto h(\theta)
+(\#eq:bayes)
+\end{equation}
+
+We can use the prior $p(\theta)$ as a proposal distribution, i.e. $k(\theta^*|\theta_t)=p(\theta^*)$. Then $R(\theta_t,\theta^*)=\frac{h(\theta^*) p(\theta_t)}{h(\theta_t)p(\theta^*)}=\frac{h(\theta^*)}{p(\theta^*)}/\frac{h(\theta_t)}{p(\theta_t)}=\frac{f(x|\theta^*)}{f(x|\theta_t)}$.
+
+## Gibbs Sampling
+
+Gibbs sampling is adapted for multidimensional target distributions by sequentially sampling from the conditional distributions of parts of the random vector. The idea is also used in the coordinate descent algorithm. 
+
+**(Gibbs Sampler)**
+
+---
 
 
 # Acknowledgment {-}
