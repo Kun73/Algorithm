@@ -1,5 +1,5 @@
 ---
-title: "Optimization"
+title: "Random Number Generation"
 author: "Kun Huang"
 date: "`r format(Sys.Date())`"
 output: bookdown::html_document2
