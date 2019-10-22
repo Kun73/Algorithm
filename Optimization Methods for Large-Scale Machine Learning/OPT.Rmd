@@ -100,18 +100,23 @@ In summary, the batch gradient descent evaluates the gradient using all the $n$ 
 
 Then we can see from \@ref(eq:glr) that evluating the gradient when $n$ is large(under the big data senario, it is common) costs a lot. For this reason, SGD is better. We then give the pseudocode of SGD.
 
+---
 
 **(stochastic gradient descent(SGD))**
 
-| Choose a starting point $w_1$
-| **For** k = 1, 2, ...
-|  Generate a realization of the random variable $\xi_k$
-|  Compute a stochastic vector $g(w_k,\xi_k)$
-|  Choose a steplength $\alpha_k>0$
-|  Set the new point $w_{k+1}<- w_k - \alpha_k g(w_k,\xi_k)$
+1. Choose a starting point $w_1$
+2. **For** k = 1, 2, ...
+   - Generate a realization of the random variable $\xi_k$
+   
+   - Compute a stochastic vector $g(w_k,\xi_k)$
+   
+   - Choose a steplength $\alpha_k>0$
 
+   - Set the new point $w_{k+1}<- w_k - \alpha_k g(w_k,\xi_k)$
 
-The stochastic vector $g(w_k,\xi_k)$ can represents the following 
+---
+
+The stochastic vector $g(w_k,\xi_k)$ can represents the following choices
 \begin{equation}
 g(w_k,\xi_k) = 
 \begin{cases}
@@ -122,8 +127,40 @@ H_k\frac{1}{n_k}\sum_{i=1}^{n_k}\nabla f(w_k;\xi_{k,i})
 (\#eq:sv)
 \end{equation}
 
+$H_k$ is a symmetric positive definite(p.d.) scaling matrix. All the following theretical results hold as long as the expected angle between $g(w_k,\xi_k)$ and $\nabla F(w_k)$ is sufficiently positive. For the choice of stepsize sequence $\{\alpha_k\}$. We focus on two choices, 
 
+- a fixed stepsize, and 
 
+- diminshing stepsizes, e.g. 
+\begin{equation}
+\sum_{i=1}^\infty \alpha_i = \infty, \sum_{i=1}^\infty\alpha_i^2 <\infty
+(\#eq:dimishingalpha)
+\end{equation}
+
+## Convergence of SG
+
+A straightforward approach for establishing convergence guarantees for SG is to assume some smoothness condistions on the objective function.
+
+```{definition, name = "Lipschitz continuous"}
+A function $f:\mathbb{R}^m\rightarrow\mathbb{R}^n$ is called *Lipschitz-continuous* with *Lipschitz constant* $L>0$, if
+\begin{equation}
+||f(x_1)-f(x_2)||_2\leq L||x_1-x_2||_2,\quad \forall x_1,x_2\in \mathbb{R}^m
+\end{equation}
+```
+
+Our first assumption for the smoothness of the objective function $F$ is to assume that $F:\mathbb{R}^d\rightarrow \mathbb{R}$ is continuously differentiable and moreover, the gradient of $F$, $\nabla F:\mathbb{R}^d\rightarrow\mathbb{R}^d$ is Lipschitz continuous with Lipschitz constant $L>0$, i.e. 
+\begin{equation}
+\|\nabla F(w)-\nabla F(\bar{w})\|_{2} \leq L\|w-\bar{w}\|_{2} \text { for all }\{w, \bar{w}\} \subset \mathbb{R}^{d}
+(\#eq:ass1)
+\end{equation}
+
+We can derive *uniformly continuous* from assumption \@ref(eq:ass1), thus it ensures $\nabla F$ does not change arbitraily quickly with respect to the parameter vector. By Taylor series, we can expand $F$ at $w=\bar{w}$, 
+\begin{align}
+F(w) &= F(\bar{w}) + \nabla F(\bar{w})^T(w-\bar{w})+\frac{H}{2}||w-\bar{w}||_2+o(||w-\bar{w}||_2)\\
+&\leq F(\bar{w}) + \nabla F(\bar{w})^T(w-\bar{w}) + \frac{L}{2}||w-\bar{w}||_2
+(\#eq:con1ass1)
+\end{align}
+The inequality can be derived directly by assumption \@ref(eq:ass1). 
 
 
 
