@@ -93,9 +93,9 @@ To determine the transition probability(kernel) $q(\cdot|\cdot)$, we have **Metr
 
 To sample from $f(x) = \frac{h(x)}{C}, C>0$, suppose we have known a *proposal distribution* $k(y|x)$
 
-**Metropolis-Hastings(MH) Algorithm**
-
 ---
+
+**Metropolis-Hastings(MH) Algorithm**
 
 1. Set $x_0,s.t. h(x_0)>0$
 2. For $t=1,2,...,n$
@@ -121,10 +121,12 @@ We can use the prior $p(\theta)$ as a proposal distribution, i.e. $k(\theta^*|\t
 
 Gibbs sampling is adapted for multidimensional target distributions by sequentially sampling from the conditional distributions of parts of the random vector. The idea is also used in the coordinate descent algorithm. 
 
-**(Gibbs Sampler)**
 
 ---
 
+**(Gibbs Sampler)**
+
+---
 
 # Acknowledgment {-}
 

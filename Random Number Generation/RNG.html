@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-21" />
+<meta name="date" content="2019-10-23" />
 
 <title>Random Number Generation</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Random Number Generation</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-21</h4>
+<h4 class="date">2019-10-23</h4>
 
 </div>
 
@@ -254,8 +254,8 @@ p_t(y)=\int f(x)q(y|x) dx = \int f(y)q(x|y) dx = f(y)\underbrace{\int q(x|y) dx}
 <div id="metropolis-hastingsmh-algorithm" class="section level2">
 <h2><span class="header-section-number">3.2</span> Metropolis-Hastings(MH) Algorithm</h2>
 <p>To sample from <span class="math inline">\(f(x) = \frac{h(x)}{C}, C&gt;0\)</span>, suppose we have known a <em>proposal distribution</em> <span class="math inline">\(k(y|x)\)</span></p>
-<p><strong>Metropolis-Hastings(MH) Algorithm</strong></p>
 <hr />
+<p><strong>Metropolis-Hastings(MH) Algorithm</strong></p>
 <ol style="list-style-type: decimal">
 <li>Set <span class="math inline">\(x_0,s.t. h(x_0)&gt;0\)</span></li>
 <li>For <span class="math inline">\(t=1,2,...,n\)</span></li>
@@ -279,6 +279,7 @@ p(\theta|x) = \frac{f(x|\theta)p(\theta)}{\int f(x|\theta)p(\theta)d\theta} \pro
 <div id="gibbs-sampling" class="section level2">
 <h2><span class="header-section-number">3.3</span> Gibbs Sampling</h2>
 <p>Gibbs sampling is adapted for multidimensional target distributions by sequentially sampling from the conditional distributions of parts of the random vector. The idea is also used in the coordinate descent algorithm.</p>
+<hr />
 <p><strong>(Gibbs Sampler)</strong></p>
 <hr />
 </div>
