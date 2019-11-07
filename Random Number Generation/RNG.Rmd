@@ -34,7 +34,35 @@ F^{-}(u) = \inf{x: F(x)\geq u}
 
 Then, similar as \@ref(eq:invCDFc), we can generate a random number distributed as $F$ by $X=F^{-}(u),u\sim U(0,1)$. 
 
-# Rejection Method
+# Rejection Sampling
+
+Suppose our target density $f$ is known up to a constant coefficient $C$, i.e.
+\begin{equation}
+f(x) = Cq(x)
+\end{equation}
+
+Of course we can calculate $C=\frac{1}{\int_\mathcal{X} q(x)dx}$. However, computing $\int_{\mathcal{X}} q(x)dx$ can sometimes be expensive or difficult. *Rejection sampling* can help us with this problem. The idea is, instead of sampling from $f$ directly, we sample from another "instrumental" density $g$ on the same support $\mathcal{X}$ and compare to some criterion to see if this sample is also from $f$. 
+
+Suppose $\exists \alpha, s.t.$, 
+\begin{equation}
+q(x) \leq \alpha g(x), \forall x \in \mathcal{X}
+(\#eq:ratio1)
+\end{equation}
+$\alpha g(x)$ is called an envelope. Then the rejection sampling can be summarized as 
+
+---
+**(Rejection Sampling)**
+1. Sample $X\sim g$ and $U\sim \text{Unif(0,1)}$
+
+2. If $U>\frac{q(X)}{\alpha g(X)}$, then go to step 1; else return $X$
+
+---
+
+Intuitively, it works because the ratio $\frac{q(X)}{\alpha g(X)}$ can be considered as the parts that $q(X)$ and $\alpha g(X)$ overlay. Thus the ratio should be close to one ideally. 
+
+
+
+
 
 # Sampling using Markov Chains
 

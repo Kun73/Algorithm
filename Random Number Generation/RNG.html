@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-10-23" />
+<meta name="date" content="2019-11-06" />
 
 <title>Random Number Generation</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Random Number Generation</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-10-23</h4>
+<h4 class="date">2019-11-06</h4>
 
 </div>
 
@@ -204,8 +204,20 @@ F^{-}(u) = \inf{x: F(x)\geq u}
 \end{equation}\]</span>
 <p>Then, similar as <a href="#eq:invCDFc">(1.1)</a>, we can generate a random number distributed as <span class="math inline">\(F\)</span> by <span class="math inline">\(X=F^{-}(u),u\sim U(0,1)\)</span>.</p>
 </div>
-<div id="rejection-method" class="section level1">
-<h1><span class="header-section-number">2</span> Rejection Method</h1>
+<div id="rejection-sampling" class="section level1">
+<h1><span class="header-section-number">2</span> Rejection Sampling</h1>
+Suppose our target density <span class="math inline">\(f\)</span> is known up to a constant coefficient <span class="math inline">\(C\)</span>, i.e.
+<span class="math display">\[\begin{equation}
+f(x) = Cq(x)
+\end{equation}\]</span>
+<p>Of course we can calculate <span class="math inline">\(C=\frac{1}{\int_\mathcal{X} q(x)dx}\)</span>. However, computing <span class="math inline">\(\int_{\mathcal{X}} q(x)dx\)</span> can sometimes be expensive or difficult. <em>Rejection sampling</em> can help us with this problem. The idea is, instead of sampling from <span class="math inline">\(f\)</span> directly, we sample from another “instrumental” density <span class="math inline">\(g\)</span> on the same support <span class="math inline">\(\mathcal{X}\)</span> and compare to some criterion to see if this sample is also from <span class="math inline">\(f\)</span>.</p>
+Suppose <span class="math inline">\(\exists \alpha, s.t.\)</span>,
+<span class="math display" id="eq:ratio1">\[\begin{equation}
+q(x) \leq \alpha g(x), \forall x \in \mathcal{X}
+\tag{2.1}
+\end{equation}\]</span>
+<p><span class="math inline">\(\alpha g(x)\)</span> is called an envelope. Then the rejection sampling can be summarized as</p>
+<p>Intuitively, it works because the ratio <span class="math inline">\(\frac{q(X)}{\alpha g(X)}\)</span> can be considered as the parts that <span class="math inline">\(q(X)\)</span> and <span class="math inline">\(\alpha g(X)\)</span> overlay. Thus the ratio should be close to one ideally.</p>
 </div>
 <div id="sampling-using-markov-chains" class="section level1">
 <h1><span class="header-section-number">3</span> Sampling using Markov Chains</h1>
