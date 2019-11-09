@@ -32,7 +32,13 @@ F^{-}(u) = \inf{x: F(x)\geq u}
 (\#eq:gF)
 \end{equation}
 
-Then, similar as \@ref(eq:invCDFc), we can generate a random number distributed as $F$ by $X=F^{-}(u),u\sim U(0,1)$. 
+Then, similar as \@ref(eq:invCDFc), we can generate a random number distributed as $F$ by $X=F^{-}(u),u\sim U(0,1)$.
+
+When $F^{-1}$ is not explicitly known, computing $F^{-1}(u)$ is equivalent to finding a root $x$ of the equation
+\begin{equation}
+F(x) - u = 0
+\end{equation}
+Then we can get $F^{-1}(u)$ numerically.
 
 # Rejection Sampling
 
@@ -51,7 +57,9 @@ q(x) \leq \alpha g(x), \forall x \in \mathcal{X}
 $\alpha g(x)$ is called an envelope. Then the rejection sampling can be summarized as 
 
 ---
+
 **(Rejection Sampling)**
+
 1. Sample $X\sim g$ and $U\sim \text{Unif(0,1)}$
 
 2. If $U>\frac{q(X)}{\alpha g(X)}$, then go to step 1; else return $X$
@@ -60,9 +68,38 @@ $\alpha g(x)$ is called an envelope. Then the rejection sampling can be summariz
 
 Intuitively, it works because the ratio $\frac{q(X)}{\alpha g(X)}$ can be considered as the parts that $q(X)$ and $\alpha g(X)$ overlay. Thus the ratio should be close to one ideally. 
 
+Suppose $Y$ is the sampled value, to show $Y$ has density $f$, it suffices to show that $\forall A\subset \mathcal{X}$, 
+\begin{equation}
+Pr(Y\in A) = \int_{A} f(x) dx
+(\#eq:rejproof)
+\end{equation}
 
+From the procedure, let $Xg$ be the sampled value from $g$, notice that $Pr(U\leq \frac{q(X)}{\alpha g(X)}) = \frac{q(X)}{\alpha g(X)}$, we have 
 
+\begin{align}
+Pr(Y\in A) & = \frac{Pr(Xg\in A,Xg \text{ is accepted})}{Pr(Xg\text{ is accepted})}\\
+&= \frac{Pr(Xg\in A,Xg \text{ is accepted}, Xg \text{ is from } g)}{Pr(Xg\text{ is accepted})}\\
+&= \frac{\int_{A} \frac{q(X)}{\alpha g(X)} g(x)dx}{\alpha^{-1}\int q(x)dx}\\
+&= \int_{A} f(x)dx
+\end{align}
 
+When $f(x)\propto\sum_{k=1}^m q_{k}(x)$, if we have a series of density $g_1,...,g_m, s.t.$
+\begin{equation*}
+q_k(x)\leq \alpha_k g_k(x), \forall x\in \mathcal{X}
+\end{equation*}
+we have similar result.
+
+---
+
+**(Rejection Sampling)**
+
+1. Sample $k$ from $\{1,...,m\}$ with probability $p_k\propto\alpha_k$
+
+2. Sample $X\sim g_k$ and $U\sim \text{Unif(0,1)}$
+
+3. If $U>\frac{q_k(X)}{\alpha_k g_k(X)}$, then go to step 1; else return $X$
+
+---
 
 # Sampling using Markov Chains
 

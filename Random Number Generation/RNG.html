@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2019-11-06" />
+<meta name="date" content="2019-11-09" />
 
 <title>Random Number Generation</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Random Number Generation</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2019-11-06</h4>
+<h4 class="date">2019-11-09</h4>
 
 </div>
 
@@ -203,6 +203,11 @@ F^{-}(u) = \inf{x: F(x)\geq u}
 \tag{1.2}
 \end{equation}\]</span>
 <p>Then, similar as <a href="#eq:invCDFc">(1.1)</a>, we can generate a random number distributed as <span class="math inline">\(F\)</span> by <span class="math inline">\(X=F^{-}(u),u\sim U(0,1)\)</span>.</p>
+When <span class="math inline">\(F^{-1}\)</span> is not explicitly known, computing <span class="math inline">\(F^{-1}(u)\)</span> is equivalent to finding a root <span class="math inline">\(x\)</span> of the equation
+<span class="math display">\[\begin{equation}
+F(x) - u = 0
+\end{equation}\]</span>
+<p>Then we can get <span class="math inline">\(F^{-1}(u)\)</span> numerically.</p>
 </div>
 <div id="rejection-sampling" class="section level1">
 <h1><span class="header-section-number">2</span> Rejection Sampling</h1>
@@ -217,7 +222,39 @@ q(x) \leq \alpha g(x), \forall x \in \mathcal{X}
 \tag{2.1}
 \end{equation}\]</span>
 <p><span class="math inline">\(\alpha g(x)\)</span> is called an envelope. Then the rejection sampling can be summarized as</p>
+<hr />
+<p><strong>(Rejection Sampling)</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Sample <span class="math inline">\(X\sim g\)</span> and <span class="math inline">\(U\sim \text{Unif(0,1)}\)</span></p></li>
+<li><p>If <span class="math inline">\(U&gt;\frac{q(X)}{\alpha g(X)}\)</span>, then go to step 1; else return <span class="math inline">\(X\)</span></p></li>
+</ol>
+<hr />
 <p>Intuitively, it works because the ratio <span class="math inline">\(\frac{q(X)}{\alpha g(X)}\)</span> can be considered as the parts that <span class="math inline">\(q(X)\)</span> and <span class="math inline">\(\alpha g(X)\)</span> overlay. Thus the ratio should be close to one ideally.</p>
+Suppose <span class="math inline">\(Y\)</span> is the sampled value, to show <span class="math inline">\(Y\)</span> has density <span class="math inline">\(f\)</span>, it suffices to show that <span class="math inline">\(\forall A\subset \mathcal{X}\)</span>,
+<span class="math display" id="eq:rejproof">\[\begin{equation}
+Pr(Y\in A) = \int_{A} f(x) dx
+\tag{2.2}
+\end{equation}\]</span>
+<p>From the procedure, let <span class="math inline">\(Xg\)</span> be the sampled value from <span class="math inline">\(g\)</span>, notice that <span class="math inline">\(Pr(U\leq \frac{q(X)}{\alpha g(X)}) = \frac{q(X)}{\alpha g(X)}\)</span>, we have</p>
+<span class="math display">\[\begin{align}
+Pr(Y\in A) &amp; = \frac{Pr(Xg\in A,Xg \text{ is accepted})}{Pr(Xg\text{ is accepted})}\\
+&amp;= \frac{Pr(Xg\in A,Xg \text{ is accepted}, Xg \text{ is from } g)}{Pr(Xg\text{ is accepted})}\\
+&amp;= \frac{\int_{A} \frac{q(X)}{\alpha g(X)} g(x)dx}{\alpha^{-1}\int q(x)dx}\\
+&amp;= \int_{A} f(x)dx
+\end{align}\]</span>
+When <span class="math inline">\(f(x)\propto\sum_{k=1}^m q_{k}(x)\)</span>, if we have a series of density <span class="math inline">\(g_1,...,g_m, s.t.\)</span>
+<span class="math display">\[\begin{equation*}
+q_k(x)\leq \alpha_k g_k(x), \forall x\in \mathcal{X}
+\end{equation*}\]</span>
+<p>we have similar result.</p>
+<hr />
+<p><strong>(Rejection Sampling)</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Sample <span class="math inline">\(k\)</span> from <span class="math inline">\(\{1,...,m\}\)</span> with probability <span class="math inline">\(p_k\propto\alpha_k\)</span></p></li>
+<li><p>Sample <span class="math inline">\(X\sim g_k\)</span> and <span class="math inline">\(U\sim \text{Unif(0,1)}\)</span></p></li>
+<li><p>If <span class="math inline">\(U&gt;\frac{q_k(X)}{\alpha_k g_k(X)}\)</span>, then go to step 1; else return <span class="math inline">\(X\)</span></p></li>
+</ol>
+<hr />
 </div>
 <div id="sampling-using-markov-chains" class="section level1">
 <h1><span class="header-section-number">3</span> Sampling using Markov Chains</h1>
