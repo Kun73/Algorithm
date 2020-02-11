@@ -34,6 +34,21 @@ Under some conditions, there exists an unique solution to \@ref(eq:obj) $x^*\in\
 
 # Notations and Assumptions
 
+## Notations
+Suppose each agent $i\in\mathcal{N}$ holds a local copy of decision variable $x_i\in\mathbb{R}^p$. Let 
+\begin{equation*}
+X = (x_1, x_2, ..., x_n)^T\in\mathbb{R}^{n\times p }\\
+F(x) := \sum_{i=1}^n f_i(x)\\
+\nabla F(x) := (\nabla f_1(x_1), ..., \nabla f_2(x_2))^T\in \mathbb{R}^{n\times p}
+\end{equation*}
+
+## Assumptions
+
+# Methods
+
+## Push-Pull Gradient Method
+
+
 
 
 # Reference {-}
