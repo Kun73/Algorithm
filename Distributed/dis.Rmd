@@ -1,0 +1,39 @@
+---
+title: "Distributed Optimization"
+author: "Kun Huang"
+date: "`r format(Sys.Date())`"
+output: bookdown::html_document2
+bibliography: template.bib
+biblio-style: asa
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Introduction
+
+In this note, we summarize three distributed gradient based algorithms solving the problem \@ref(eq:obj), namely *Push-Pull Gradient Method*^[In the original paper, the author considers minimizing the sum of $f_i$, known by agent i only] @pu2018push, *Distributed Stochastic Gradient Tracking Methods(DSGT)* @pu2018distributed, and *Distributed Stochastic Gradient Descent* @olshevsky2019nonasymptotic.
+
+\begin{equation}
+\underset{x\in\mathbb{R}^p}{\min} f(x):=\frac{1}{n}\sum_{i=1}^n f_i(x)
+(\#eq:obj)
+\end{equation}
+Where $f_i:\mathbb{R}^p\to \mathbb{R}$ is known by agent $i$ only, and all the agents communicate and exchange information over a network.  
+
+In general, the first two methods use a decision variable $x\in \mathbb{R}^p$ and an auxiliary variable $y\in\mathbb{R}^p$ and have a form of \@ref(eq:unif) while the last one does not introduce an auxiliary variable$y\in\mathbb{R}^p$.
+
+\begin{align}
+X_{k+1} &= S_1(X_k-\boldsymbol\alpha Y_k)\\
+Y_{k+1} &= S_2Y_k + T(X_{k+1}) - T(X_k)
+(\#eq:unif)
+\end{align}
+
+Under some conditions, there exists an unique solution to \@ref(eq:obj) $x^*\in\mathbb{R}^{1\times p}$. To prove the convergen of those three methods, the idea is to bound the distance between iterated decision variable and the true value, the distance between iterated decision variable and its own average, and the distance between anxiliary variable and its own average in terms of linear combination of their previous value. This will introduce a matrix $A$.  In order to make it converge, we need to set $\rho(A)<1$, the spectral radius of $A$ to be less than $1$(similar idea in contraction mapping), which will derive a constraint to the stepsize $\alpha$. By doing so, the authors prove the convergence of those three methods and derive their convergence rate. 
+
+# Notations and Assumptions
+
+
+
+# Reference {-}
