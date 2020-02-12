@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-11" />
+<meta name="date" content="2020-02-12" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-11</h4>
+<h4 class="date">2020-02-12</h4>
 
 </div>
 
@@ -215,7 +215,29 @@ F(x) := \sum_{i=1}^n f_i(x)\\
 </div>
 <div id="assumptions" class="section level2">
 <h2><span class="header-section-number">2.2</span> Assumptions</h2>
-<pre class="assumption"><code>assumption 1</code></pre>
+<p>(A1) digraph</p>
+</div>
+</div>
+<div id="methods" class="section level1">
+<h1><span class="header-section-number">3</span> Methods</h1>
+<div id="push-pull-gradient-method" class="section level2">
+<h2><span class="header-section-number">3.1</span> Push-Pull Gradient Method</h2>
+<p>In a digraph, each agent <span class="math inline">\(i\)</span> can actively and reliably push information out to its neighbor <span class="math inline">\(l\in\mathcal{N}^{out}_{C,i}\subset\mathcal{N}\)</span> and pull information from its neighbor <span class="math inline">\(j\in\mathcal{N}^{in}_{R,i}\subset\mathcal{N}\)</span>. To avoid a situation where agent <span class="math inline">\(i\)</span> can only push information or can only pull information from its neighbors, we need assumption <em>A1</em>. Matrix <span class="math inline">\(R=(r_{ij})\in\mathbb{R}^{n\times n}\)</span> denotes the pulling weights that agent <span class="math inline">\(i\)</span> pulls information from agent <span class="math inline">\(j\)</span>. Thus the row sum of <span class="math inline">\(R\)</span> should be <span class="math inline">\(1\)</span>, i.e. <span class="math inline">\(R\boldsymbol 1 = \boldsymbol 1\)</span> and <span class="math inline">\(r_{ij}\geq 0\)</span>. That is to say, matrix <span class="math inline">\(R\)</span> is row-stochastic. Similarly, <span class="math inline">\(C = (c_{ij})\in\mathbb{R}^{n\times n}\)</span> denotes the pushing weights that agent <span class="math inline">\(i\)</span> pushes information to agent <span class="math inline">\(j\)</span>. In other words, it denotes the pulling weights that agent <span class="math inline">\(j\)</span> pulls information to agent <span class="math inline">\(i\)</span>. Hence <span class="math inline">\(C^T\boldsymbol 1=\boldsymbol 1\)</span>, i.e. <span class="math inline">\(\boldsymbol 1^T C=\boldsymbol 1^T, c_{ij}\geq 0\)</span>. Moreover, for agent <span class="math inline">\(i\)</span> itself, it will have no problem getting information, hence <span class="math inline">\(r_{ii}&gt;0, c_{ii}&gt;0\)</span>.</p>
+<p>The idea of Push-Pull Gradient Methods is that, at each iteration <span class="math inline">\(k\)</span>, agent <span class="math inline">\(i\)</span> updates its local copy of decision variable <span class="math inline">\(x_{i,k+1}\in\mathbb R^p\)</span> according to the information it pulls from its nearby agents based on the corresponding pulling weights. Then it will also update the information stored in an auxiliary variable <span class="math inline">\(y_{i, k+1}\in\mathbb{R}^p\)</span></p>
+<hr />
+<p>(Push-Pull Gradient Method)</p>
+<p>Each agent <span class="math inline">\(i\)</span> chooses its local step size <span class="math inline">\(\alpha_i\geq0\)</span> and initilized with an arbitary <span class="math inline">\(x_{i,0}\in\mathbb{R}^p, y_{i,0}=\nabla f_i(x_{i,0})\)</span>.</p>
+<p>For k = 0, 1, …,</p>
+<p>For <span class="math inline">\(i\in\mathcal{N}\)</span>,</p>
+<p>-<span class="math inline">\(x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})\)</span> (Pull)</p>
+<p>-<span class="math inline">\(y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})\)</span>(Push)</p>
+<hr />
+Or in matrix form using <span class="math inline">\(R=(r_{ij})\in\mathbb{R}^{n\times n}, C=(c_{ij})\in\mathbb{R}^{n\times n}, X_k\in\mathbb{R}^{n\times p}, Y_k\in\mathbb{R}^{n\times p}, \boldsymbol\alpha = \text{diag}(\alpha_1,...,\alpha_n)\)</span>.
+<span class="math display" id="eq:pp">\[\begin{align}
+X_{k+1} &amp;= R(X_{k}-\boldsymbol\alpha Y_k),\\
+Y_{k+1} &amp;= CY_k+\nabla F(X_{k+1})-\nabla F(X_k)
+\tag{3.1}
+\end{align}\]</span>
 </div>
 </div>
 <div id="reference" class="section level1 unnumbered">

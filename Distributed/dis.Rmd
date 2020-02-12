@@ -43,12 +43,38 @@ F(x) := \sum_{i=1}^n f_i(x)\\
 \end{equation*}
 
 ## Assumptions
+(A1) digraph 
 
 # Methods
 
 ## Push-Pull Gradient Method
 
+In a digraph, each agent $i$ can actively and reliably push information out to its neighbor  $l\in\mathcal{N}^{out}_{C,i}\subset\mathcal{N}$ and pull information from its neighbor $j\in\mathcal{N}^{in}_{R,i}\subset\mathcal{N}$. To avoid a situation where agent $i$ can only push information or can only pull information from its neighbors, we need assumption *A1*. Matrix $R=(r_{ij})\in\mathbb{R}^{n\times n}$ denotes the pulling weights that agent $i$ pulls information from agent $j$. Thus the row sum of $R$ should be $1$, i.e. $R\boldsymbol 1 = \boldsymbol 1$ and $r_{ij}\geq 0$. That is to say, matrix $R$ is  row-stochastic. Similarly, $C = (c_{ij})\in\mathbb{R}^{n\times n}$ denotes the pushing weights that agent $i$ pushes information to agent $j$. In other words, it denotes the pulling weights that agent $j$ pulls information to agent $i$. Hence $C^T\boldsymbol 1=\boldsymbol 1$, i.e. $\boldsymbol 1^T C=\boldsymbol 1^T, c_{ij}\geq 0$. Moreover, for agent $i$ itself, it will have no problem getting information, hence $r_{ii}>0, c_{ii}>0$. 
 
+The idea of Push-Pull Gradient Methods is that, at each iteration $k$, agent $i$ updates its local copy of decision variable $x_{i,k+1}\in\mathbb R^p$ according to the information it pulls from its nearby agents based on the corresponding pulling weights. Then it will also update the information stored in an auxiliary variable $y_{i, k+1}\in\mathbb{R}^p$ 
+
+---
+
+(Push-Pull Gradient Method)
+
+Each agent $i$ chooses its local step size $\alpha_i\geq0$ and initilized with an arbitary $x_{i,0}\in\mathbb{R}^p, y_{i,0}=\nabla f_i(x_{i,0})$. 
+
+For k = 0, 1, ...,
+
+  For $i\in\mathcal{N}$, 
+  
+  -$x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})$ (Pull)
+  
+  -$y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})$(Push)
+
+
+---
+Or in matrix form using $R=(r_{ij})\in\mathbb{R}^{n\times n}, C=(c_{ij})\in\mathbb{R}^{n\times n}, X_k\in\mathbb{R}^{n\times p}, Y_k\in\mathbb{R}^{n\times p}, \boldsymbol\alpha = \text{diag}(\alpha_1,...,\alpha_n)$.
+\begin{align}
+X_{k+1} &= R(X_{k}-\boldsymbol\alpha Y_k),\\
+Y_{k+1} &= CY_k+\nabla F(X_{k+1})-\nabla F(X_k)
+(\#eq:pp)
+\end{align}
 
 
 # Reference {-}
