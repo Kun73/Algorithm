@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-12" />
+<meta name="date" content="2020-02-16" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-12</h4>
+<h4 class="date">2020-02-16</h4>
 
 </div>
 
@@ -200,7 +200,7 @@ X_{k+1} &amp;= S_1(X_k-\boldsymbol\alpha Y_k)\\
 Y_{k+1} &amp;= S_2Y_k + T(X_{k+1}) - T(X_k)
 \tag{1.2}
 \end{align}\]</span>
-<p>Under some conditions, there exists an unique solution to <a href="#eq:obj">(1.1)</a> <span class="math inline">\(x^*\in\mathbb{R}^{1\times p}\)</span>. To prove the convergen of those three methods, the idea is to bound the distance between iterated decision variable and the true value, the distance between iterated decision variable and its own average, and the distance between anxiliary variable and its own average in terms of linear combination of their previous value. This will introduce a matrix <span class="math inline">\(A\)</span>. In order to make it converge, we need to set <span class="math inline">\(\rho(A)&lt;1\)</span>, the spectral radius of <span class="math inline">\(A\)</span> to be less than <span class="math inline">\(1\)</span>(similar idea in contraction mapping), which will derive a constraint to the stepsize <span class="math inline">\(\alpha\)</span>. By doing so, the authors prove the convergence of those three methods and derive their convergence rate.</p>
+<p>Under some conditions, there exists an unique solution to <a href="#eq:obj">(1.1)</a> <span class="math inline">\(x^*\in\mathbb{R}^{1\times p}\)</span>. To prove the convergence of those three methods, the idea is to bound the distance between iterated decision variable and the true value, the distance between iterated decision variable and its own average, and the distance between anxiliary variable and its own average in terms of linear combination of their previous value. This will introduce a matrix <span class="math inline">\(A\)</span>. In order to make it converge, we need to set <span class="math inline">\(\rho(A)&lt;1\)</span>, the spectral radius of <span class="math inline">\(A\)</span> to be less than <span class="math inline">\(1\)</span>(similar idea in contraction mapping), which will derive a constraint to the stepsize <span class="math inline">\(\alpha\)</span>. By doing so, the authors prove the convergence of those three methods and derive their convergence rate.</p>
 </div>
 <div id="notations-and-assumptions" class="section level1">
 <h1><span class="header-section-number">2</span> Notations and Assumptions</h1>
@@ -223,14 +223,19 @@ F(x) := \sum_{i=1}^n f_i(x)\\
 <div id="push-pull-gradient-method" class="section level2">
 <h2><span class="header-section-number">3.1</span> Push-Pull Gradient Method</h2>
 <p>In a digraph, suppose each agent <span class="math inline">\(i\)</span> can actively and reliably push information out to its neighbor <span class="math inline">\(l\in\mathcal{N}^{out}_{C,i}\subset\mathcal{N}\)</span> and pull information from its neighbor <span class="math inline">\(j\in\mathcal{N}^{in}_{R,i}\subset\mathcal{N}\)</span>. To avoid a situation where agent <span class="math inline">\(i\)</span> can only push information or can only pull information from its neighbors, we need assumption <em>A1</em>. Matrix <span class="math inline">\(R=(r_{ij})\in\mathbb{R}^{n\times n}\)</span> denotes the pulling weights that agent <span class="math inline">\(i\)</span> pulls information from agent <span class="math inline">\(j\)</span>. Thus the row sum of <span class="math inline">\(R\)</span> should be <span class="math inline">\(1\)</span>, i.e. <span class="math inline">\(R\boldsymbol 1 = \boldsymbol 1\)</span> and <span class="math inline">\(r_{ij}\geq 0\)</span>. That is to say, matrix <span class="math inline">\(R\)</span> is row-stochastic. Similarly, <span class="math inline">\(C = (c_{ij})\in\mathbb{R}^{n\times n}\)</span> denotes the pushing weights that agent <span class="math inline">\(i\)</span> pushes information to agent <span class="math inline">\(j\)</span>. In other words, it denotes the pulling weights that agent <span class="math inline">\(j\)</span> pulls information to agent <span class="math inline">\(i\)</span>. Hence <span class="math inline">\(C^T\boldsymbol 1=\boldsymbol 1\)</span>, i.e. <span class="math inline">\(\boldsymbol 1^T C=\boldsymbol 1^T, c_{ij}\geq 0\)</span>. Moreover, for agent <span class="math inline">\(i\)</span> itself, it will have no problem getting information, hence <span class="math inline">\(r_{ii}&gt;0, c_{ii}&gt;0\)</span>.</p>
+<p>Hence we have assumption on <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span>,</p>
 <p>The idea of Push-Pull Gradient Methods is that, at each iteration <span class="math inline">\(k\)</span>, agent <span class="math inline">\(i\)</span> updates its local copy of decision variable <span class="math inline">\(x_{i,k+1}\in\mathbb R^p\)</span> according to the information it pulls from its nearby agents based on the corresponding pulling weights. Then it will also update the information stored in an auxiliary variable <span class="math inline">\(y_{i, k+1}\in\mathbb{R}^p\)</span></p>
 <hr />
 <p>(Push-Pull Gradient Method)</p>
 <p>Each agent <span class="math inline">\(i\)</span> chooses its local step size <span class="math inline">\(\alpha_i\geq0\)</span> and initilized with an arbitary <span class="math inline">\(x_{i,0}\in\mathbb{R}^p, y_{i,0}=\nabla f_i(x_{i,0})\)</span>.</p>
 <p>For k = 0, 1, …,</p>
-<p>For <span class="math inline">\(i\in\mathcal{N}\)</span>,</p>
-<p>-<span class="math inline">\(x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})\)</span> (Pull)</p>
-<p>-<span class="math inline">\(y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})\)</span>(Push)</p>
+<ul>
+<li><p>For <span class="math inline">\(i\in\mathcal{N}\)</span>,</p>
+<ul>
+<li><p><span class="math inline">\(x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})\)</span> (Pull)</p></li>
+<li><p><span class="math inline">\(y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})\)</span>(Push)</p></li>
+</ul></li>
+</ul>
 <hr />
 Or in matrix form using <span class="math inline">\(R=(r_{ij})\in\mathbb{R}^{n\times n}, C=(c_{ij})\in\mathbb{R}^{n\times n}, X_k\in\mathbb{R}^{n\times p}, Y_k\in\mathbb{R}^{n\times p}, \boldsymbol\alpha = \text{diag}(\alpha_1,...,\alpha_n)\)</span>.
 <span class="math display" id="eq:pp">\[\begin{align}
@@ -248,9 +253,13 @@ Y_{k+1} &amp;= CY_k+\nabla F(X_{k+1})-\nabla F(X_k)
 <p>(DSGT)</p>
 <p>Choose step siez <span class="math inline">\(\alpha&gt;0\)</span> and initilize each agent <span class="math inline">\(i\)</span> with an arbitary <span class="math inline">\(x_{i,0}\in\mathbb{R}^p, y_{i,0}=\nabla f_i(x_{i,0})\)</span>.</p>
 <p>For k = 0, 1, …,</p>
-<p>For <span class="math inline">\(i\in\mathcal{N}\)</span>,</p>
-<p>-<span class="math inline">\(x_{i, k+1} = \sum\limits_{j=1}^nw_{ij}(x_{j, k}-\alpha y_{j, k})\)</span> (Pull)</p>
-<p>-<span class="math inline">\(y_{i, k+1} = \sum\limits_{j=1}^nw_{ij}y_{j,k}+ g_i(x_{i,k+1},\xi_{i,k+1})- g_i(x_{i,k},\xi_{i,k})\)</span>(Push)</p>
+<ul>
+<li><p>For <span class="math inline">\(i\in\mathcal{N}\)</span>,</p>
+<ul>
+<li><p><span class="math inline">\(x_{i, k+1} = \sum\limits_{j=1}^nw_{ij}(x_{j, k}-\alpha y_{j, k})\)</span> (Pull)</p></li>
+<li><p><span class="math inline">\(y_{i, k+1} = \sum\limits_{j=1}^nw_{ij}y_{j,k}+ g_i(x_{i,k+1},\xi_{i,k+1})- g_i(x_{i,k},\xi_{i,k})\)</span>(Push)</p></li>
+</ul></li>
+</ul>
 <hr />
 Or in matrix form using <span class="math inline">\(W=(w_{ij})\in\mathbb{R}^{n\times n}, X_k\in\mathbb{R}^{n\times p}, Y_k\in\mathbb{R}^{n\times p}, \boldsymbol\alpha = \text{diag}(\alpha,...,\alpha)\)</span>.
 <span class="math display" id="eq:DSGT">\[\begin{align}
@@ -266,6 +275,157 @@ Y_{k+1} &amp;= WY_k+G(X_{k+1})-G(X_k)
 X_{k+1} = W(X_{k}-\boldsymbol\alpha Y_k)
 \tag{3.3}
 \end{equation}\]</span>
+</div>
+</div>
+<div id="convergence-analysis" class="section level1">
+<h1><span class="header-section-number">4</span> Convergence Analysis</h1>
+<p>To prove the convergence of thoses three methods, we bound the three distance.</p>
+<div id="push-pull" class="section level2">
+<h2><span class="header-section-number">4.1</span> Push-Pull</h2>
+<p>The goal is to bound <span class="math inline">\(\Vert\bar x_{k+1}-x^*\Vert_2, \Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R\)</span>,and <span class="math inline">\(\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C\)</span>. Where <span class="math inline">\(\Vert\cdot\Vert_R\)</span> and <span class="math inline">\(\Vert\cdot\Vert_C\)</span> are some defined norms,</p>
+
+<div class="remark">
+ <span class="remark"><em>Remark. </em></span> <span class="math inline">\(X_{k+1}-\boldsymbol1\bar x_{k+1}\)</span> and <span class="math inline">\(Y_{k+1}-v\bar y_{k+1}\)</span> are both <span class="math inline">\(\mathbb{R}^{n\times p}\)</span>, the definition of matrix norm given an arbitary vector norm used here is different from the usual matrix norm induced by a vector norm.
+</div>
+
+<div id="relationship-between-two-iteration-steps" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Relationship between two iteration steps</h3>
+<p>Recall in Push-Pull method, we have <a href="#eq:pp">(3.1)</a>, which involves two matrices <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span> containing pulling weights and pushing weights respectively. By adding assumptions on the graph <span class="math inline">\(\mathcal{G}_R\)</span> and <span class="math inline">\(\mathcal{G}_{C^T}\)</span> and the stochastic attributes of <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span>, we have</p>
+
+<div class="lemma">
+<p><span id="lem:eigvrc" class="lemma"><strong>Lemma 4.1  </strong></span>Under assumptions, the matrix <span class="math inline">\(R\)</span> has a unique nonnegative left eigenvector <span class="math inline">\(u^T\)</span>(w.r.t. eigenvalue 1) with <span class="math inline">\(u^T\boldsymbol1 = n\)</span>, and the matrix <span class="math inline">\(C\)</span> has a unique nonnegative right eigenvector <span class="math inline">\(v\)</span> (w.r.t. eigenvalue 1) with <span class="math inline">\(\boldsymbol1^T v = n\)</span>, i.e., <span class="math display">\[
+  u^T R = 1\cdot u^T
+\]</span></p>
+<p><span class="math display">\[
+  Cv = 1\cdot v
+\]</span></p>
+<p>Moreover, <span class="math inline">\(u^T\)</span> (resp., <span class="math inline">\(v\)</span>) is nonzero only on the entries associated with agents <span class="math inline">\(i\in\mathcal{R}_R\)</span>(resp., <span class="math inline">\(j\in\mathcal{R}_{C^T}\)</span>), and <span class="math inline">\(u^Tv&gt;0\)</span>.</p>
+</div>
+
+<p>Next, we give definition of <span class="math inline">\(\bar x_k\)</span> and <span class="math inline">\(\bar y_k\)</span>.</p>
+<span class="math display" id="eq:barpp">\[\begin{equation}
+\bar x_k := \frac{1}{n}u^TX_k\in\mathbb{R}^{1\times p},\quad \bar y_k:= \frac{1}{n}\boldsymbol 1 \nabla F(X_k)\in\mathbb{R}^{1\times p}
+\tag{4.1}
+\end{equation}\]</span>
+<p>The authors do not define <span class="math inline">\(\bar x_k\)</span> as <span class="math inline">\(\frac{1}{n}\boldsymbol 1^TX_k\)</span> is because the pulling information is subject to the pulling weights matrix <span class="math inline">\(R\)</span>, not the whole system.</p>
+<p>For the pull step,</p>
+<span class="math display" id="eq:barxpp">\[\begin{equation}
+\bar x_{k+1} = \frac{1}{n}u^TX_{k+1}\stackrel{\text{pull step}}{=}\frac{1}{n}u^TR(X_k-\boldsymbol\alpha Y_k)=\bar x_k-\frac{1}{n}u^T\boldsymbol\alpha Y_k
+\tag{4.2}
+\end{equation}\]</span>
+<p>Hence,</p>
+<span class="math display" id="eq:pp1bar">\[\begin{align}
+
+X_{k+1}-\boldsymbol1\bar x_{k+1}&amp;= R(X_k-\boldsymbol\alpha Y_k)-\boldsymbol1(\bar x_k-\frac{1}{n}u^T\boldsymbol\alpha Y_k)\\
+&amp;=(R-\frac{\boldsymbol 1 u^T}{n})(X_k-\boldsymbol 1\bar x_k)-
+(R-\frac{\boldsymbol 1 u^T}{n})\boldsymbol\alpha Y_k+\frac{\boldsymbol 1 u^T}{n}(X_k-\boldsymbol 1\bar x_k)\\
+&amp;=(R-\frac{\boldsymbol 1 u^T}{n})(X_k-\boldsymbol 1\bar x_k)-
+(R-\frac{\boldsymbol 1 u^T}{n})\boldsymbol\alpha Y_k
+\tag{4.3}
+
+\end{align}\]</span>
+<p>This is because <span class="math inline">\(\frac{\boldsymbol 1 u^T}{n}(X_k-\boldsymbol 1\bar x_k)=\bar x_k-\frac{u^T\boldsymbol1}{n}\bar x_k=0\)</span> according to lemma <a href="#lem:eigvrc">4.1</a>.</p>
+<p>To see what does this difference mean, we rewrite <span class="math inline">\(X_{k+1}-\boldsymbol1\bar x_{k+1}\)</span> as</p>
+<span class="math display">\[\begin{equation}
+(x_1-\frac{1}{n}\sum_{i=1}^n u_i x_i,...,x_n-\frac{1}{n}\sum_{i=1}^n u_i x_i)^T\in\mathbb{R}^{n\times p}
+\end{equation}\]</span>
+<p>where <span class="math inline">\(u=(u_1,...,u_n)^T\in\mathbb{R}^n,x_i\in\mathbb{R}^p\)</span>. It denotes the difference between each agent <span class="math inline">\(i\)</span>’s decision variable and the overall weighted mean.</p>
+
+<div class="remark">
+ <span class="remark"><em>Remark. </em></span> The interpretation of <span class="math inline">\(R-\frac{\boldsymbol 1 u^T}{n}\)</span>?
+</div>
+
+<p>For the push step,</p>
+<span class="math display" id="eq:ppvbar">\[\begin{align}
+Y_{k+1}-v\bar y_{k+1}&amp;\stackrel{\text{push step}}=CY_k+\nabla F(X_{k+1})-\nabla F(X_k)-v[\frac{1}{n}\boldsymbol1(CY_k+\nabla F(X_{k+1})-\nabla F(X_k))]\\
+&amp;=CY_k-v\bar y_k+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))\\
+&amp;=(C-\frac{v}{\boldsymbol1}{n})(Y_k-v\bar y_k)+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))+Cv\bar y_k+\frac{v\boldsymbol1^T}{n}Y_k-\frac{v\boldsymbol1^Tv}{n}\bar y_k-v\bar y_k\\
+&amp;=(C-\frac{v}{\boldsymbol1}{n})(Y_k-v\bar y_k)+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))
+\tag{4.4}
+\end{align}\]</span>
+<p>where <span class="math display">\[
+\frac{1}{n}v\boldsymbol1^TCY_k=v\bar y_k
+\]</span></p>
+<p><span class="math display">\[
+Cv\bar y_k+\frac{v\boldsymbol1^T}{n}Y_k-\frac{v\boldsymbol1^Tv}{n}\bar y_k-v\bar y_k=v\bar y_k+v\bar y_k-v\bar y_k-v\bar y_k=0
+\]</span> are both derived from lemma <a href="#lem:eigvrc">4.1</a>.</p>
+Similarly, we can rewrite <span class="math inline">\(Y_{k+1}-v\bar y_{k+1}\)</span> as
+<span class="math display">\[\begin{equation}
+(y_1-\frac{1}{n}v_1\sum_{i=1}^ny_i,...,y_n-\frac{1}{n}v_n\sum_{i=1}^ny_i)^T
+\end{equation}\]</span>
+<p>Where <span class="math inline">\(v=(v_1,...,v_n)^T\in\mathbb{R}^n,y_i\in\mathbb R^p\)</span>. It denotes the difference between each agent <span class="math inline">\(i\)</span>’s average gradient and the overall mean subjected to its pushed situation with other agents.</p>
+<p>Additionally, recall our goal is to bound those three distance, from <a href="#eq:barxpp">(4.2)</a>, we separate <span class="math inline">\(Y_k\)</span> as <span class="math inline">\(Y_k-v\bar y_k\)</span> and <span class="math inline">\(v\bar y_k\)</span>, then</p>
+<span class="math display" id="eq:xbar2pp">\[\begin{align}
+
+\bar x_{k+1} &amp;=\bar x_k -\underbrace{\frac{1}{n}u^T\boldsymbol\alpha v}{\alpha'}\bar y_k-\frac{1}{n}u^T\boldsymbol \alpha(Y_k-v\bar y_k)\\
+&amp;=\bar x_k-\alpha'(\bar y_k-\underbrace{\frac{1}{n}\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)}{g_k})-\frac{1}{n}\alpha'\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)-frac{1}{n}u^T\boldsymbol\alpha(Y_k-v\bar y_k)\\
+&amp;=\bar x_k-\alpha'(\bar y_k-g_k)-\alpha'g_k-\frac{1}{n}u^T\boldsymbol\alpha(Y_k-v\bar y_k)
+\tag{4.5}
+\end{align}\]</span>
+The auther introduce <span class="math inline">\(g_k=\frac{1}{n}\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)\)</span> is because we can prove
+<span class="math display" id="eq:baryknabla">\[\begin{equation}
+\bar y_k =\frac{1}{n}\boldsymbol 1^T \nabla F(X_k)
+\tag{4.6}
+\end{equation}\]</span>
+</div>
+<div id="linear-system-of-inequalities" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Linear system of inequalities</h3>
+<p>we then bound <span class="math inline">\((\Vert\bar x_{k+1}-x^*\Vert_2, \Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R,\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C)^T\)</span> by linear system of inequalities.</p>
+
+<div class="lemma">
+<span id="lem:eapp" class="lemma"><strong>Lemma 4.2  </strong></span>Under some conditions, <span class="math inline">\(\exists A\in \mathbb R^{3\times 3}, s.t.\)</span>
+<span class="math display" id="eq:ineqpp">\[\begin{equation}
+\left(
+\begin{array}{c}
+\Vert\bar x_{k+1}-x^*\Vert_2,\\
+\Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R,\\
+\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C)^T
+\end{array}
+\right)
+\leq A 
+\left(
+\begin{array}{c}
+\Vert\bar x_{k}-x^*\Vert_2,\\
+\Vert X_{k}-\boldsymbol1\bar x_{k}\Vert_R,\\
+\Vert Y_{k}-v\bar y_{k}\Vert_C
+\end{array}
+\right)
+\tag{4.7}
+\end{equation}\]</span>
+</div>
+
+<p>Next we derive the elements of <span class="math inline">\(A\)</span>. We add supported lemmas in derivation.</p>
+<p>First, for <span class="math inline">\(\Vert\bar x_{k+1}-x^*\Vert_2\)</span>, substitute <span class="math inline">\(\bar x_{k+1}\)</span> using <a href="#eq:xbar2pp">(4.5)</a>, we have</p>
+<span class="math display" id="eq:ineq11">\[\begin{align}
+
+\Vert\bar x_{k+1}-x^*\Vert_2&amp;\leq \left\|\bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\right\|_{2}+\alpha^{\prime}\left\|\bar{y}_{k}-g_{k}\right\|_{2}+\frac{1}{n}\left\|u^{\top} \boldsymbol{\alpha}\left(Y_{k}-v \bar{y}_{k}\right)\right\|_{2}
+\tag{4.8}
+\end{align}\]</span>
+<p>On the right hand side, <span class="math inline">\(\Vert \bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\Vert_2\)</span> is the distance between the optimal and iterated value, <span class="math inline">\(\vert \bar{y}_{k}-g_{k}\Vert_2\)</span> is the distance between average gradient and gradient of iterated value. Lemma <a href="#lem:lem31">4.3</a> connects them with <span class="math inline">\(\Vert X_{k}-\boldsymbol1\bar x_{k}\Vert_2\)</span> and <span class="math inline">\(\Vert\bar x_{k+1}-x^*\Vert_2\)</span> and add conditions on <span class="math inline">\(f_i\)</span> and <span class="math inline">\(\alpha'\)</span>.</p>
+
+<div class="lemma">
+<span id="lem:lem31" class="lemma"><strong>Lemma 4.3  </strong></span>Given <span class="math inline">\(f_i, i=1,2,...,n\)</span> are <span class="math inline">\(\mu\)</span>-strongly convex and <span class="math inline">\(L\)</span> Lipschitz continuous, <span class="math display">\[
+\left\|\bar{y}_{k}-g_{k}\right\|_{2} \leq \frac{L}{\sqrt{n}}\left\|\mathbf{x}_{k}-\mathbf{1} \bar{x}_{k}\right\|_{2}, \quad\left\|g_{k}\right\|_{2} \leq L\left\|\bar{x}_{k}-x^{*}\right\|_{2}
+\]</span> In addition, when <span class="math inline">\(\alpha'\leq \frac{2}{\mu+L}\)</span>, we have <span class="math display">\[
+\left\|\bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\right\|_{2} \leq\left(1-\alpha^{\prime} \mu\right)\left\|\bar{x}_{k}-x^{*}\right\|_{2}, \quad \forall k
+\]</span>
+</div>
+
+<p>However, notice that our final goal involves norm <span class="math inline">\(\Vert\cdot\Vert_R\)</span> and <span class="math inline">\(\Vert\cdot\Vert_C\)</span>. We need to transform them, which is ensured from the equivalence of norms. To make the notation more easily, the author gives lemma <a href="#lem:lem35">4.4</a>.</p>
+
+<div class="lemma">
+<p><span id="lem:lem35" class="lemma"><strong>Lemma 4.4  </strong></span><span class="math inline">\(\exists \delta_{\mathrm{C}, \mathrm{R}}, \delta_{\mathrm{C}, 2}, \delta_{\mathrm{R}, \mathrm{C}}, \delta_{\mathrm{R}, 2}&gt;0,s.t. \forall X\in\mathbb{R}^{n\times p}\)</span>, we have <span class="math inline">\(\Vert X\Vert_{\mathrm{C}} \leq \delta_{\mathrm{C}, \mathrm{R}}\Vert X\Vert_{\mathrm{R}},\Vert X\Vert_{\mathrm{C}} \leq \delta_{\mathrm{C}, 2}\Vert X\Vert_{2},\Vert X\Vert_{\mathrm{R}} \leq \delta_{\mathrm{R}, \mathrm{C}}\Vert X\Vert_{\mathrm{C}}\)</span>, and <span class="math inline">\(\|\mathbf{x}\|_{\mathrm{R}} \leq\delta_{\mathrm{R}, 2}\Vert X\Vert_{2}\)</span>. In addition, with a proper rescaling of the norms <span class="math inline">\(\Vert\cdot\Vert_R\)</span> and <span class="math inline">\(\Vert\cdot\Vert_C\)</span>, we have <span class="math inline">\(\Vert X\Vert_{2} \leq\Vert X\Vert_{\mathrm{R}} \text { and }\Vert X\Vert_{2} \leq\Vert X\Vert_{\mathrm{C}}\)</span></p>
+</div>
+
+<p>On the other hand, <span class="math inline">\(\boldsymbol\alpha=\text{diag}(\alpha_1,...,\alpha_n)\in \mathbb{R}^{n\times n}\)</span>, then <span class="math inline">\(\Vert \boldsymbol\alpha\Vert_2=\sigma_{\max}(\boldsymbol\alpha)=\underset{i}{\max}\alpha_i:=\hat\alpha\)</span>,since <span class="math inline">\(\alpha_i\in\mathbb{R}^+,i=1,2,...,n\)</span>. <span class="math inline">\(\sigma(A)\)</span> denotes the singular value of <span class="math inline">\(A\)</span>.</p>
+Finally, <a href="#eq:ineq11">(4.8)</a> can be written as
+<span class="math display" id="eq:ineq1pp">\[\begin{equation}
+
+\Vert\bar x_{k+1}-x^*\Vert_2\leq
+\left(1-\alpha^{\prime} \mu\right)\left\|\bar{x}_{k}-x^{*}\right\|_{2}+\frac{\alpha^{\prime} L}{\sqrt{n}}\left\|\mathbf{x}_{k}-\mathbf{1} \bar{x}_{k}\right\|_{\mathrm{R}}+\frac{\hat{\alpha}\|u\|_{2}}{n}\left\|Y_{k}-v \bar{y}_{k}\right\|_{\mathrm{C}}
+\tag{4.9}
+\end{equation}\]</span>
+</div>
 </div>
 </div>
 <div id="reference" class="section level1 unnumbered">

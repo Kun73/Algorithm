@@ -30,7 +30,7 @@ Y_{k+1} &= S_2Y_k + T(X_{k+1}) - T(X_k)
 (\#eq:unif)
 \end{align}
 
-Under some conditions, there exists an unique solution to \@ref(eq:obj) $x^*\in\mathbb{R}^{1\times p}$. To prove the convergen of those three methods, the idea is to bound the distance between iterated decision variable and the true value, the distance between iterated decision variable and its own average, and the distance between anxiliary variable and its own average in terms of linear combination of their previous value. This will introduce a matrix $A$.  In order to make it converge, we need to set $\rho(A)<1$, the spectral radius of $A$ to be less than $1$(similar idea in contraction mapping), which will derive a constraint to the stepsize $\alpha$. By doing so, the authors prove the convergence of those three methods and derive their convergence rate. 
+Under some conditions, there exists an unique solution to \@ref(eq:obj) $x^*\in\mathbb{R}^{1\times p}$. To prove the convergence of those three methods, the idea is to bound the distance between iterated decision variable and the true value, the distance between iterated decision variable and its own average, and the distance between anxiliary variable and its own average in terms of linear combination of their previous value. This will introduce a matrix $A$.  In order to make it converge, we need to set $\rho(A)<1$, the spectral radius of $A$ to be less than $1$(similar idea in contraction mapping), which will derive a constraint to the stepsize $\alpha$. By doing so, the authors prove the convergence of those three methods and derive their convergence rate. 
 
 # Notations and Assumptions
 
@@ -51,6 +51,9 @@ F(x) := \sum_{i=1}^n f_i(x)\\
 
 In a digraph, suppose each agent $i$ can actively and reliably push information out to its neighbor  $l\in\mathcal{N}^{out}_{C,i}\subset\mathcal{N}$ and pull information from its neighbor $j\in\mathcal{N}^{in}_{R,i}\subset\mathcal{N}$. To avoid a situation where agent $i$ can only push information or can only pull information from its neighbors, we need assumption *A1*. Matrix $R=(r_{ij})\in\mathbb{R}^{n\times n}$ denotes the pulling weights that agent $i$ pulls information from agent $j$. Thus the row sum of $R$ should be $1$, i.e. $R\boldsymbol 1 = \boldsymbol 1$ and $r_{ij}\geq 0$. That is to say, matrix $R$ is  row-stochastic. Similarly, $C = (c_{ij})\in\mathbb{R}^{n\times n}$ denotes the pushing weights that agent $i$ pushes information to agent $j$. In other words, it denotes the pulling weights that agent $j$ pulls information to agent $i$. Hence $C^T\boldsymbol 1=\boldsymbol 1$, i.e. $\boldsymbol 1^T C=\boldsymbol 1^T, c_{ij}\geq 0$. Moreover, for agent $i$ itself, it will have no problem getting information, hence $r_{ii}>0, c_{ii}>0$. 
 
+Hence we have assumption on $R$ and $C$, 
+
+
 The idea of Push-Pull Gradient Methods is that, at each iteration $k$, agent $i$ updates its local copy of decision variable $x_{i,k+1}\in\mathbb R^p$ according to the information it pulls from its nearby agents based on the corresponding pulling weights. Then it will also update the information stored in an auxiliary variable $y_{i, k+1}\in\mathbb{R}^p$ 
 
 ---
@@ -61,11 +64,11 @@ Each agent $i$ chooses its local step size $\alpha_i\geq0$ and initilized with a
 
 For k = 0, 1, ...,
 
-  For $i\in\mathcal{N}$, 
+  * For $i\in\mathcal{N}$, 
   
-  -$x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})$ (Pull)
+    * $x_{i, k+1} = \sum\limits_{j=1}^nr_{ij}(x_{j, k}-\alpha_j y_{j, k})$ (Pull)
   
-  -$y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})$(Push)
+    * $y_{i, k+1} = \sum\limits_{j=1}^nc_{ij}y_{j,k}+\nabla f_i(x_{i,k+1})-\nabla f_i(x_{i,k})$(Push)
 
 
 ---
@@ -94,11 +97,11 @@ Choose step siez $\alpha>0$ and initilize each agent $i$ with an arbitary $x_{i,
 
 For k = 0, 1, ...,
 
-  For $i\in\mathcal{N}$, 
+  * For $i\in\mathcal{N}$, 
   
-  -$x_{i, k+1} = \sum\limits_{j=1}^nw_{ij}(x_{j, k}-\alpha y_{j, k})$ (Pull)
+    * $x_{i, k+1} = \sum\limits_{j=1}^nw_{ij}(x_{j, k}-\alpha y_{j, k})$ (Pull)
   
-  -$y_{i, k+1} = \sum\limits_{j=1}^nw_{ij}y_{j,k}+ g_i(x_{i,k+1},\xi_{i,k+1})- g_i(x_{i,k},\xi_{i,k})$(Push)
+    * $y_{i, k+1} = \sum\limits_{j=1}^nw_{ij}y_{j,k}+ g_i(x_{i,k+1},\xi_{i,k+1})- g_i(x_{i,k},\xi_{i,k})$(Push)
 
 ---
 
@@ -118,7 +121,190 @@ X_{k+1} = W(X_{k}-\boldsymbol\alpha Y_k)
 (\#eq:DSGD)
 \end{equation}
 
+# Convergence Analysis
+
+To prove the convergence of thoses three methods, we bound the three distance. 
 
 
+## Push-Pull
+
+The goal is to bound $\Vert\bar x_{k+1}-x^*\Vert_2, \Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R$,and $\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C$. Where $\Vert\cdot\Vert_R$ and $\Vert\cdot\Vert_C$ are some defined norms,
+
+```{remark, n1}
+$X_{k+1}-\boldsymbol1\bar x_{k+1}$ and $Y_{k+1}-v\bar y_{k+1}$ are both $\mathbb{R}^{n\times p}$, the definition of matrix norm given an arbitary vector norm used here is different from the usual matrix norm induced by a vector norm.
+```
+
+
+
+### Relationship between two iteration steps
+
+Recall in Push-Pull method, we have \@ref(eq:pp), which involves two matrices $R$ and $C$ containing pulling weights and pushing weights respectively. By adding assumptions on the graph $\mathcal{G}_R$ and $\mathcal{G}_{C^T}$ and the stochastic attributes of $R$ and $C$, we have 
+
+```{lemma, eigvrc}
+Under assumptions, the matrix $R$ has a unique nonnegative left eigenvector $u^T$(w.r.t. eigenvalue 1) with $u^T\boldsymbol1 = n$, and the matrix $C$ has a unique nonnegative right eigenvector $v$ (w.r.t. eigenvalue 1) with $\boldsymbol1^T v = n$, i.e., 
+$$
+  u^T R = 1\cdot u^T
+$$
+
+$$
+  Cv = 1\cdot v
+$$
+  
+Moreover, $u^T$ (resp., $v$) is nonzero only on the entries associated with agents $i\in\mathcal{R}_R$(resp., $j\in\mathcal{R}_{C^T}$), and $u^Tv>0$.
+
+```
+
+Next, we give definition of $\bar x_k$ and $\bar y_k$.
+
+\begin{equation}
+\bar x_k := \frac{1}{n}u^TX_k\in\mathbb{R}^{1\times p},\quad \bar y_k:= \frac{1}{n}\boldsymbol 1 \nabla F(X_k)\in\mathbb{R}^{1\times p}
+(\#eq:barpp)
+\end{equation}
+
+The authors do not define $\bar x_k$ as $\frac{1}{n}\boldsymbol 1^TX_k$ is because the pulling information is subject to the pulling weights matrix $R$, not the whole system.
+
+For the pull step, 
+
+\begin{equation}
+\bar x_{k+1} = \frac{1}{n}u^TX_{k+1}\stackrel{\text{pull step}}{=}\frac{1}{n}u^TR(X_k-\boldsymbol\alpha Y_k)=\bar x_k-\frac{1}{n}u^T\boldsymbol\alpha Y_k
+(\#eq:barxpp)
+\end{equation}
+
+Hence,
+
+\begin{align}
+
+X_{k+1}-\boldsymbol1\bar x_{k+1}&= R(X_k-\boldsymbol\alpha Y_k)-\boldsymbol1(\bar x_k-\frac{1}{n}u^T\boldsymbol\alpha Y_k)\\
+&=(R-\frac{\boldsymbol 1 u^T}{n})(X_k-\boldsymbol 1\bar x_k)-
+(R-\frac{\boldsymbol 1 u^T}{n})\boldsymbol\alpha Y_k+\frac{\boldsymbol 1 u^T}{n}(X_k-\boldsymbol 1\bar x_k)\\
+&=(R-\frac{\boldsymbol 1 u^T}{n})(X_k-\boldsymbol 1\bar x_k)-
+(R-\frac{\boldsymbol 1 u^T}{n})\boldsymbol\alpha Y_k
+(\#eq:pp1bar)
+
+\end{align}
+This is because $\frac{\boldsymbol 1 u^T}{n}(X_k-\boldsymbol 1\bar x_k)=\bar x_k-\frac{u^T\boldsymbol1}{n}\bar x_k=0$ according to lemma \@ref(lem:eigvrc). 
+
+To see what does this difference mean, we rewrite $X_{k+1}-\boldsymbol1\bar x_{k+1}$ as 
+
+\begin{equation}
+(x_1-\frac{1}{n}\sum_{i=1}^n u_i x_i,...,x_n-\frac{1}{n}\sum_{i=1}^n u_i x_i)^T\in\mathbb{R}^{n\times p}
+\end{equation}
+where $u=(u_1,...,u_n)^T\in\mathbb{R}^n,x_i\in\mathbb{R}^p$. It denotes the difference between each agent $i$'s decision variable and the overall weighted mean.
+
+```{remark}
+The interpretation of $R-\frac{\boldsymbol 1 u^T}{n}$?
+```
+
+For the push step, 
+
+\begin{align}
+Y_{k+1}-v\bar y_{k+1}&\stackrel{\text{push step}}=CY_k+\nabla F(X_{k+1})-\nabla F(X_k)-v[\frac{1}{n}\boldsymbol1(CY_k+\nabla F(X_{k+1})-\nabla F(X_k))]\\
+&=CY_k-v\bar y_k+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))\\
+&=(C-\frac{v}{\boldsymbol1}{n})(Y_k-v\bar y_k)+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))+Cv\bar y_k+\frac{v\boldsymbol1^T}{n}Y_k-\frac{v\boldsymbol1^Tv}{n}\bar y_k-v\bar y_k\\
+&=(C-\frac{v}{\boldsymbol1}{n})(Y_k-v\bar y_k)+(I-\frac{v\boldsymbol1^T}{n})(\nabla F(X_{k+1})-\nabla F(X_k))
+(\#eq:ppvbar)
+\end{align}
+where 
+$$
+\frac{1}{n}v\boldsymbol1^TCY_k=v\bar y_k
+$$
+
+$$
+Cv\bar y_k+\frac{v\boldsymbol1^T}{n}Y_k-\frac{v\boldsymbol1^Tv}{n}\bar y_k-v\bar y_k=v\bar y_k+v\bar y_k-v\bar y_k-v\bar y_k=0
+$$
+are both derived from lemma \@ref(lem:eigvrc).
+
+Similarly, we can rewrite $Y_{k+1}-v\bar y_{k+1}$ as 
+\begin{equation}
+(y_1-\frac{1}{n}v_1\sum_{i=1}^ny_i,...,y_n-\frac{1}{n}v_n\sum_{i=1}^ny_i)^T
+\end{equation}
+
+Where $v=(v_1,...,v_n)^T\in\mathbb{R}^n,y_i\in\mathbb R^p$. It denotes the difference between each agent $i$'s average gradient and the overall mean subjected to its pushed situation with other agents.
+
+Additionally, recall our goal is to bound those three distance, from \@ref(eq:barxpp), we separate $Y_k$ as $Y_k-v\bar y_k$ and $v\bar y_k$, then 
+
+\begin{align}
+
+\bar x_{k+1} &=\bar x_k -\underbrace{\frac{1}{n}u^T\boldsymbol\alpha v}{\alpha'}\bar y_k-\frac{1}{n}u^T\boldsymbol \alpha(Y_k-v\bar y_k)\\
+&=\bar x_k-\alpha'(\bar y_k-\underbrace{\frac{1}{n}\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)}{g_k})-\frac{1}{n}\alpha'\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)-frac{1}{n}u^T\boldsymbol\alpha(Y_k-v\bar y_k)\\
+&=\bar x_k-\alpha'(\bar y_k-g_k)-\alpha'g_k-\frac{1}{n}u^T\boldsymbol\alpha(Y_k-v\bar y_k)
+(\#eq:xbar2pp)
+\end{align}
+
+The auther introduce $g_k=\frac{1}{n}\boldsymbol 1^T\nabla F(\boldsymbol 1\bar x_k)$ is because we can prove
+\begin{equation}
+\bar y_k =\frac{1}{n}\boldsymbol 1^T \nabla F(X_k)
+(\#eq:baryknabla)
+\end{equation}
+
+### Linear system of inequalities
+
+we then bound $(\Vert\bar x_{k+1}-x^*\Vert_2, \Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R,\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C)^T$ by linear system of inequalities. 
+
+
+```{lemma, eapp}
+Under some conditions, $\exists A\in \mathbb R^{3\times 3}, s.t.$
+\begin{equation}
+\left(
+\begin{array}{c}
+\Vert\bar x_{k+1}-x^*\Vert_2,\\
+\Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R,\\
+\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C)^T
+\end{array}
+\right)
+\leq A 
+\left(
+\begin{array}{c}
+\Vert\bar x_{k}-x^*\Vert_2,\\
+\Vert X_{k}-\boldsymbol1\bar x_{k}\Vert_R,\\
+\Vert Y_{k}-v\bar y_{k}\Vert_C
+\end{array}
+\right)
+(\#eq:ineqpp)
+\end{equation}
+```
+
+Next we derive the elements of $A$. We add supported lemmas in derivation.
+
+First, for $\Vert\bar x_{k+1}-x^*\Vert_2$, substitute $\bar x_{k+1}$ using \@ref(eq:xbar2pp), we have 
+
+\begin{align}
+
+\Vert\bar x_{k+1}-x^*\Vert_2&\leq \left\|\bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\right\|_{2}+\alpha^{\prime}\left\|\bar{y}_{k}-g_{k}\right\|_{2}+\frac{1}{n}\left\|u^{\top} \boldsymbol{\alpha}\left(Y_{k}-v \bar{y}_{k}\right)\right\|_{2}
+(\#eq:ineq11)
+\end{align}
+
+On the right hand side, $\Vert \bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\Vert_2$ is the distance between the optimal and iterated value, $\vert \bar{y}_{k}-g_{k}\Vert_2$ is the distance between average gradient and gradient of iterated value. Lemma \@ref(lem:lem31) connects them with $\Vert X_{k}-\boldsymbol1\bar x_{k}\Vert_2$ and $\Vert\bar x_{k+1}-x^*\Vert_2$ and add conditions on $f_i$ and $\alpha'$.
+
+```{lemma, lem31}
+Given $f_i, i=1,2,...,n$ are $\mu$-strongly convex and $L$ Lipschitz continuous, 
+$$
+\left\|\bar{y}_{k}-g_{k}\right\|_{2} \leq \frac{L}{\sqrt{n}}\left\|\mathbf{x}_{k}-\mathbf{1} \bar{x}_{k}\right\|_{2}, \quad\left\|g_{k}\right\|_{2} \leq L\left\|\bar{x}_{k}-x^{*}\right\|_{2}
+$$
+In addition, when $\alpha'\leq \frac{2}{\mu+L}$, we have 
+$$
+\left\|\bar{x}_{k}-\alpha^{\prime} g_{k}-x^{*}\right\|_{2} \leq\left(1-\alpha^{\prime} \mu\right)\left\|\bar{x}_{k}-x^{*}\right\|_{2}, \quad \forall k
+$$
+```
+
+However, notice that our final goal involves norm $\Vert\cdot\Vert_R$ and $\Vert\cdot\Vert_C$. We need to transform them, which is ensured from the equivalence of norms. To make the notation more easily, the author gives lemma \@ref(lem:lem35).
+
+```{lemma, lem35}
+$\exists \delta_{\mathrm{C}, \mathrm{R}}, \delta_{\mathrm{C}, 2}, \delta_{\mathrm{R}, \mathrm{C}}, \delta_{\mathrm{R}, 2}>0,s.t. \forall X\in\mathbb{R}^{n\times p}$, we have 
+$\Vert X\Vert_{\mathrm{C}} \leq \delta_{\mathrm{C}, \mathrm{R}}\Vert X\Vert_{\mathrm{R}},\Vert X\Vert_{\mathrm{C}} \leq \delta_{\mathrm{C}, 2}\Vert X\Vert_{2},\Vert X\Vert_{\mathrm{R}} \leq \delta_{\mathrm{R}, \mathrm{C}}\Vert X\Vert_{\mathrm{C}}$, and 
+$\|\mathbf{x}\|_{\mathrm{R}} \leq\delta_{\mathrm{R}, 2}\Vert X\Vert_{2}$. In addition, with a proper rescaling of the norms $\Vert\cdot\Vert_R$ and $\Vert\cdot\Vert_C$, we have $\Vert X\Vert_{2} \leq\Vert X\Vert_{\mathrm{R}} \text { and }\Vert X\Vert_{2} \leq\Vert X\Vert_{\mathrm{C}}$
+
+```
+
+On the other hand, 
+$\boldsymbol\alpha=\text{diag}(\alpha_1,...,\alpha_n)\in \mathbb{R}^{n\times n}$, then $\Vert \boldsymbol\alpha\Vert_2=\sigma_{\max}(\boldsymbol\alpha)=\underset{i}{\max}\alpha_i:=\hat\alpha$,since $\alpha_i\in\mathbb{R}^+,i=1,2,...,n$. $\sigma(A)$ denotes the singular value of $A$.
+
+Finally, \@ref(eq:ineq11) can be written as 
+\begin{equation}
+
+\Vert\bar x_{k+1}-x^*\Vert_2\leq
+\left(1-\alpha^{\prime} \mu\right)\left\|\bar{x}_{k}-x^{*}\right\|_{2}+\frac{\alpha^{\prime} L}{\sqrt{n}}\left\|\mathbf{x}_{k}-\mathbf{1} \bar{x}_{k}\right\|_{\mathrm{R}}+\frac{\hat{\alpha}\|u\|_{2}}{n}\left\|Y_{k}-v \bar{y}_{k}\right\|_{\mathrm{C}}
+(\#eq:ineq1pp)
+\end{equation}
 
 # Reference {-}
