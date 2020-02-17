@@ -16,3 +16,9 @@ See [here](http://htmlpreview.github.io/?https://raw.githubusercontent.com/Kun73
 
 # Optimization
 This part mainly includes notes from *Optimization Methods for Large-Scale Machine Learning* by L´eon Bottou et al, see [here](http://htmlpreview.github.io/?https://raw.githubusercontent.com/Kun73/Algorithm/master/Optimization%20Methods%20for%20Large-Scale%20Machine%20Learning/OPT.html)
+
+## Distributed optimization
+
+Push-Pull method, distributed stochastic gradient tracking(DSGT) method.
+
+Can see [here](http://htmlpreview.github.io/?https://raw.githubusercontent.com/Kun73/Algorithm/master/Distributed/dis.html)
