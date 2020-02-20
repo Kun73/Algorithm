@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-17" />
+<meta name="date" content="2020-02-19" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-17</h4>
+<h4 class="date">2020-02-19</h4>
 
 </div>
 
@@ -290,7 +290,7 @@ X_{k+1} = W(X_{k}-\boldsymbol\alpha Y_k)
 
 <div id="relationship-between-two-iteration-steps" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> Relationship between two iteration steps</h3>
-<p>Recall in Push-Pull method, we have <a href="#eq:pp">(3.1)</a>, which involves two matrices <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span> containing pulling weights and pushing weights respectively. By adding assumptions on the graph <span class="math inline">\(\mathcal{G}_R\)</span> and <span class="math inline">\(\mathcal{G}_{C^T}\)</span> and the stochastic attributes of <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span>, we have</p>
+<p>Recall in Push-Pull method, we have <a href="#eq:pp">(3.1)</a>, which involves two matrices <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span> containing pulling weights and pushing weights respectively. By adding assumptions on the graphs <span class="math inline">\(\mathcal{G}_R\)</span> and <span class="math inline">\(\mathcal{G}_{C^T}\)</span> and the stochastic attributes of <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span>, we have</p>
 
 <div class="lemma">
 <p><span id="lem:eigvrc" class="lemma"><strong>Lemma 4.1  </strong></span>Under assumptions, the matrix <span class="math inline">\(R\)</span> has a unique nonnegative left eigenvector <span class="math inline">\(u^T\)</span>(w.r.t. eigenvalue 1) with <span class="math inline">\(u^T\boldsymbol1 = n\)</span>, and the matrix <span class="math inline">\(C\)</span> has a unique nonnegative right eigenvector <span class="math inline">\(v\)</span> (w.r.t. eigenvalue 1) with <span class="math inline">\(\boldsymbol1^T v = n\)</span>, i.e., <span class="math display">\[
@@ -481,6 +481,18 @@ For <span class="math inline">\(\Vert X_{k+1}-X_k\Vert_2\)</span>, we have
 </div>
 
 </div>
+</div>
+<div id="a-distributed-stochastic-gradient-tracking-methoddsgt" class="section level2">
+<h2><span class="header-section-number">4.2</span> A Distributed Stochastic Gradient Tracking Method(DSGT)</h2>
+<p>The idea is similar to that in the Push-Pull method. However, since <span class="math inline">\(Y_k\in\mathbb{R}^{n\times p}\)</span> is used to track the average stochastic gradients in the <span class="math inline">\(k\)</span>th iteration, i.e. <span class="math inline">\(\bar y_k = \frac{1}{n}\mathbf{1}^T Y_k=\frac{1}{n}\sum\limits_{i=1}^ng_i(x_{i,k},\xi_{i,k})\)</span> provided <span class="math inline">\(y_{i,0}=g(x_{i,0},\xi_{i,0})\)</span>, which is random. Hence we now bound <span class="math inline">\(E\left[\left\|\bar{x}_{k+1}-x^{*}\right\|^{2}\right]\)</span>, <span class="math inline">\(E\left[\left\|X_{k+1}-1 \bar{x}_{k+1}\right\|^{2}\right]\)</span>, and <span class="math inline">\(E\left[\left\|Y_{k+1}-\mathbf{1} \bar{y}_{k+1}\right\|^{2}\right]\)</span>, which can be seen as variances of <span class="math inline">\(\bar x_k, X_k\)</span>, and <span class="math inline">\(Y_k\)</span>. Thus we need to assume <span class="math inline">\(g_i(x,\xi_i),i\in\mathcal{N}\)</span> have the finite variances and also assume they are good estimates of <span class="math inline">\(\nabla f_i(x), i\in\mathcal{N}\)</span>.</p>
+<p>Insead of the definition of norms used in the Push-Pull method, we denote <span class="math inline">\(\Vert\cdot\Vert\)</span> as the <span class="math inline">\(\ell_2-\)</span>norm for vectors and as Frobenius norms for matrices. Hence they are consistent.</p>
+<hr />
+(Assumption) <span class="math inline">\(\forall i\in\mathcal{N},x\in\mathbb{R}^p\)</span>, eahc random vector <span class="math inline">\(\xi_i\in\mathbb{R}^m\)</span> is independent, and
+<span class="math display">\[\begin{align}
+E[g_i(x,\xi_i)|x]&amp;=\nabla f_i(x)\\
+E[\Vert g_i(x,\xi_i)-\nabla f_i(x)\Vert^2 |x]&amp;\leq \sigma, \exists \sigma
+\end{align}\]</span>
+<hr />
 </div>
 </div>
 <div id="reference" class="section level1 unnumbered">

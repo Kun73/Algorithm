@@ -138,7 +138,7 @@ $X_{k+1}-\boldsymbol1\bar x_{k+1}$ and $Y_{k+1}-v\bar y_{k+1}$ are both $\mathbb
 
 ### Relationship between two iteration steps
 
-Recall in Push-Pull method, we have \@ref(eq:pp), which involves two matrices $R$ and $C$ containing pulling weights and pushing weights respectively. By adding assumptions on the graph $\mathcal{G}_R$ and $\mathcal{G}_{C^T}$ and the stochastic attributes of $R$ and $C$, we have 
+Recall in Push-Pull method, we have \@ref(eq:pp), which involves two matrices $R$ and $C$ containing pulling weights and pushing weights respectively. By adding assumptions on the graphs $\mathcal{G}_R$ and $\mathcal{G}_{C^T}$ and the stochastic attributes of $R$ and $C$, we have 
 
 ```{lemma, eigvrc}
 Under assumptions, the matrix $R$ has a unique nonnegative left eigenvector $u^T$(w.r.t. eigenvalue 1) with $u^T\boldsymbol1 = n$, and the matrix $C$ has a unique nonnegative right eigenvector $v$ (w.r.t. eigenvalue 1) with $\boldsymbol1^T v = n$, i.e., 
@@ -370,6 +370,28 @@ Lemma \@ref(lem:lem37) lead us to give conditions on $A$ so that $\rho(A)<1$.
 Given a nonnegative, irreducible matrix $M=(m_{ij})\in \mathbb{R}^{n\times n}$ with $m_{ii}<\lambda, i=1,2,3$ for some $\lambda>0$. $\rho(M)<\lambda\Leftrightarrow \text{det}(\lambda I-M)>0$
   
 ```
+
+
+## A Distributed Stochastic Gradient Tracking Method(DSGT)
+
+The idea is similar to that in the Push-Pull method. However, since $Y_k\in\mathbb{R}^{n\times p}$ is used to track the average stochastic gradients in the $k$th iteration, i.e. $\bar y_k = \frac{1}{n}\mathbf{1}^T Y_k=\frac{1}{n}\sum\limits_{i=1}^ng_i(x_{i,k},\xi_{i,k})$ provided $y_{i,0}=g(x_{i,0},\xi_{i,0})$, which is random. Hence we now bound $E\left[\left\|\bar{x}_{k+1}-x^{*}\right\|^{2}\right]$,
+$E\left[\left\|X_{k+1}-1 \bar{x}_{k+1}\right\|^{2}\right]$, and $E\left[\left\|Y_{k+1}-\mathbf{1} \bar{y}_{k+1}\right\|^{2}\right]$, which can be seen as variances of $\bar x_k, X_k$, and $Y_k$. Thus we need to assume $g_i(x,\xi_i),i\in\mathcal{N}$ have the finite variances and also assume they are good estimates of $\nabla f_i(x), i\in\mathcal{N}$. 
+
+Insead of the definition of norms used in the Push-Pull method, we denote $\Vert\cdot\Vert$ as the $\ell_2-$norm for vectors and as Frobenius norms for matrices. Hence they are consistent. 
+
+
+---
+
+(Assumption)
+$\forall i\in\mathcal{N},x\in\mathbb{R}^p$, eahc random vector $\xi_i\in\mathbb{R}^m$ is independent, and 
+\begin{align}
+E[g_i(x,\xi_i)|x]&=\nabla f_i(x)\\
+E[\Vert g_i(x,\xi_i)-\nabla f_i(x)\Vert^2 |x]&\leq \sigma, \exists \sigma
+\end{align}
+
+---
+
+
 
 
 
