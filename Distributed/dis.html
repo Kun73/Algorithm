@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-20" />
+<meta name="date" content="2020-02-22" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-20</h4>
+<h4 class="date">2020-02-22</h4>
 
 </div>
 
@@ -554,8 +554,8 @@ Then
 \Vert X_{k+1}-\mathbf{1}\bar x_{k+1}\Vert^2&amp;\stackrel{\text{iterate}}{=}
 \Vert WX_k-\alpha WY_k-\mathbf{1}(\bar x_k-\alpha\bar y_k)\Vert^2\\
 &amp;=\left\|W X_{k}-1 \bar{x}_{k}\right\|^{2}-2 \alpha\left\langle W X_{k}-1 \bar{x}_{k}, W Y_{k}-1 \bar{y}_{k}\right\rangle+\alpha^{2}\left\|W Y_{k}-1 \bar{y}_{k}\right\|^{2}\\
-&amp;\leq =\rho_{w}^{2}\left\|\mathrm{x}_{k}-1 \bar{x}_{k}\right\|^{2}+\alpha \rho_{w}^{2}\left[\frac{\left(1-\rho_{w}^{2}\right)}{2 \alpha \rho_{w}^{2}}\left\|\mathrm{x}_{k}-1 \bar{x}_{k}\right\|^{2}+\frac{2 \alpha \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left\|\mathrm{y}_{k}-1 \bar{y}_{k}\right\|^{2}\right]+\alpha^{2} \rho_{w}^{2}\left\|\mathrm{y}_{k}-1 \bar{y}_{k}\right\|^{2}\\
-&amp;\leq 
+&amp;\leq \rho_{w}^{2}\left\|\mathrm{x}_{k}-1 \bar{x}_{k}\right\|^{2}+\alpha \rho_{w}^{2}\left[\frac{\left(1-\rho_{w}^{2}\right)}{2 \alpha \rho_{w}^{2}}\left\|\mathrm{x}_{k}-1 \bar{x}_{k}\right\|^{2}+\frac{2 \alpha \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left\|\mathrm{y}_{k}-1 \bar{y}_{k}\right\|^{2}\right]+\alpha^{2} \rho_{w}^{2}\left\|\mathrm{y}_{k}-1 \bar{y}_{k}\right\|^{2}\\
+&amp;=
 \frac{\left(1+\rho_{w}^{2}\right)}{2}\left\|X_{k}-1 \bar{x}_{k}\right\|^{2}+\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left\|Y_{k}-1 \bar{y}_{k}\right\|^{2}
 \tag{4.16}
 \end{align}\]</span>
