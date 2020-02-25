@@ -593,7 +593,7 @@ we have $\rho(A_{dsgt})<1$.
 
 ```{remark}
 \\
-From the proof above, we see that, the structure $\frac{1-\rho_w^2}{L}$ originates from  $\beta=\frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-4 \alpha L-2 \alpha^{2} L^{2}$. For example, if we let $\beta$ be some other forms, we can still derive the constraints on $\alpha$ following the same routine abouve.
+From the proof above, making $\beta = \frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-4 \alpha L-2 \alpha^{2} L^{2}$ is a little tricky. $(1-a_22)=\frac{1-\rho_w^2}{2}$ can give us hints about such a choice.
 ```
 
 # Reference {-}
