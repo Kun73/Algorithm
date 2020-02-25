@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-22" />
+<meta name="date" content="2020-02-24" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-22</h4>
+<h4 class="date">2020-02-24</h4>
 
 </div>
 
@@ -447,7 +447,7 @@ For <span class="math inline">\(\Vert X_{k+1}-\boldsymbol1\bar x_{k+1}\Vert_R\)<
 <p>Where the second inquality is derived from lemma <a href="#lem:lem33">4.6</a> in transforming <span class="math inline">\(\Vert\boldsymbol\alpha\Vert_R=\Vert\boldsymbol\alpha\Vert_2=\hat\alpha\)</span> since <span class="math inline">\(\boldsymbol\alpha\)</span> is diagonal and lemma <a href="#lem:lem35">4.4</a> in transforming <span class="math inline">\(\Vert\cdot\Vert_R\)</span> into <span class="math inline">\(\Vert\cdot\Vert_C\)</span>. Next we use lemma <a href="#lem:lem34">4.5</a> and <a href="#lem:lem31">4.3</a> to transform <span class="math inline">\(\Vert \bar y_k\Vert_R\)</span> into the two parts. Finally, we choose a proper rescaling of the norm <span class="math inline">\(\Vert\cdot\Vert_R\)</span> to derive <span class="math inline">\(\Vert X_{k}-\mathbf{1} \bar{x}_{k}\Vert_2\leq\Vert X_{k}-\mathbf{1} \bar{x}_{k}\Vert_R\)</span>.</p>
 
 <div class="lemma">
-<span id="lem:lem33" class="lemma"><strong>Lemma 4.6  </strong></span>There exist matrix norms <span class="math inline">\(\Vert\cdot\Vert_R\)</span> and <span class="math inline">\(\Vert\cdot\Vert_C\)</span> such that <span class="math inline">\(\sigma_R:=\Vert R-\frac{\mathbf1u^T}{n}\Vert_R&lt;1,\sigma_{\mathrm{C}}:=\left\|\mathbf{C}-\frac{v \mathbf{1}^{\mathrm{T}}}{n}\right\|_{\mathrm{C}}&lt;1\)</span>, and <span class="math inline">\(\sigma_R\)</span> and <span class="math inline">\(\sigma_C\)</span> are arbitrarily close to <span class="math inline">\(\rho_R\)</span> and <span class="math inline">\(\rho_C\)</span>, respectively. In addition, given any diagnal matrix <span class="math inline">\(W\in\mathbb{R}^{n\times n}\)</span>, we have <span class="math inline">\(\|\mathbf{W}\|_{\mathrm{R}}=\|\mathbf{W}\|_{\mathrm{C}}=\|\mathbf{W}\|_{2}\)</span>.
+<span id="lem:lem33" class="lemma"><strong>Lemma 4.6  </strong></span>There exist matrix norms <span class="math inline">\(\Vert\cdot\Vert_R\)</span> and <span class="math inline">\(\Vert\cdot\Vert_C\)</span> such that <span class="math inline">\(\sigma_R:=\Vert R-\frac{\mathbf1u^T}{n}\Vert_R&lt;1,\sigma_{\mathrm{C}}:=\left\|\mathbf{C}-\frac{v \mathbf{1}^{\mathrm{T}}}{n}\right\|_{\mathrm{C}}&lt;1\)</span>, and <span class="math inline">\(\sigma_R\)</span> and <span class="math inline">\(\sigma_C\)</span> are arbitrarily close to <span class="math inline">\(\rho_R\)</span> and <span class="math inline">\(\rho_C\)</span>, respectively. In addition, given any diagnal matrix <span class="math inline">\(W\in\mathbb{R}^{n\times n}\)</span>, we have <span class="math inline">\(\|W\|_{\mathrm{R}}=\|W\|_{\mathrm{C}}=\|W\|_{2}\)</span>.
 </div>
 <p> \</p>
 <p>For <span class="math inline">\(\Vert Y_{k+1}-v\bar y_{k+1}\Vert_C\)</span>, denote <span class="math inline">\(\sigma_{\mathrm{C}}:=\left\|\mathbf{C}-\frac{v \mathbf{1}^{\mathrm{T}}}{n}\right\|_{\mathrm{C}}\)</span> and <span class="math inline">\(c_0 :=\Vert I-\frac{v\boldsymbol1^T}{n}\Vert_C\)</span>, from <a href="#eq:ppvbar">(4.4)</a>, we have</p>
@@ -466,7 +466,7 @@ For <span class="math inline">\(\Vert X_{k+1}-X_k\Vert_2\)</span>, we have
 <p>The inequality is based on lemma <a href="#lem:lem35">4.4</a> by choosing a proper rescaling of <span class="math inline">\(\Vert \cdot\Vert_R\)</span>. Then by lemma <a href="#lem:lem31">4.3</a> and unite like terms, we have</p>
 <span class="math display" id="eq:ineq3pp">\[\begin{align}
 \Vert Y_{k+1}-v\bar y_{k+1}\Vert_C&amp;\leq \left(\sigma_{\mathrm{C}}+\hat{\alpha} c_{0} \delta_{\mathrm{C}, 2}\|\mathbf{R}\|_{2} L\right)\left\|Y_{k}-v \bar{y}_{k}\right\|_{\mathrm{C}} +\\ 
-&amp;c_{0} \delta_{\mathrm{C}, 2} L\left(\|\mathbf{R}-\mathbf{I}\|_{2}+\hat{\alpha}\|\mathbf{R}\|_{2}\|v\|_{2} \frac{L}{\sqrt{n}}\right)\left\|X_{k}-\mathbf{1} \bar{x}_{k}\right\|_{\mathrm{R}} + 
+&amp;c_{0} \delta_{\mathrm{C}, 2} L\left(\|\mathbf{R}-I\|_{2}+\hat{\alpha}\|\mathbf{R}\|_{2}\|v\|_{2} \frac{L}{\sqrt{n}}\right)\left\|X_{k}-\mathbf{1} \bar{x}_{k}\right\|_{\mathrm{R}} + 
 \hat{\alpha} c_{0} \delta_{\mathrm{C}, 2}\|\mathbf{R}\|_{2}\|v\|_{2} L^{2}\left\|\bar{x}_{k}-x^{*}\right\|_{2}
 \tag{4.11}
 \end{align}\]</span>
@@ -544,7 +544,7 @@ E\left[\Vert \bar x_{k+1}-x^*\Vert^2|\mathcal{F}_k\right]&amp;\leq
 
 <div class="lemma">
 <span id="lem:lem1" class="lemma"><strong>Lemma 4.9  </strong></span>Given the graph <span class="math inline">\(\mathcal{G}\)</span> corresponding to the network of agents is undirected and connected, and <span class="math inline">\(W\)</span> is doubly stochastic and <span class="math inline">\(w_{ii}&gt;0,\exists i\in\mathcal{N}\)</span>, we have the spectral norm <span class="math inline">\(\rho_W\)</span> of <span class="math inline">\(W-\frac{\mathbf{1}\mathbf{1}^T}{n}\)</span>, <span class="math inline">\(\rho_W&lt;1\)</span>, and <span class="math display">\[
-  \|\mathbf{W} \omega-\mathbf{1} \bar{\omega}\| \leq \rho_{w}\|\omega-1 \bar{\omega}\|, \forall \omega\in\mathbb{R}^{n\times p}, \bar\omega = \frac{1}{n}\mathbf{1}\omega
+  \|W \omega-\mathbf{1} \bar{\omega}\| \leq \rho_{w}\|\omega-1 \bar{\omega}\|, \forall \omega\in\mathbb{R}^{n\times p}, \bar\omega = \frac{1}{n}\mathbf{1}\omega
 \]</span>
 </div>
 
@@ -558,6 +558,71 @@ Then
 &amp;=
 \frac{\left(1+\rho_{w}^{2}\right)}{2}\left\|X_{k}-1 \bar{x}_{k}\right\|^{2}+\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left\|Y_{k}-1 \bar{y}_{k}\right\|^{2}
 \tag{4.16}
+\end{align}\]</span>
+
+<div class="remark">
+<p> <span class="remark"><em>Remark. </em></span> For lemma <a href="#lem:lem1">4.9</a>, a counter example for not assuming assumption connected graph is that graph <span class="math inline">\(\mathcal{G}\)</span> induced by the identity matrix <span class="math inline">\(I\)</span>, then the spectral norm of <span class="math inline">\(I-\frac{\mathbf{1}\mathbf{1}^T}{n}\)</span> is <span class="math inline">\(\rho_w = 1\)</span>.</p>
+</div>
+
+<p>For <span class="math inline">\(E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]\)</span>. We write <span class="math inline">\(G(X_k,\xi_k):=G_k,\nabla_k:=\nabla F(X_k)\)</span> for simplicity, then we have,</p>
+<span class="math display" id="eq:dsgt31">\[\begin{align}
+\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2&amp;=
+
+\Vert WY_k + G_{k+1} - G_k -\mathbf{1}\bar y_k + \mathbf{1}(\bar y_k-\bar y_{k+1})\Vert^2\\
+&amp;= \Vert WY_k -  \mathbf{1}\bar y_k\Vert^2 + 
+\Vert G_{k+1} - G_k\Vert^2 + \Vert \mathbf{1}(\bar y_k-\bar y_{k+1})\Vert^2 + 2\langle WY_k - \mathbf{1}\bar y_k, G_{k+1}-G_k\rangle\\
+&amp;+ 2\langle WY_k-\mathbf{1}\bar y_k + G_{k+1}-G_k, \mathbf{1}(\bar y_k-\bar y_{k+1})\rangle \\
+&amp;=\Vert WY_k -  \mathbf{1}\bar y_k\Vert^2 + 
+\Vert G_{k+1} - G_k\Vert^2 + \Vert \mathbf{1}(\bar y_k-\bar y_{k+1})\Vert^2 + 2\langle WY_k - \mathbf{1}\bar y_k, G_{k+1}-G_k\rangle\\
+&amp;+ 2\langle Y_{k+1}-\mathbf{1}\bar y_{k+1}-\mathbf{1}(\bar y_k-\bar y_{k+1}) , \mathbf{1}(\bar y_k-\bar y_{k+1})\rangle\\
+&amp;\stackrel{?}{=}
+\Vert WY_k -  \mathbf{1}\bar y_k\Vert^2 + 
+\Vert G_{k+1} - G_k\Vert^2 - n\Vert \bar y_k-\bar y_{k+1}\Vert^2 + 2\langle WY_k - \mathbf{1}\bar y_k, G_{k+1}-G_k\rangle \\
+&amp;\leq \rho^2_w\Vert Y_k-\mathbf{1}\bar y_k\Vert^2+\Vert G_{k+1} - G_k\Vert^2 + 2\langle WY_k - \mathbf{1}\bar y_k, G_{k+1}-G_k\rangle
+\tag{4.17}
+\end{align}\]</span>
+<p>After getting the element of the matrix <span class="math inline">\(A\)</span> of the linear system of inequalities, we again use lemma <a href="#lem:lem37">4.7</a> to build conditions on step size <span class="math inline">\(\alpha\)</span> so that the spectral radius of <span class="math inline">\(A\)</span>, <span class="math inline">\(\rho(A)&lt;1\)</span>.</p>
+
+<div class="theorem">
+<span id="thm:dsgtA" class="theorem"><strong>Theorem 4.1  </strong></span>
+<span class="math display">\[\begin{equation}
+A_{dsgt}=\left[\begin{array}{ccc}
+{1-\alpha \mu} &amp; {\frac{\alpha L^{2}}{\mu n}(1+\alpha \mu)} &amp; {0} \\
+{0} &amp; {\frac{1}{2}\left(1+\rho_{w}^{2}\right)} &amp; {\alpha^{2} \frac{\left(1+\rho_{\nu}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}} \\
+2 \alpha n L^{3} &amp; \left(\frac{1}{\beta}+2\right) {\|W-I\|^{2} L^{2}+3 \alpha L^{3}} &amp; {\left(1+4 \alpha L+2 \alpha^{2} L^{2}+\beta\right) \rho_{w}^{2}}
+\end{array}\right]
+\end{equation}\]</span>
+where <span class="math inline">\(\beta=\frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-4 \alpha L-2 \alpha^{2} L^{2}\)</span>
+</div>
+
+<p>Next, we derive the conditions on <span class="math inline">\(\alpha\)</span> so that <span class="math inline">\(\rho(A_{dsgt})&lt;1\)</span> by computing <span class="math inline">\(det(I-A_{dsgt})\)</span> and make it greater than 0. We expand <span class="math inline">\(det(I-A_{dsgt})\)</span> according to the first column,</p>
+<span class="math display" id="eq:detdsgt">\[\begin{align}
+det(I-A_{dsgt}) &amp;= (1-a_{11})[(1-a_{22})(1-a_{33})-a_{32}a_{23}]-a_{12}a_{23}a_{31}
+\tag{4.18}
+\end{align}\]</span>
+<p>Notice that in lemma <a href="#lem:lem37">4.7</a>, it requires <span class="math inline">\(\lambda-a_{ii}&gt;0, i=1,2,3\)</span> and in <a href="#eq:detdsgt">(4.18)</a>, we already have <span class="math inline">\((1-a_{11})(1-a_{22})(1-a_{33})-C\)</span>. Hence we may expect <span class="math inline">\(C\)</span> to be bounded by the term of <span class="math inline">\(c_0(1-a_{11})(1-a_{22})(1-a_{33})\)</span>, where <span class="math inline">\(c_0&lt;1\)</span> is a positive number. So when we make</p>
+<span class="math display" id="eq:gamma1">\[\begin{align}
+a_{23}a_{32}&amp;\leq \frac{1}{\Gamma}(1-a_{22})(1-a_{33}),\\
+\tag{4.19}
+\end{align}\]</span>
+<span class="math display" id="eq:gamma2">\[\begin{align}
+a_{12}a_{23}a_{31}&amp;\leq \frac{1}{\Gamma+1}(1-a_{11})[(1-a_{22})(1-a_{33})-a_{32}a_{23}]
+\tag{4.20}
+\end{align}\]</span>
+<p>we have</p>
+<span class="math display">\[\begin{equation}
+det(I-A_{dsgt}) \geq \frac{\Gamma-1}{\Gamma+1}(1-a_{11})(1-a_{22})(1-a_{33})&gt;0
+\end{equation}\]</span>
+Next, we derive what exactly conditions <span class="math inline">\(\alpha\)</span> should satisfy to make the inequalities <a href="#eq:gamma1">(4.19)</a> and <a href="#eq:gamma2">(4.20)</a> hold. Additionally, in the proof of building linear inequality system of <span class="math inline">\(E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]\)</span>, the author used
+<span class="math display">\[\begin{align}
+2\|\mathbf{W}-\mathbf{I}\| L \rho_{w}\left\|\mathbf{y}_{k}-\mathbf{1} \bar{y}_{k}\right\|\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|\leq
+\beta \rho_{w}^{2} \left\|\mathbf{y}_{k}-1 \bar{y}_{k}\right\|^{2} | \mathcal{F}_{k}+\frac{1}{\beta}\|\mathbf{W}-\mathbf{I}\|^{2} L^{2}\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|^{2}
+\end{align}\]</span>
+<p>Thus we also need <span class="math inline">\(\beta&gt;0\)</span>.</p>
+<p>For inequality <a href="#eq:gamma1">(4.19)</a>,</p>
+<span class="math display">\[\begin{align}
+a_{23}a_{32}&amp;=\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left[\left(\frac{1}{\beta}+2\right)\|W-I\|^{2} L^{2}+3 \alpha L^{3}\right]\\
+&amp;=
 \end{align}\]</span>
 </div>
 </div>
