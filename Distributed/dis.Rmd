@@ -496,7 +496,7 @@ After getting the element of the matrix $A$ of the linear system of inequalities
 \begin{equation}
 A_{dsgt}=\left[\begin{array}{ccc}
 {1-\alpha \mu} & {\frac{\alpha L^{2}}{\mu n}(1+\alpha \mu)} & {0} \\
-{0} & {\frac{1}{2}\left(1+\rho_{w}^{2}\right)} & {\alpha^{2} \frac{\left(1+\rho_{\nu}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}} \\
+{0} & {\frac{1}{2}\left(1+\rho_{w}^{2}\right)} & {\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}} \\
 2 \alpha n L^{3} & \left(\frac{1}{\beta}+2\right) {\|W-I\|^{2} L^{2}+3 \alpha L^{3}} & {\left(1+4 \alpha L+2 \alpha^{2} L^{2}+\beta\right) \rho_{w}^{2}}
 \end{array}\right]
 \end{equation}
@@ -513,7 +513,7 @@ det(I-A_{dsgt}) &= (1-a_{11})[(1-a_{22})(1-a_{33})-a_{32}a_{23}]-a_{12}a_{23}a_{
 Notice that in lemma \@ref(lem:lem37), it requires $\lambda-a_{ii}>0, i=1,2,3$ and in \@ref(eq:detdsgt), we already have  $(1-a_{11})(1-a_{22})(1-a_{33})-C$. Hence we may expect $C$ to be bounded by the term of $c_0(1-a_{11})(1-a_{22})(1-a_{33})$, where $c_0<1$ is a positive number. So when we make 
 
 \begin{align}
-a_{23}a_{32}&\leq \frac{1}{\Gamma}(1-a_{22})(1-a_{33}),\\
+a_{23}a_{32}&\leq \frac{1}{\Gamma}(1-a_{22})(1-a_{33})=\frac{1}{\Gamma}(\frac{1-\rho_w^2}{2})^2,\\
 (\#eq:gamma1)
 \end{align}
 
@@ -528,18 +528,72 @@ we have
 det(I-A_{dsgt}) \geq \frac{\Gamma-1}{\Gamma+1}(1-a_{11})(1-a_{22})(1-a_{33})>0
 \end{equation}
 
-Next, we derive what exactly conditions $\alpha$ should satisfy to make the inequalities \@ref(eq:gamma1) and \@ref(eq:gamma2) hold. Additionally, in the proof of building linear inequality system of $E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]$, the author used 
+Next, we derive what exactly conditions $\alpha$ should satisfy to make the inequalities \@ref(eq:gamma1) and \@ref(eq:gamma2) hold. Additionally, in the proof of building linear inequality system of $E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]$, the author uses
 \begin{align}
 2\|\mathbf{W}-\mathbf{I}\| L \rho_{w}\left\|\mathbf{y}_{k}-\mathbf{1} \bar{y}_{k}\right\|\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|\leq
 \beta \rho_{w}^{2} \left\|\mathbf{y}_{k}-1 \bar{y}_{k}\right\|^{2} | \mathcal{F}_{k}+\frac{1}{\beta}\|\mathbf{W}-\mathbf{I}\|^{2} L^{2}\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|^{2}
 \end{align}
-Thus we also need $\beta>0$.
+Thus we also need $\beta>0$. Since$\beta$ is the quadratic about $\alpha>0$, so $\beta>0$ when 
+\begin{equation}
+\alpha < \frac{\sqrt{1+3\rho_w^2}}{2\rho_wL}-\frac{1}{L}
+(\#eq:dsgtalpha1)
+\end{equation}
 
-For inequality \@ref(eq:gamma1), 
 
+The author uses $\alpha\leq \frac{1-\rho_w^2}{12\rho_w^2L}$ to gurantee $\beta>0$ since $0<\rho_w<1$. 
 \begin{align}
-a_{23}a_{32}&=\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left[\left(\frac{1}{\beta}+2\right)\|W-I\|^{2} L^{2}+3 \alpha L^{3}\right]\\
-&=
+\beta \geq \frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-\frac{1-\rho_{w}^{2}}{3 \rho_{w}}-\frac{\left(1-\rho_{w}^{2}\right)^{2}}{72 \rho_{w}^{2}} \geq \frac{11\left(1-\rho_{w}^{2}\right)}{72 \rho_{w}^{2}} \geq \frac{1-\rho_{w}^{2}}{8 \rho_{w}^{2}}>0
+(\#eq:dsgtbeta)
 \end{align}
+
+The coefficient $C>0$ of $\frac{1-\rho_w^2}{C\rho_w^2L}$ can be chosen from $(\frac{2}{\sqrt{5}-2}\approx8.47,+\infty)$.
+
+Figure \@ref(fig:f1) plots the function $\frac{\sqrt{1+3\rho_w^2}}{2\rho_w}-1-\frac{1-\rho_w^2}{12\rho_w^2}$, we see from figure \ref(fig:f1) that the constraint in \@ref(eq:dsgtalpha1) is not better than $\alpha\leq \frac{1-\rho_w^2}{12\rho_w^2L}$, especilly when $\rho_w$ is close to $0$.
+
+```{r,f1, echo = FALSE, fig.cap="The difference between two constraints", out.width="50%"}
+f1 = function(x) {sqrt(1+3*x^2)/(2*x)-(1-x^2)/(12*x^2) - 1}
+curve(f1,0,0.2)
+abline(h = 0, col = "red")
+```
+
+In short, a less strict $\alpha$ can be chosen as $\alpha\leq\frac{1-\rho_w^2}{9\rho_wL}$.
+
+For inequality \@ref(eq:gamma1), substitute $\beta\geq\frac{1-\rho_w^2}{C'\rho_w^2}$, where $C'$ is subject to the chioce of $C\in(\frac{2}{\sqrt{5}-2}\approx8.47,+\infty)$. We follow the author's choice here, then the LHS of \@ref(eq:gamma1) is less than the following, 
+\begin{equation}
+\frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\alpha^{2}\left[\frac{\left(2+6 \rho_{w}^{2}\right)}{\left(1-\rho_{w}^{2}\right)}\|\mathbf{W}-\mathbf{I}\|^{2} L^{2}+\frac{\left(1-\rho_{w}^{2}\right)}{4 \rho_{w}^{2}} L^{2}\right]\leq RHS=\frac{\left(1-\rho_{w}^{2}\right)^{2}}{4 \Gamma}
+(\#eq:dsgtalpha21)
+\end{equation}
+Hence, it suffice to make $\alpha$,
+\begin{equation}
+
+\alpha\leq \frac{\left(1-\rho_{w}^{2}\right)^{2}}{2 \sqrt{\Gamma} L \max \left(6 \rho_{w}\|\mathbf{W}-\mathbf{I}\|, 1-\rho_{w}^{2}\right)}\leq \frac{\left(1-\rho_{w}^{2}\right)^{2}}{L \sqrt{\Gamma\left(1+\rho_{w}^{2}\right)} \sqrt{4 \rho_{w}^{2}\left(2+6 \rho_{w}^{2}\right)\|\mathbf{W}-\mathbf{I}\|^{2}+\left(1-\rho_{w}^{2}\right)^{2}}}
+
+\end{equation}
+The latter inequality comes from $\rho_w^2<1<\frac{7}{6}$ and $a+b\leq 2\max(a,b)$.
+
+For the inequality \@ref(eq:gamma2), from the inequality \@ref(eq:gamma1), it is sufficient to have 
+\begin{equation}
+
+a_{12} a_{23} a_{31}\leq
+\frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\left(1-a_{11}\right)\left(1-a_{22}\right)\left(1-a_{33}\right)
+\end{equation}
+
+Thus, 
+
+\begin{equation}
+\alpha \leq \frac{\left(1-\rho_{w}^{2}\right)}{3 \rho_{w}^{2 / 3} L}\left[\frac{\mu^{2}}{L^{2}} \frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\right]^{1 / 3}
+\end{equation}
+
+Then, when the step size $\alpha$ is chosen such that 
+\begin{equation}
+\alpha \leq \min \left\{\frac{\left(1-\rho_{w}^{2}\right)}{12 \rho_{w} L}, \frac{\left(1-\rho_{w}^{2}\right)^{2}}{2 \sqrt{\Gamma} L \max \left\{6 \rho_{w}\|\mathbf{W}-\mathbf{I}\|, 1-\rho_{w}^{2}\right\}}, \frac{\left(1-\rho_{w}^{2}\right)}{3 \rho_{w}^{2 / 3} L}\left[\frac{\mu^{2}}{L^{2}} \frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\right]^{1 / 3}\right\}
+(\#eq:dsgtalpha)
+\end{equation}
+we have $\rho(A_{dsgt})<1$.
+
+```{remark}
+\\
+From the proof above, we see that, the structure $\frac{1-\rho_w^2}{L}$ originates from  $\beta=\frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-4 \alpha L-2 \alpha^{2} L^{2}$. For example, if we let $\beta$ be some other forms, we can still derive the constraints on $\alpha$ following the same routine abouve.
+```
 
 # Reference {-}

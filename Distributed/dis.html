@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kun Huang" />
 
-<meta name="date" content="2020-02-24" />
+<meta name="date" content="2020-02-25" />
 
 <title>Distributed Optimization</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Distributed Optimization</h1>
 <h4 class="author">Kun Huang</h4>
-<h4 class="date">2020-02-24</h4>
+<h4 class="date">2020-02-25</h4>
 
 </div>
 
@@ -588,7 +588,7 @@ Then
 <span class="math display">\[\begin{equation}
 A_{dsgt}=\left[\begin{array}{ccc}
 {1-\alpha \mu} &amp; {\frac{\alpha L^{2}}{\mu n}(1+\alpha \mu)} &amp; {0} \\
-{0} &amp; {\frac{1}{2}\left(1+\rho_{w}^{2}\right)} &amp; {\alpha^{2} \frac{\left(1+\rho_{\nu}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}} \\
+{0} &amp; {\frac{1}{2}\left(1+\rho_{w}^{2}\right)} &amp; {\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}} \\
 2 \alpha n L^{3} &amp; \left(\frac{1}{\beta}+2\right) {\|W-I\|^{2} L^{2}+3 \alpha L^{3}} &amp; {\left(1+4 \alpha L+2 \alpha^{2} L^{2}+\beta\right) \rho_{w}^{2}}
 \end{array}\right]
 \end{equation}\]</span>
@@ -602,7 +602,7 @@ det(I-A_{dsgt}) &amp;= (1-a_{11})[(1-a_{22})(1-a_{33})-a_{32}a_{23}]-a_{12}a_{23
 \end{align}\]</span>
 <p>Notice that in lemma <a href="#lem:lem37">4.7</a>, it requires <span class="math inline">\(\lambda-a_{ii}&gt;0, i=1,2,3\)</span> and in <a href="#eq:detdsgt">(4.18)</a>, we already have <span class="math inline">\((1-a_{11})(1-a_{22})(1-a_{33})-C\)</span>. Hence we may expect <span class="math inline">\(C\)</span> to be bounded by the term of <span class="math inline">\(c_0(1-a_{11})(1-a_{22})(1-a_{33})\)</span>, where <span class="math inline">\(c_0&lt;1\)</span> is a positive number. So when we make</p>
 <span class="math display" id="eq:gamma1">\[\begin{align}
-a_{23}a_{32}&amp;\leq \frac{1}{\Gamma}(1-a_{22})(1-a_{33}),\\
+a_{23}a_{32}&amp;\leq \frac{1}{\Gamma}(1-a_{22})(1-a_{33})=\frac{1}{\Gamma}(\frac{1-\rho_w^2}{2})^2,\\
 \tag{4.19}
 \end{align}\]</span>
 <span class="math display" id="eq:gamma2">\[\begin{align}
@@ -613,17 +613,63 @@ a_{12}a_{23}a_{31}&amp;\leq \frac{1}{\Gamma+1}(1-a_{11})[(1-a_{22})(1-a_{33})-a_
 <span class="math display">\[\begin{equation}
 det(I-A_{dsgt}) \geq \frac{\Gamma-1}{\Gamma+1}(1-a_{11})(1-a_{22})(1-a_{33})&gt;0
 \end{equation}\]</span>
-Next, we derive what exactly conditions <span class="math inline">\(\alpha\)</span> should satisfy to make the inequalities <a href="#eq:gamma1">(4.19)</a> and <a href="#eq:gamma2">(4.20)</a> hold. Additionally, in the proof of building linear inequality system of <span class="math inline">\(E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]\)</span>, the author used
+Next, we derive what exactly conditions <span class="math inline">\(\alpha\)</span> should satisfy to make the inequalities <a href="#eq:gamma1">(4.19)</a> and <a href="#eq:gamma2">(4.20)</a> hold. Additionally, in the proof of building linear inequality system of <span class="math inline">\(E\left[\Vert Y_{k+1}-\mathbf{1}\bar y_{k+1}\Vert^2|\mathcal{F}_k\right]\)</span>, the author uses
 <span class="math display">\[\begin{align}
 2\|\mathbf{W}-\mathbf{I}\| L \rho_{w}\left\|\mathbf{y}_{k}-\mathbf{1} \bar{y}_{k}\right\|\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|\leq
 \beta \rho_{w}^{2} \left\|\mathbf{y}_{k}-1 \bar{y}_{k}\right\|^{2} | \mathcal{F}_{k}+\frac{1}{\beta}\|\mathbf{W}-\mathbf{I}\|^{2} L^{2}\left\|\mathbf{x}_{k}-1 \bar{x}_{k}\right\|^{2}
 \end{align}\]</span>
-<p>Thus we also need <span class="math inline">\(\beta&gt;0\)</span>.</p>
-<p>For inequality <a href="#eq:gamma1">(4.19)</a>,</p>
-<span class="math display">\[\begin{align}
-a_{23}a_{32}&amp;=\alpha^{2} \frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\left[\left(\frac{1}{\beta}+2\right)\|W-I\|^{2} L^{2}+3 \alpha L^{3}\right]\\
-&amp;=
+Thus we also need <span class="math inline">\(\beta&gt;0\)</span>. Since<span class="math inline">\(\beta\)</span> is the quadratic about <span class="math inline">\(\alpha&gt;0\)</span>, so <span class="math inline">\(\beta&gt;0\)</span> when
+<span class="math display" id="eq:dsgtalpha1">\[\begin{equation}
+\alpha &lt; \frac{\sqrt{1+3\rho_w^2}}{2\rho_wL}-\frac{1}{L}
+\tag{4.21}
+\end{equation}\]</span>
+The author uses <span class="math inline">\(\alpha\leq \frac{1-\rho_w^2}{12\rho_w^2L}\)</span> to gurantee <span class="math inline">\(\beta&gt;0\)</span> since <span class="math inline">\(0&lt;\rho_w&lt;1\)</span>.
+<span class="math display" id="eq:dsgtbeta">\[\begin{align}
+\beta \geq \frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-\frac{1-\rho_{w}^{2}}{3 \rho_{w}}-\frac{\left(1-\rho_{w}^{2}\right)^{2}}{72 \rho_{w}^{2}} \geq \frac{11\left(1-\rho_{w}^{2}\right)}{72 \rho_{w}^{2}} \geq \frac{1-\rho_{w}^{2}}{8 \rho_{w}^{2}}&gt;0
+\tag{4.22}
 \end{align}\]</span>
+<p>The coefficient <span class="math inline">\(C&gt;0\)</span> of <span class="math inline">\(\frac{1-\rho_w^2}{C\rho_w^2L}\)</span> can be chosen from <span class="math inline">\((\frac{2}{\sqrt{5}-2}\approx8.47,+\infty)\)</span>.</p>
+<p>Figure <a href="#fig:f1">4.1</a> plots the function <span class="math inline">\(\frac{\sqrt{1+3\rho_w^2}}{2\rho_w}-1-\frac{1-\rho_w^2}{12\rho_w^2}\)</span>, we see from figure (fig:f1) that the constraint in <a href="#eq:dsgtalpha1">(4.21)</a> is not better than <span class="math inline">\(\alpha\leq \frac{1-\rho_w^2}{12\rho_w^2L}\)</span>, especilly when <span class="math inline">\(\rho_w\)</span> is close to <span class="math inline">\(0\)</span>.</p>
+<div class="figure"><span id="fig:f1"></span>
+<img src="data:image/png;base64,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" alt="The difference between two constraints" width="50%" />
+<p class="caption">
+Figure 4.1: The difference between two constraints
+</p>
+</div>
+<p>In short, a less strict <span class="math inline">\(\alpha\)</span> can be chosen as <span class="math inline">\(\alpha\leq\frac{1-\rho_w^2}{9\rho_wL}\)</span>.</p>
+For inequality <a href="#eq:gamma1">(4.19)</a>, substitute <span class="math inline">\(\beta\geq\frac{1-\rho_w^2}{C'\rho_w^2}\)</span>, where <span class="math inline">\(C'\)</span> is subject to the chioce of <span class="math inline">\(C\in(\frac{2}{\sqrt{5}-2}\approx8.47,+\infty)\)</span>. We follow the author’s choice here, then the LHS of <a href="#eq:gamma1">(4.19)</a> is less than the following,
+<span class="math display" id="eq:dsgtalpha21">\[\begin{equation}
+\frac{\left(1+\rho_{w}^{2}\right) \rho_{w}^{2}}{\left(1-\rho_{w}^{2}\right)}\alpha^{2}\left[\frac{\left(2+6 \rho_{w}^{2}\right)}{\left(1-\rho_{w}^{2}\right)}\|\mathbf{W}-\mathbf{I}\|^{2} L^{2}+\frac{\left(1-\rho_{w}^{2}\right)}{4 \rho_{w}^{2}} L^{2}\right]\leq RHS=\frac{\left(1-\rho_{w}^{2}\right)^{2}}{4 \Gamma}
+\tag{4.23}
+\end{equation}\]</span>
+Hence, it suffice to make <span class="math inline">\(\alpha\)</span>,
+<span class="math display">\[\begin{equation}
+
+\alpha\leq \frac{\left(1-\rho_{w}^{2}\right)^{2}}{2 \sqrt{\Gamma} L \max \left(6 \rho_{w}\|\mathbf{W}-\mathbf{I}\|, 1-\rho_{w}^{2}\right)}\leq \frac{\left(1-\rho_{w}^{2}\right)^{2}}{L \sqrt{\Gamma\left(1+\rho_{w}^{2}\right)} \sqrt{4 \rho_{w}^{2}\left(2+6 \rho_{w}^{2}\right)\|\mathbf{W}-\mathbf{I}\|^{2}+\left(1-\rho_{w}^{2}\right)^{2}}}
+
+\end{equation}\]</span>
+<p>The latter inequality comes from <span class="math inline">\(\rho_w^2&lt;1&lt;\frac{7}{6}\)</span> and <span class="math inline">\(a+b\leq 2\max(a,b)\)</span>.</p>
+For the inequality <a href="#eq:gamma2">(4.20)</a>, from the inequality <a href="#eq:gamma1">(4.19)</a>, it is sufficient to have
+<span class="math display">\[\begin{equation}
+
+a_{12} a_{23} a_{31}\leq
+\frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\left(1-a_{11}\right)\left(1-a_{22}\right)\left(1-a_{33}\right)
+\end{equation}\]</span>
+<p>Thus,</p>
+<span class="math display">\[\begin{equation}
+\alpha \leq \frac{\left(1-\rho_{w}^{2}\right)}{3 \rho_{w}^{2 / 3} L}\left[\frac{\mu^{2}}{L^{2}} \frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\right]^{1 / 3}
+\end{equation}\]</span>
+Then, when the step size <span class="math inline">\(\alpha\)</span> is chosen such that
+<span class="math display" id="eq:dsgtalpha">\[\begin{equation}
+\alpha \leq \min \left\{\frac{\left(1-\rho_{w}^{2}\right)}{12 \rho_{w} L}, \frac{\left(1-\rho_{w}^{2}\right)^{2}}{2 \sqrt{\Gamma} L \max \left\{6 \rho_{w}\|\mathbf{W}-\mathbf{I}\|, 1-\rho_{w}^{2}\right\}}, \frac{\left(1-\rho_{w}^{2}\right)}{3 \rho_{w}^{2 / 3} L}\left[\frac{\mu^{2}}{L^{2}} \frac{(\Gamma-1)}{\Gamma(\Gamma+1)}\right]^{1 / 3}\right\}
+\tag{4.24}
+\end{equation}\]</span>
+<p>we have <span class="math inline">\(\rho(A_{dsgt})&lt;1\)</span>.</p>
+
+<div class="remark">
+ <span class="remark"><em>Remark. </em></span> \ From the proof above, we see that, the structure <span class="math inline">\(\frac{1-\rho_w^2}{L}\)</span> originates from <span class="math inline">\(\beta=\frac{1-\rho_{w}^{2}}{2 \rho_{w}^{2}}-4 \alpha L-2 \alpha^{2} L^{2}\)</span>. For example, if we let <span class="math inline">\(\beta\)</span> be some other forms, we can still derive the constraints on <span class="math inline">\(\alpha\)</span> following the same routine abouve.
+</div>
+
 </div>
 </div>
 <div id="reference" class="section level1 unnumbered">
