@@ -2,7 +2,7 @@
 
 This repository includes algorithms in statistical computing and big data analysis.
 
-For the first part, we derive the MLE for the most of the time while for the latter one, we minimize a loss function.So it may be a little diffence when describing an algorithm in these two scenarios. However, most of the time, we just need to add a minus sign to switch bewtween these two situations, i.e. one is for minimization, the other is for maximization.
+For the first part, we derive the MLE for the most of the time while for the latter one, we minimize a loss function.So it may be a little diffence when describing an algorithm in these two scenarios. However, most of the time, we just need to add a minus sign to switch between these two situations, i.e. one is for minimization, the other is for maximization.
 
 # Statistical Computing
 
